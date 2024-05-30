@@ -48,10 +48,10 @@ func FailWithMessage(message string, c *gin.Context) {
 	MsgResult(ERROR, message, c)
 }
 
-func NoAuth(c *gin.Context) {
+func NoAuth(message string, c *gin.Context) {
 	c.JSON(http.StatusUnauthorized, Response{
 		7,
 		nil,
-		"身份校验不通过",
+		message,
 	})
 }
