@@ -13,7 +13,7 @@ func GetSystemUserList(c *gin.Context) {
 	// 获取分页参数
 	pageNumber, pageSize := utils.GetPaginationParams(c)
 	// 获取其它查询参数
-	name := c.Query("name")
+	userName := c.Query("userName")
 
 	// 声明 system.SysUser 类型的变量以存储查询结果
 	systemUserList := make([]system.SysUser, 0)
@@ -21,8 +21,8 @@ func GetSystemUserList(c *gin.Context) {
 
 	// 准备数据库查询
 	db := global.DB.Model(&system.SysUser{})
-	if name != "" {
-		db = db.Where("name LIKE ?", "%"+name+"%")
+	if userName != "" {
+		db = db.Where("user_name LIKE ?", "%"+userName+"%")
 	}
 
 	// 获取总数

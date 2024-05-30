@@ -5,7 +5,7 @@ import (
 	"github.com/wangyupo/GGB/api/system"
 )
 
-func SysUserRouter(r *gin.Engine) {
+func SysUserRouter(r *gin.RouterGroup) {
 	sysUserRouter := r.Group("/sysUser")
 	{
 		sysUserRouter.GET("", system.GetSystemUserList)
