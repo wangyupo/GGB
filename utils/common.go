@@ -17,3 +17,11 @@ func GetQueryInt(c *gin.Context, key string, defaultValue int) int {
 	}
 	return value
 }
+
+func GetToken(c *gin.Context) string {
+	token, _ := c.Cookie("Authorization")
+	if token == "" {
+		token = c.Request.Header.Get("Authorization")
+	}
+	return token
+}
