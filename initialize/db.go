@@ -2,7 +2,7 @@ package initialize
 
 import (
 	"fmt"
-	"github.com/wangyupo/gin-cli/global"
+	"github.com/wangyupo/GGB/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"

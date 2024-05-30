@@ -2,7 +2,7 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/gin-cli/api/system"
+	"github.com/wangyupo/GGB/api/system"
 )
 
 func SysUserRouter(r *gin.Engine) {

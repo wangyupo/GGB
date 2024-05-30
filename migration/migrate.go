@@ -2,8 +2,8 @@ package migration
 
 import (
 	"fmt"
-	"github.com/wangyupo/gin-cli/global"
-	"github.com/wangyupo/gin-cli/model/system"
+	"github.com/wangyupo/GGB/global"
+	"github.com/wangyupo/GGB/model/system"
 )
 
 // Migrate 表和数据迁移

@@ -2,10 +2,10 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/gin-cli/global"
-	"github.com/wangyupo/gin-cli/model/common/response"
-	"github.com/wangyupo/gin-cli/model/system"
-	"github.com/wangyupo/gin-cli/utils"
+	"github.com/wangyupo/GGB/global"
+	"github.com/wangyupo/GGB/model/common/response"
+	"github.com/wangyupo/GGB/model/system"
+	"github.com/wangyupo/GGB/utils"
 )
 
 // GetSystemUserList 列表

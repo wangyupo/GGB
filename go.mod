@@ -1,4 +1,4 @@
-module github.com/wangyupo/gin-cli
+module github.com/wangyupo/GGB
 
 go 1.22.3
 

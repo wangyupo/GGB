@@ -1,6 +1,6 @@
 package system
 
-import "github.com/wangyupo/gin-cli/global"
+import "github.com/wangyupo/GGB/global"
 
 type SysUser struct {
 	global.BaseModel

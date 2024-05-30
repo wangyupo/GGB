@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/wangyupo/gin-cli/global"
-	"github.com/wangyupo/gin-cli/initialize"
-	"github.com/wangyupo/gin-cli/migration"
-	"github.com/wangyupo/gin-cli/router"
+	"github.com/wangyupo/GGB/global"
+	"github.com/wangyupo/GGB/initialize"
+	"github.com/wangyupo/GGB/migration"
+	"github.com/wangyupo/GGB/router"
 	"os"
 )
 
