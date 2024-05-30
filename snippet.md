@@ -1,0 +1,135 @@
+把这些代码放到 GoLand 的实时模板里
+
+```
+// Get$Items$ 列表
+func Get$Items$(c *gin.Context) {
+	// 获取分页参数
+	pageNumber, pageSize := utils.GetPaginationParams(c)
+	// 获取其它查询参数
+	name := c.Query("name")
+
+	// 声明 $model_1$ 类型的变量以存储查询结果
+    $items$ := make([]$model$, 0)
+	var total int64
+
+    // 准备数据库查询
+	db := global.DB.Model(&$model${})
+	if name != "" {
+		db = db.Where("name LIKE ?", "%" + name + "%")
+	}
+
+    // 获取总数
+    if err := db.Count(&total).Error; err != nil {
+        // 错误处理
+        response.FailWithMessage(err.Error(), c)
+        return
+    }
+
+    // 获取分页数据
+	db = db.Offset((pageNumber - 1)*pageSize).Limit(pageSize)
+
+	// 执行查询并获取结果
+    if err := db.Find(&$items$).Error; err != nil {
+        // 错误处理
+        response.FailWithMessage(err.Error(), c)
+        return
+    }
+
+    // 返回响应结果
+	response.SuccessWithData(response.PageResult{
+        List:  $items$,
+        Total: total,
+    }, c)
+}
+
+// Create$Item$ 新建
+func Create$Item$(c *gin.Context) {
+    // 声明 $model_1$ 类型的变量以存储 JSON 数据
+	var $item$ $model$
+
+	// 绑定 JSON 请求体中的数据到 $item$ 结构体
+	if err := c.ShouldBindJSON(&$item$); err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 创建 $item$ 记录
+	if err := global.DB.Create(&$item$).Error; err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 返回响应结果
+    response.SuccessWithMessage("Success to create $item$", c)
+}
+
+// Get$Item$ 详情
+func Get$Item$(c *gin.Context) {
+	// 获取路径参数
+	id := c.Param("id")
+
+    // 声明 $model_1$ 类型的变量以存储查询结果
+	var $item$ $model$
+
+    // 从数据库中查找具有指定 ID 的数据
+	if err := global.DB.First(&$item$, id).Error; err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 返回响应结果
+	response.SuccessWithData($item$, c)
+}
+
+// Update$Item$ 编辑
+func Update$Item$(c *gin.Context) {
+	// 获取路径参数
+	id := c.Param("id")
+
+	// 声明 $model_1$ 类型的变量以存储查询结果
+	var $item$ $model$
+
+    // 从数据库中查找具有指定 ID 的数据
+	if err := global.DB.First(&$item$, id).Error; err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 绑定请求参数到数据对象
+	if err := c.ShouldBindJSON(&$item$); err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 更新用户记录
+	if err := global.DB.Save(&$item$).Error; err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 返回响应结果
+	response.SuccessWithMessage("Success to update $item$", c)
+}
+
+// Delete$Item$ 删除
+func Delete$Item$(c *gin.Context) {
+    // 获取路径参数
+	id := c.Param("id")
+
+    // 根据指定 ID 删除数据
+	if err := global.DB.Delete(&$model${}, id).Error; err != nil {
+	    // 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+    // 返回响应结果
+	response.SuccessWithMessage("Success to deleted $item$", c)
+}
+```
