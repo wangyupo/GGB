@@ -1,6 +1,7 @@
 package system
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
@@ -96,6 +97,43 @@ func ChangePassword(c *gin.Context) {
 	}
 
 	response.SuccessWithMessage("密码修改成功", c)
+}
+
+// ResetPassword 重置用户登录密码
+func ResetPassword(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		response.FailWithMessage("用户id不能为空", c)
+		return
+	}
+
+	err := global.DB.Model(&system.SysUser{}).
+		Where("id = ?", id).
+		Update("password", utils.BcryptHash("123456")).Error
+	if err != nil {
+		fmt.Print(err)
+		response.FailWithMessage("密码重置失败！", c)
+		return
+	}
+
+	response.SuccessWithMessage("密码重置成功！", c)
+}
+
+// GetSystemUserInfo 根据token获取用户信息
+func GetSystemUserInfo(c *gin.Context) {
+	id, err := utils.GetUserID(c)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	var systemUser system.SysUser
+	if err := global.DB.Model(&system.SysUser{}).Where("id = ?", id).First(&systemUser).Error; err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithData(systemUser, c)
 }
 
 // GetSystemUserList 列表
