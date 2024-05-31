@@ -72,7 +72,11 @@ func ChangePassword(c *gin.Context) {
 	}
 
 	// 从token获取用户id
-	userId := utils.GetUserID(c)
+	userId, err := utils.GetUserID(c)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	// 根据id查找用户
 	var systemUser system.SysUser
 	if err := global.DB.Where("id = ?", userId).First(&systemUser).Error; err != nil {
