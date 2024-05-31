@@ -3,7 +3,6 @@ package utils
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/wangyupo/GGB/router/system/request"
-	"log"
 	"os"
 	"time"
 )
@@ -13,7 +12,7 @@ func CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
 	claims := request.CustomClaims{
 		BaseClaims: baseClaims,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)), // 过期时间 7天  配置文件
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)), // 过期时间 7天
 		},
 	}
 	return claims
@@ -32,10 +31,15 @@ func ParseToken(tokenString string) (*request.CustomClaims, error) {
 		return []byte(os.Getenv("TOKEN_SECRET")), nil
 	})
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
-	if claims, ok := token.Claims.(*request.CustomClaims); ok {
-		return claims, nil
+	if token != nil {
+		if claims, ok := token.Claims.(*request.CustomClaims); ok && token.Valid {
+			return claims, nil
+		}
+		return nil, jwt.ErrTokenInvalidClaims
+
+	} else {
+		return nil, jwt.ErrTokenInvalidClaims
 	}
-	return nil, nil
 }
