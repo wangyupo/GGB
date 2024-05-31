@@ -44,6 +44,10 @@ func SuccessWithData(data interface{}, c *gin.Context) {
 	Result(SUCCESS, data, "查询成功", c)
 }
 
+func SuccessWithDetailed(data interface{}, message string, c *gin.Context) {
+	Result(SUCCESS, data, message, c)
+}
+
 func FailWithMessage(message string, c *gin.Context) {
 	MsgResult(ERROR, message, c)
 }
