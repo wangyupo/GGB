@@ -13,7 +13,7 @@ func InitRouter() *gin.Engine {
 
 	ApiGroup := r.Group(os.Getenv("ROUTE_PREFIX"))
 	{
-		ApiGroup.GET("", apiSystem.Login)
+		ApiGroup.POST("/login", apiSystem.Login)
 	}
 
 	ApiGroup.Use(middleware.Jwt())
