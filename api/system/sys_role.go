@@ -8,15 +8,15 @@ import (
 	"github.com/wangyupo/GGB/utils"
 )
 
-// GetRoleLIst 列表
-func GetRoleLIst(c *gin.Context) {
+// GetSysRoleList 列表
+func GetSysRoleList(c *gin.Context) {
 	// 获取分页参数
 	pageNumber, pageSize := utils.GetPaginationParams(c)
 	// 获取其它查询参数
 	name := c.Query("name")
 
 	// 声明 system.SysRole 类型的变量以存储查询结果
-	roleLIst := make([]system.SysRole, 0)
+	sysRoleList := make([]system.SysRole, 0)
 	var total int64
 
 	// 准备数据库查询
@@ -36,7 +36,7 @@ func GetRoleLIst(c *gin.Context) {
 	db = db.Offset((pageNumber - 1) * pageSize).Limit(pageSize)
 
 	// 执行查询并获取结果
-	if err := db.Find(&roleLIst).Error; err != nil {
+	if err := db.Find(&sysRoleList).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -44,88 +44,88 @@ func GetRoleLIst(c *gin.Context) {
 
 	// 返回响应结果
 	response.SuccessWithData(response.PageResult{
-		List:  roleLIst,
+		List:  sysRoleList,
 		Total: total,
 	}, c)
 }
 
-// CreateRole 新建
-func CreateRole(c *gin.Context) {
+// CreateSysRole 新建
+func CreateSysRole(c *gin.Context) {
 	// 声明 system.SysRole 类型的变量以存储 JSON 数据
-	var role system.SysRole
+	var sysRole system.SysRole
 
-	// 绑定 JSON 请求体中的数据到 role 结构体
-	if err := c.ShouldBindJSON(&role); err != nil {
+	// 绑定 JSON 请求体中的数据到 sysRole 结构体
+	if err := c.ShouldBindJSON(&sysRole); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	// 创建 role 记录
-	if err := global.DB.Create(&role).Error; err != nil {
-		// 错误处理
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-
-	// 返回响应结果
-	response.SuccessWithMessage("Success to create role", c)
-}
-
-// GetRole 详情
-func GetRole(c *gin.Context) {
-	// 获取路径参数
-	id := c.Param("id")
-
-	// 声明 system.SysRole 类型的变量以存储查询结果
-	var role system.SysRole
-
-	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&role, id).Error; err != nil {
+	// 创建 sysRole 记录
+	if err := global.DB.Create(&sysRole).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	// 返回响应结果
-	response.SuccessWithData(role, c)
+	response.SuccessWithMessage("Success to create sysRole", c)
 }
 
-// UpdateRole 编辑
-func UpdateRole(c *gin.Context) {
+// GetSysRole 详情
+func GetSysRole(c *gin.Context) {
 	// 获取路径参数
 	id := c.Param("id")
 
 	// 声明 system.SysRole 类型的变量以存储查询结果
-	var role system.SysRole
+	var sysRole system.SysRole
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&role, id).Error; err != nil {
+	if err := global.DB.First(&sysRole, id).Error; err != nil {
+		// 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	// 返回响应结果
+	response.SuccessWithData(sysRole, c)
+}
+
+// UpdateSysRole 编辑
+func UpdateSysRole(c *gin.Context) {
+	// 获取路径参数
+	id := c.Param("id")
+
+	// 声明 system.SysRole 类型的变量以存储查询结果
+	var sysRole system.SysRole
+
+	// 从数据库中查找具有指定 ID 的数据
+	if err := global.DB.First(&sysRole, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	// 绑定请求参数到数据对象
-	if err := c.ShouldBindJSON(&role); err != nil {
+	if err := c.ShouldBindJSON(&sysRole); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	// 更新用户记录
-	if err := global.DB.Save(&role).Error; err != nil {
+	if err := global.DB.Save(&sysRole).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to update role", c)
+	response.SuccessWithMessage("Success to update sysRole", c)
 }
 
-// DeleteRole 删除
-func DeleteRole(c *gin.Context) {
+// DeleteSysRole 删除
+func DeleteSysRole(c *gin.Context) {
 	// 获取路径参数
 	id := c.Param("id")
 
@@ -137,5 +137,5 @@ func DeleteRole(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to deleted role", c)
+	response.SuccessWithMessage("Success to deleted sysRole", c)
 }

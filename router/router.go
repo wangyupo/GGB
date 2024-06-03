@@ -19,6 +19,10 @@ func InitRouter() *gin.Engine {
 	ApiGroup.Use(middleware.Jwt())
 	{
 		system.SysUserRouter(ApiGroup)
+		system.SysRoleRouter(ApiGroup)
+		system.SysMenuRouter(ApiGroup)
+		system.SysDictCategoryRouter(ApiGroup)
+		system.SysDictDataRouter(ApiGroup)
 	}
 
 	return r
