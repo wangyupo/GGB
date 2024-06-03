@@ -6,7 +6,7 @@ import (
 )
 
 func SysDictDataRouter(r *gin.RouterGroup) {
-	sysDictDataRouter := r.Group("/sysDictData")
+	sysDictDataRouter := r.Group("/system/dictData")
 	{
 		sysDictDataRouter.GET("", system.GetSysDictDataList)
 		sysDictDataRouter.POST("", system.CreateSysDictData)

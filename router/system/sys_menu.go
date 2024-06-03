@@ -6,7 +6,7 @@ import (
 )
 
 func SysMenuRouter(r *gin.RouterGroup) {
-	sysMenuRouter := r.Group("/sysMenu")
+	sysMenuRouter := r.Group("/system/menu")
 	{
 		sysMenuRouter.GET("", system.GetSysMenuList)
 		sysMenuRouter.POST("", system.CreateSysMenu)

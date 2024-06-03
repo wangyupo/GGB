@@ -19,6 +19,7 @@ type Role struct {
 }
 
 type Menu struct {
+	ID       uint   `json:"id"`
 	Label    string `json:"label"`
 	Path     string `json:"path"`
 	Icon     string `json:"icon"`

@@ -6,7 +6,7 @@ import (
 )
 
 func SysRoleRouter(r *gin.RouterGroup) {
-	sysRoleRouter := r.Group("/sysRole")
+	sysRoleRouter := r.Group("/system/role")
 	{
 		sysRoleRouter.GET("", system.GetSysRoleList)
 		sysRoleRouter.POST("", system.CreateSysRole)

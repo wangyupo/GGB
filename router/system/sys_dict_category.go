@@ -6,7 +6,7 @@ import (
 )
 
 func SysDictCategoryRouter(r *gin.RouterGroup) {
-	sysDictCategoryRouter := r.Group("/sysDictCategory")
+	sysDictCategoryRouter := r.Group("/system/dictCategory")
 	{
 		sysDictCategoryRouter.GET("", system.GetSysDictCategoryList)
 		sysDictCategoryRouter.POST("", system.CreateSysDictCategory)
