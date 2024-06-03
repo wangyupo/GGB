@@ -1,6 +1,7 @@
 package system
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/global"
@@ -9,6 +10,7 @@ import (
 	request2 "github.com/wangyupo/GGB/model/system/request"
 	sysResp "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -43,7 +45,11 @@ func Login(c *gin.Context) {
 	}
 
 	// 密码核对正确，查询用户角色和菜单
-	role, menu := getRoleMenu(systemUser.ID, c)
+	role, menu, err := getRoleMenu(systemUser.ID)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 
 	// 通过jwt生成token
 	claims := utils.CreateClaims(request2.BaseClaims{
@@ -70,7 +76,7 @@ func Login(c *gin.Context) {
 }
 
 // 获取用户角色和菜单
-func getRoleMenu(userId uint, c *gin.Context) (sysResp.Role, []sysResp.Menu) {
+func getRoleMenu(userId uint) (sysResp.Role, []sysResp.Menu, error) {
 	var role sysResp.Role
 	var menus []sysResp.Menu
 
@@ -80,8 +86,10 @@ func getRoleMenu(userId uint, c *gin.Context) (sysResp.Role, []sysResp.Menu) {
 		Where("sys_role_user.user_id = ?", userId).
 		First(&role).Error
 	if roleErr != nil {
-		response.FailWithMessage(roleErr.Error(), c)
-		return sysResp.Role{}, nil
+		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
+			return sysResp.Role{}, []sysResp.Menu{}, fmt.Errorf("账户未匹配角色")
+		}
+		return sysResp.Role{}, []sysResp.Menu{}, roleErr
 	}
 
 	// 查找角色对应菜单
@@ -90,11 +98,13 @@ func getRoleMenu(userId uint, c *gin.Context) (sysResp.Role, []sysResp.Menu) {
 		Where("sys_role_menu.role_id = ?", role.ID).
 		Scan(&menus).Error
 	if menuErr != nil {
-		response.FailWithMessage(menuErr.Error(), c)
-		return sysResp.Role{}, nil
+		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
+			return sysResp.Role{}, []sysResp.Menu{}, fmt.Errorf("角色未匹配菜单")
+		}
+		return sysResp.Role{}, []sysResp.Menu{}, menuErr
 	}
 
-	return role, menus
+	return role, menus, nil
 }
 
 // ChangePassword 修改密码
@@ -142,7 +152,7 @@ func ResetPassword(c *gin.Context) {
 
 	err := global.DB.Model(&system.SysUser{}).
 		Where("id = ?", id).
-		Update("password", utils.BcryptHash("123456")).Error
+		Update("password", utils.BcryptHash(global.DefaultLoginPassword)).Error
 	if err != nil {
 		fmt.Print(err)
 		response.FailWithMessage("密码重置失败！", c)
@@ -221,6 +231,16 @@ func CreateSystemUser(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
+	// 检查 UserName 是否重复
+	var existingUser system.SysUser
+	if err := global.DB.Where("user_name = ?", systemUser.UserName).First(&existingUser).Error; err == nil {
+		// 找到了具有相同用户名的用户
+		response.FailWithMessage("用户名已存在，请更换用户名", c)
+		return
+	}
+
+	systemUser.Password = utils.BcryptHash(global.DefaultLoginPassword)
 
 	// 创建 systemUser 记录
 	if err := global.DB.Create(&systemUser).Error; err != nil {
