@@ -16,7 +16,7 @@ func SysUserRouter(r *gin.RouterGroup) {
 
 		sysUserRouter.POST("/changePassword", system.ChangePassword)
 		sysUserRouter.PUT("/resetPassword/:id", system.ResetPassword)
-		sysUserRouter.GET("/info", system.GetSystemUserInfo)
+		sysUserRouter.GET("/userInfo", system.GetSystemUserInfo)
 
 	}
 }
