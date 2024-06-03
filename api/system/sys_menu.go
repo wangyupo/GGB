@@ -5,6 +5,7 @@ import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
+	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
 )
 
@@ -138,4 +139,69 @@ func DeleteSysMenu(c *gin.Context) {
 
 	// 返回响应结果
 	response.SuccessWithMessage("Success to deleted sysMenu", c)
+}
+
+// MoveSysMenu 菜单排序
+func MoveSysMenu(c *gin.Context) {
+	var req request.MoveMenu
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	// 校验DropType
+	validDropTypes := map[string]bool{
+		"before": true,
+		"inner":  true,
+		"after":  true,
+	}
+	if !validDropTypes[req.DropType] {
+		response.FailWithMessage("移动类型错误", c)
+		return
+	}
+
+	// 找到源菜单、目标菜单
+	var originMenu, targetMenu system.SysMenu
+	err := global.DB.Where("id = ?", req.OriginID).First(&originMenu).Error
+	if err != nil {
+		response.FailWithMessage("移动菜单未找到", c)
+		return
+	}
+	err = global.DB.Where("id = ?", req.TargetID).First(&targetMenu).Error
+	if err != nil {
+		response.FailWithMessage("目标菜单未找到", c)
+		return
+	}
+
+	var parentId uint
+	sortOrder := targetMenu.Sort // 将目标菜单的sort（排序值）作为基准
+
+	switch req.DropType {
+	case "before":
+		parentId = targetMenu.ParentId
+		sortOrder -= 1
+	case "after":
+		parentId = targetMenu.ParentId
+		sortOrder += 1
+	case "inner":
+		parentId = targetMenu.ID
+		sortOrder = 1
+	default:
+		response.FailWithMessage("移动类型错误", c)
+		return
+	}
+
+	// 注：使用map更新，防止gorm的updates方法把sort=0跳过
+	err = global.DB.Model(&system.SysMenu{}).
+		Where("id = ?", originMenu.ID).
+		Updates(map[string]interface{}{
+			"ParentId": parentId,
+			"Sort":     sortOrder,
+		}).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithMessage("菜单移动成功！", c)
 }
