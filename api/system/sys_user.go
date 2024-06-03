@@ -6,8 +6,8 @@ import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
-	"github.com/wangyupo/GGB/router/system/request"
-	sysResp "github.com/wangyupo/GGB/router/system/response"
+	request2 "github.com/wangyupo/GGB/model/system/request"
+	sysResp "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 	"time"
 )
@@ -15,7 +15,7 @@ import (
 // Login 登录
 func Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
-	var loginForm request.Login
+	var loginForm request2.Login
 	if err := c.BindJSON(&loginForm); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
@@ -42,8 +42,11 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// 密码核对正确，查询用户角色和菜单
+	role, menu := getRoleMenu(systemUser.ID, c)
+
 	// 通过jwt生成token
-	claims := utils.CreateClaims(request.BaseClaims{
+	claims := utils.CreateClaims(request2.BaseClaims{
 		ID:       systemUser.ID,
 		UserName: systemUser.UserName,
 		NickName: systemUser.NickName,
@@ -61,12 +64,42 @@ func Login(c *gin.Context) {
 		User:      systemUser,
 		Token:     token,
 		ExpiresAt: claims.RegisteredClaims.ExpiresAt.Unix() * 1000,
+		Role:      role,
+		Menu:      menu,
 	}, "登录成功", c)
+}
+
+// 获取用户角色和菜单
+func getRoleMenu(userId uint, c *gin.Context) (sysResp.Role, []sysResp.Menu) {
+	var role sysResp.Role
+	var menus []sysResp.Menu
+
+	// 查找用户角色
+	roleErr := global.DB.Model(&system.SysRole{}).
+		Joins("join sys_role_user on sys_role_user.role_id=sys_role.id").
+		Where("sys_role_user.user_id = ?", userId).
+		First(&role).Error
+	if roleErr != nil {
+		response.FailWithMessage(roleErr.Error(), c)
+		return sysResp.Role{}, nil
+	}
+
+	// 查找角色对应菜单
+	menuErr := global.DB.Model(&system.SysMenu{}).
+		Joins("join sys_role_menu on sys_role_menu.menu_id = sys_menu.id").
+		Where("sys_role_menu.role_id = ?", role.ID).
+		Scan(&menus).Error
+	if menuErr != nil {
+		response.FailWithMessage(menuErr.Error(), c)
+		return sysResp.Role{}, nil
+	}
+
+	return role, menus
 }
 
 // ChangePassword 修改密码
 func ChangePassword(c *gin.Context) {
-	var req request.ChangePassword
+	var req request2.ChangePassword
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

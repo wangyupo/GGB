@@ -2,7 +2,7 @@ package utils
 
 import (
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/wangyupo/GGB/router/system/request"
+	"github.com/wangyupo/GGB/model/system/request"
 	"os"
 	"time"
 )

@@ -3,7 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/GGB/router/system/request"
+	"github.com/wangyupo/GGB/model/system/request"
 	"net"
 )
 
