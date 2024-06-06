@@ -34,10 +34,8 @@ func GetSysMenuList(c *gin.Context) {
 	}
 
 	// 获取分页数据
-	db = db.Offset(offset).Limit(limit)
-
-	// 执行查询并获取结果
-	if err := db.Find(&sysMenuList).Error; err != nil {
+	err := db.Offset(offset).Limit(limit).Find(&sysMenuList).Error
+	if err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
