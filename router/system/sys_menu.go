@@ -14,5 +14,6 @@ func SysMenuRouter(r *gin.RouterGroup) {
 		sysMenuRouter.DELETE("/:id", system.DeleteSysMenu)
 
 		sysMenuRouter.POST("/move", system.MoveSysMenu)
+		sysMenuRouter.GET("/getMenuByRole/:id", system.GetMenuByRole)
 	}
 }

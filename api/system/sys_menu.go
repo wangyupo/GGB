@@ -12,7 +12,7 @@ import (
 // GetSysMenuList 列表
 func GetSysMenuList(c *gin.Context) {
 	// 获取分页参数
-	pageNumber, pageSize := utils.GetPaginationParams(c)
+	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
 	name := c.Query("name")
 
@@ -34,7 +34,7 @@ func GetSysMenuList(c *gin.Context) {
 	}
 
 	// 获取分页数据
-	db = db.Offset((pageNumber - 1) * pageSize).Limit(pageSize)
+	db = db.Offset(offset).Limit(limit)
 
 	// 执行查询并获取结果
 	if err := db.Find(&sysMenuList).Error; err != nil {
@@ -70,7 +70,7 @@ func CreateSysMenu(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to create sysMenu", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
 // GetSysMenu 详情
@@ -96,6 +96,10 @@ func GetSysMenu(c *gin.Context) {
 func UpdateSysMenu(c *gin.Context) {
 	// 获取路径参数
 	id := c.Param("id")
+	if id == "" {
+		response.FailWithMessage("缺少参数：id", c)
+		return
+	}
 
 	// 声明 system.SysMenu 类型的变量以存储查询结果
 	var sysMenu system.SysMenu
@@ -122,7 +126,7 @@ func UpdateSysMenu(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to update sysMenu", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
 // DeleteSysMenu 删除
@@ -138,7 +142,7 @@ func DeleteSysMenu(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to deleted sysMenu", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
 // MoveSysMenu 菜单排序
@@ -203,5 +207,37 @@ func MoveSysMenu(c *gin.Context) {
 		return
 	}
 
-	response.SuccessWithMessage("菜单移动成功！", c)
+	response.SuccessWithDefaultMessage(c)
+}
+
+// GetMenuByRole 根据角色id查对应菜单
+func GetMenuByRole(c *gin.Context) {
+	roleId := c.Param("id")
+	if roleId == "" {
+		response.FailWithMessage("缺少参数：角色id", c)
+		return
+	}
+
+	// 根据roleId找到对应的菜单
+	var roleMenu []system.SysRoleMenu
+	err := global.DB.Where("role_id = ?", roleId).Find(&roleMenu).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	var menuIds []uint
+	for _, menu := range roleMenu {
+		menuIds = append(menuIds, menu.MenuID)
+	}
+
+	// 根据菜单id查找菜单
+	var menus []system.SysMenu
+	err = global.DB.Where("id in (?)", menuIds).Order("sort").Find(&menus).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithData(menus, c)
 }
