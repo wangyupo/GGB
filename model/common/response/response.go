@@ -37,6 +37,11 @@ func MsgResult(code int, msg string, c *gin.Context) {
 	})
 }
 
+// SuccessWithDefaultMessage 返回成功并携带自定义消息
+func SuccessWithDefaultMessage(c *gin.Context) {
+	MsgResult(Success, "操作成功", c)
+}
+
 // SuccessWithMessage 返回成功并携带自定义消息
 func SuccessWithMessage(message string, c *gin.Context) {
 	MsgResult(Success, message, c)
