@@ -204,10 +204,8 @@ func GetSystemUserList(c *gin.Context) {
 	}
 
 	// 获取分页数据
-	db = db.Offset(offset).Limit(limit).Order("created_at DESC")
-
-	// 执行查询并获取结果
-	if err := db.Find(&systemUserList).Error; err != nil {
+	err := db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&systemUserList).Error
+	if err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
