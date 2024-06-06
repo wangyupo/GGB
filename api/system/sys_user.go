@@ -7,7 +7,7 @@ import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
-	request2 "github.com/wangyupo/GGB/model/system/request"
+	"github.com/wangyupo/GGB/model/system/request"
 	sysResp "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 	"gorm.io/gorm"
@@ -17,7 +17,7 @@ import (
 // Login 登录
 func Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
-	var loginForm request2.Login
+	var loginForm request.Login
 	if err := c.BindJSON(&loginForm); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
@@ -52,7 +52,7 @@ func Login(c *gin.Context) {
 	}
 
 	// 通过jwt生成token
-	claims := utils.CreateClaims(request2.BaseClaims{
+	claims := utils.CreateClaims(request.BaseClaims{
 		ID:       systemUser.ID,
 		UserName: systemUser.UserName,
 		NickName: systemUser.NickName,
@@ -109,7 +109,7 @@ func getRoleMenu(userId uint) (sysResp.Role, []sysResp.Menu, error) {
 
 // ChangePassword 修改密码
 func ChangePassword(c *gin.Context) {
-	var req request2.ChangePassword
+	var req request.ChangePassword
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -182,7 +182,7 @@ func GetSystemUserInfo(c *gin.Context) {
 // GetSystemUserList 列表
 func GetSystemUserList(c *gin.Context) {
 	// 获取分页参数
-	pageNumber, pageSize := utils.GetPaginationParams(c)
+	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
 	userName := c.Query("userName")
 
@@ -204,7 +204,7 @@ func GetSystemUserList(c *gin.Context) {
 	}
 
 	// 获取分页数据
-	db = db.Offset((pageNumber - 1) * pageSize).Limit(pageSize)
+	db = db.Offset(offset).Limit(limit).Order("created_at DESC")
 
 	// 执行查询并获取结果
 	if err := db.Find(&systemUserList).Error; err != nil {
@@ -233,10 +233,8 @@ func CreateSystemUser(c *gin.Context) {
 	}
 
 	// 检查 UserName 是否重复
-	var existingUser system.SysUser
-	if err := global.DB.Where("user_name = ?", systemUser.UserName).First(&existingUser).Error; err == nil {
-		// 找到了具有相同用户名的用户
-		response.FailWithMessage("用户名已存在，请更换用户名", c)
+	if !errors.Is(global.DB.Where("user_name = ?", systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
+		response.FailWithMessage(fmt.Sprintf("用户名 %s 已存在", systemUser.UserName), c)
 		return
 	}
 
@@ -250,7 +248,7 @@ func CreateSystemUser(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to create systemUser", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
 // GetSystemUser 详情
@@ -294,6 +292,11 @@ func UpdateSystemUser(c *gin.Context) {
 		return
 	}
 
+	if !errors.Is(global.DB.Where("id != ? AND user_name = ?", id, systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
+		response.FailWithMessage(fmt.Sprintf("用户名 %s 已存在", systemUser.UserName), c)
+		return
+	}
+
 	// 更新用户记录
 	if err := global.DB.Save(&systemUser).Error; err != nil {
 		// 错误处理
@@ -302,10 +305,10 @@ func UpdateSystemUser(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to update systemUser", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSystemUser 删除
+// DeleteSystemUser 删除用户
 func DeleteSystemUser(c *gin.Context) {
 	// 获取路径参数
 	id := c.Param("id")
@@ -319,4 +322,23 @@ func DeleteSystemUser(c *gin.Context) {
 
 	// 返回响应结果
 	response.SuccessWithMessage("Success to deleted systemUser", c)
+}
+
+// ChangeSystemUserStatus 修改用户状态
+func ChangeSystemUserStatus(c *gin.Context) {
+	var req request.ChangeSystemUserStatus
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	err := global.DB.Model(&system.SysUser{}).
+		Where("id = ?", req.ID).
+		Update("status", req.Status).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithDefaultMessage(c)
 }

@@ -15,6 +15,7 @@ func SysUserRouter(r *gin.RouterGroup) {
 		sysUserRouter.DELETE("/:id", system.DeleteSystemUser)
 
 		sysUserRouter.POST("/changePassword", system.ChangePassword)
+		sysUserRouter.POST("/changeStatus", system.ChangeSystemUserStatus)
 		sysUserRouter.PUT("/resetPassword/:id", system.ResetPassword)
 		sysUserRouter.GET("/userInfo", system.GetSystemUserInfo)
 

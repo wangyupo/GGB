@@ -10,3 +10,8 @@ type ChangePassword struct {
 	Password    string `json:"password"`    // 密码
 	NewPassword string `json:"newPassword"` // 新密码
 }
+
+type ChangeSystemUserStatus struct {
+	ID     uint `json:"id"`
+	Status int  `json:"status"`
+}
