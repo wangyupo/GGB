@@ -12,5 +12,11 @@ func SysRoleRouter(r *gin.RouterGroup) {
 		sysRoleRouter.POST("", system.CreateSysRole)
 		sysRoleRouter.PUT("/:id", system.UpdateSysRole)
 		sysRoleRouter.DELETE("/:id", system.DeleteSysRole)
+
+		sysRoleRouter.POST("/changeStatus", system.ChangeRoleStatus)
+		sysRoleRouter.POST("/assignMenu", system.RoleAssignMenu)
+		sysRoleRouter.POST("/assignUser", system.RoleAssignUser)
+		sysRoleRouter.POST("/unAssignUser", system.RoleUnAssignUser)
+		sysRoleRouter.GET("/user", system.GetUserByRole)
 	}
 }

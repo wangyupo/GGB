@@ -1,19 +1,23 @@
 package system
 
 import (
+	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
+	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
+	"gorm.io/gorm"
 )
 
 // GetSysRoleList 列表
 func GetSysRoleList(c *gin.Context) {
 	// 获取分页参数
-	pageNumber, pageSize := utils.GetPaginationParams(c)
+	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
-	name := c.Query("name")
+	name := c.Query("roleName")
 
 	// 声明 system.SysRole 类型的变量以存储查询结果
 	sysRoleList := make([]system.SysRole, 0)
@@ -22,7 +26,7 @@ func GetSysRoleList(c *gin.Context) {
 	// 准备数据库查询
 	db := global.DB.Model(&system.SysRole{})
 	if name != "" {
-		db = db.Where("name LIKE ?", "%"+name+"%")
+		db = db.Where("role_name LIKE ?", "%"+name+"%")
 	}
 
 	// 获取总数
@@ -33,10 +37,8 @@ func GetSysRoleList(c *gin.Context) {
 	}
 
 	// 获取分页数据
-	db = db.Offset((pageNumber - 1) * pageSize).Limit(pageSize)
-
-	// 执行查询并获取结果
-	if err := db.Find(&sysRoleList).Error; err != nil {
+	err := db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&sysRoleList).Error
+	if err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -61,6 +63,15 @@ func CreateSysRole(c *gin.Context) {
 		return
 	}
 
+	if !errors.Is(global.DB.Where("role_name = ?", sysRole.RoleName).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+		response.FailWithMessage(fmt.Sprintf("角色 %s 已存在", sysRole.RoleName), c)
+		return
+	}
+	if !errors.Is(global.DB.Where("role_code = ?", sysRole.RoleCode).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+		response.FailWithMessage(fmt.Sprintf("角色标识码 %s 已存在", sysRole.RoleCode), c)
+		return
+	}
+
 	// 创建 sysRole 记录
 	if err := global.DB.Create(&sysRole).Error; err != nil {
 		// 错误处理
@@ -69,7 +80,7 @@ func CreateSysRole(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to create sysRole", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
 // GetSysRole 详情
@@ -113,6 +124,15 @@ func UpdateSysRole(c *gin.Context) {
 		return
 	}
 
+	if !errors.Is(global.DB.Where("id != ? AND role_name = ?", id, sysRole.RoleName).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+		response.FailWithMessage(fmt.Sprintf("角色 %s 已存在", sysRole.RoleName), c)
+		return
+	}
+	if !errors.Is(global.DB.Where("id != ? AND role_code = ?", id, sysRole.RoleCode).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+		response.FailWithMessage(fmt.Sprintf("角色标识码 %s 已存在", sysRole.RoleCode), c)
+		return
+	}
+
 	// 更新用户记录
 	if err := global.DB.Save(&sysRole).Error; err != nil {
 		// 错误处理
@@ -121,7 +141,7 @@ func UpdateSysRole(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to update sysRole", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
 // DeleteSysRole 删除
@@ -137,5 +157,140 @@ func DeleteSysRole(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to deleted sysRole", c)
+	response.SuccessWithDefaultMessage(c)
+}
+
+// ChangeRoleStatus 修改角色状态
+func ChangeRoleStatus(c *gin.Context) {
+	var req request.ChangeRoleStatus
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	err := global.DB.Model(&system.SysRole{}).
+		Where("id = ?", req.ID).
+		Update("status", req.Status).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithDefaultMessage(c)
+}
+
+// RoleAssignMenu 角色分配菜单
+func RoleAssignMenu(c *gin.Context) {
+	var req request.RoleAssignMenu
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	// 删掉之前的菜单
+	err := global.DB.Where("role_id = ?", req.RoleID).Delete(&system.SysRoleMenu{}).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if len(req.MenuIds) > 0 {
+		// 添加新菜单
+		var roleMenu []system.SysRoleMenu
+		for _, id := range req.MenuIds {
+			roleMenu = append(roleMenu, system.SysRoleMenu{
+				RoleID: req.RoleID,
+				MenuID: id,
+			})
+		}
+		err = global.DB.Create(&roleMenu).Error
+		if err != nil {
+			response.FailWithMessage(err.Error(), c)
+			return
+		}
+	}
+
+	response.SuccessWithDefaultMessage(c)
+}
+
+// RoleAssignUser 角色分配给用户
+func RoleAssignUser(c *gin.Context) {
+	var req request.RoleAssignUser
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if len(req.UserIds) > 0 {
+		// 绑定用户与角色
+		var roleUser []system.SysRoleUser
+		for _, id := range req.UserIds {
+			roleUser = append(roleUser, system.SysRoleUser{
+				RoleID: req.RoleID,
+				UserID: id,
+			})
+		}
+		err := global.DB.Create(roleUser).Error
+		if err != nil {
+			response.FailWithMessage(err.Error(), c)
+			return
+		}
+	}
+
+	response.SuccessWithDefaultMessage(c)
+}
+
+// GetUserByRole 获取角色绑定的用户
+func GetUserByRole(c *gin.Context) {
+	// 获取分页参数
+	offset, limit := utils.GetPaginationParams(c)
+	// 获取其它查询参数
+	roleId := c.Query("roleId")
+	if roleId == "" {
+		response.FailWithMessage("缺少参数：roleId", c)
+		return
+	}
+
+	var users []system.SysUser
+	var total int64
+
+	err := global.DB.Model(&system.SysRoleUser{}).Where("role_id = ?", roleId).Count(&total).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	err = global.DB.Model(&system.SysUser{}).
+		Joins("JOIN sys_role_user ON sys_role_user.user_id = sys_user.id").
+		Where("sys_role_user.role_id = ? AND sys_role_user.deleted_at IS NULL", roleId).
+		Order("sys_role_user.created_at DESC").
+		Offset(offset).Limit(limit).
+		Find(&users).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithData(response.PageResult{
+		List:  users,
+		Total: total,
+	}, c)
+}
+
+// RoleUnAssignUser 角色取消绑定用户
+func RoleUnAssignUser(c *gin.Context) {
+	var req request.RoleAssignUser
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	err := global.DB.Where("role_id = ? AND user_id in (?)", req.RoleID, req.UserIds).
+		Delete(&system.SysRoleUser{}).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithDefaultMessage(c)
 }
