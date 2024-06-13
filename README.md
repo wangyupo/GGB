@@ -4,7 +4,7 @@
     <img src="./logo.png" alt="Logo" width="180" height="160">
   </a>
 
-<h3 align="center"># GGB（猪猪侠）后端框架</h3>
+  <h3 align="center">GGB（猪猪侠）后端框架</h3>
 
   <p>
     基于 gin 搭建的后端框架。
