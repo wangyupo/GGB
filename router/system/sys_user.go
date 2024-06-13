@@ -6,7 +6,7 @@ import (
 )
 
 func SysUserRouter(r *gin.RouterGroup) {
-	sysUserRouter := r.Group("/system/user")
+	sysUserRouter := r.Group("/system/user/info")
 	{
 		sysUserRouter.GET("", system.GetSystemUserList)
 		sysUserRouter.GET("/:id", system.GetSystemUser)
@@ -14,10 +14,8 @@ func SysUserRouter(r *gin.RouterGroup) {
 		sysUserRouter.PUT("/:id", system.UpdateSystemUser)
 		sysUserRouter.DELETE("/:id", system.DeleteSystemUser)
 
-		sysUserRouter.POST("/changePassword", system.ChangePassword)
-		sysUserRouter.POST("/changeStatus", system.ChangeSystemUserStatus)
-		sysUserRouter.PUT("/resetPassword/:id", system.ResetPassword)
-		sysUserRouter.GET("/userInfo", system.GetSystemUserInfo)
-
+		sysUserRouter.PATCH("/password", system.ChangePassword)
+		sysUserRouter.PATCH("/:id/reset-password", system.ResetPassword)
+		sysUserRouter.PATCH("/:id/status", system.ChangeSystemUserStatus)
 	}
 }

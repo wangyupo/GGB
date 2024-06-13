@@ -324,6 +324,8 @@ func DeleteSystemUser(c *gin.Context) {
 
 // ChangeSystemUserStatus 修改用户状态
 func ChangeSystemUserStatus(c *gin.Context) {
+	id := c.Param("id")
+
 	var req request.ChangeSystemUserStatus
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -331,7 +333,7 @@ func ChangeSystemUserStatus(c *gin.Context) {
 	}
 
 	err := global.DB.Model(&system.SysUser{}).
-		Where("id = ?", req.ID).
+		Where("id = ?", id).
 		Update("status", req.Status).Error
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
