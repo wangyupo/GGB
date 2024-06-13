@@ -1,5 +1,5 @@
 <br />
-<div style="text-align: center">
+<div align="center">
   <a href="https://github.com/wangyupo/GGB">
     <img src="./logo.png" alt="Logo" width="180" height="160">
   </a>
