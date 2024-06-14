@@ -18,5 +18,6 @@ func SysRoleRouter(r *gin.RouterGroup) {
 		sysRoleRouter.POST("/user", system.RoleAssignUser)
 		sysRoleRouter.DELETE("/user", system.RoleUnAssignUser)
 		sysRoleRouter.GET("/user", system.GetUserByRole)
+		sysRoleRouter.GET("/:id/menu", system.GetMenuByRole)
 	}
 }

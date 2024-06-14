@@ -294,3 +294,35 @@ func RoleUnAssignUser(c *gin.Context) {
 
 	response.SuccessWithDefaultMessage(c)
 }
+
+// GetMenuByRole 根据角色id查对应菜单
+func GetMenuByRole(c *gin.Context) {
+	roleId := c.Param("id")
+	if roleId == "" {
+		response.FailWithMessage("缺少参数：角色id", c)
+		return
+	}
+
+	// 根据roleId找到对应的菜单
+	var roleMenu []system.SysRoleMenu
+	err := global.DB.Where("role_id = ?", roleId).Find(&roleMenu).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	var menuIds []uint
+	for _, menu := range roleMenu {
+		menuIds = append(menuIds, menu.MenuID)
+	}
+
+	// 根据菜单id查找菜单
+	var menus []system.SysMenu
+	err = global.DB.Where("id in (?)", menuIds).Order("sort").Find(&menus).Error
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithData(menus, c)
+}
