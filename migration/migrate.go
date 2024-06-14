@@ -9,6 +9,7 @@ import (
 
 // Migrate 表和数据迁移
 func Migrate() {
+	// 1、创建数据表
 	err := global.DB.AutoMigrate(
 		system.SysUser{},
 		system.SysMenu{},
@@ -17,10 +18,13 @@ func Migrate() {
 		system.SysRoleUser{},
 		system.SysDictCategory{},
 		system.SysDictData{},
+		system.SysRequestLog{},
 	)
 	if err != nil {
 		fmt.Print(err)
 	}
+
+	// 2、初始化默认数据
 	initSystemData()
 }
 
