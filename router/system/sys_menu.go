@@ -13,6 +13,6 @@ func SysMenuRouter(r *gin.RouterGroup) {
 		sysMenuRouter.PUT("/:id", system.UpdateSysMenu)
 		sysMenuRouter.DELETE("/:id", system.DeleteSysMenu)
 
-		sysMenuRouter.POST("/move", system.MoveSysMenu)
+		sysMenuRouter.PUT("/move", system.MoveSysMenu)
 	}
 }
