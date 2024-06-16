@@ -6,7 +6,7 @@ import (
 )
 
 func SysUserRouter(r *gin.RouterGroup) {
-	sysUserRouter := r.Group("/system/user/info")
+	sysUserRouter := r.Group("/system/user")
 	{
 		sysUserRouter.GET("", system.GetSystemUserList)
 		sysUserRouter.GET("/:id", system.GetSystemUser)
