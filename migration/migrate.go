@@ -18,7 +18,7 @@ func Migrate() {
 		system.SysRoleUser{},
 		system.SysDictCategory{},
 		system.SysDictData{},
-		system.SysRequestLog{},
+		system.SysLogLogin{},
 	)
 	if err != nil {
 		fmt.Print(err)
@@ -58,14 +58,17 @@ func initSystemData() {
 
 		// 创建系统管理菜单
 		global.DB.Create(&[]system.SysMenu{
+			// 系统管理
 			{Label: "系统管理", Path: "", Icon: "", ParentId: 0, Sort: 1, Type: 1},
-			{Label: "用户管理", Path: "/system/user", Icon: "", ParentId: 1, Sort: 1, Type: 1},
-			{Label: "角色管理", Path: "/system/role", Icon: "", ParentId: 1, Sort: 2, Type: 1},
-			{Label: "分配用户", Path: "/system/role/user", Icon: "", ParentId: 6, Sort: 1, Type: 2},
-			{Label: "菜单管理", Path: "/system/menu", Icon: "", ParentId: 1, Sort: 3, Type: 1},
-			{Label: "字典管理", Path: "/system/dict", Icon: "", ParentId: 1, Sort: 4, Type: 1},
-			{Label: "字典数据", Path: "/system/dict/data", Icon: "", ParentId: 2, Sort: 1, Type: 2},
-			{Label: "登录日志", Path: "/system/loginLog", Icon: "", ParentId: 1, Sort: 5, Type: 1},
+			{Label: "用户管理", Path: "/systemManage/user", Icon: "", ParentId: 1, Sort: 1, Type: 1},
+			{Label: "角色管理", Path: "/systemManage/role", Icon: "", ParentId: 1, Sort: 2, Type: 1},
+			{Label: "分配用户", Path: "/systemManage/role/user", Icon: "", ParentId: 6, Sort: 1, Type: 2},
+			{Label: "菜单管理", Path: "/systemManage/menu", Icon: "", ParentId: 1, Sort: 3, Type: 1},
+			{Label: "字典管理", Path: "/systemManage/dict", Icon: "", ParentId: 1, Sort: 4, Type: 1},
+			{Label: "字典数据", Path: "/systemManage/dict/data", Icon: "", ParentId: 2, Sort: 1, Type: 2},
+			// 日志管理
+			{Label: "日志管理", Path: "", Icon: "", ParentId: 0, Sort: 2, Type: 1},
+			{Label: "登录日志", Path: "/logManage/loginLog", Icon: "", ParentId: 8, Sort: 1, Type: 1},
 		})
 
 		// 关联 admin（超级管理员） 用户和角色
