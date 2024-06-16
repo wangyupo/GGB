@@ -8,7 +8,7 @@ import (
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
-	sysResp "github.com/wangyupo/GGB/model/system/response"
+	systemResponse "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 	"gorm.io/gorm"
 	"time"
@@ -21,6 +21,15 @@ func Login(c *gin.Context) {
 	if err := c.BindJSON(&loginForm); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if loginForm.UserName == "" {
+		response.FailWithMessage("缺少账户", c)
+		return
+	}
+	if loginForm.Password == "" {
+		response.FailWithMessage("缺少密码", c)
 		return
 	}
 
@@ -66,7 +75,20 @@ func Login(c *gin.Context) {
 	// 设置cookie
 	utils.SetToken(c, token, int(claims.RegisteredClaims.ExpiresAt.Unix()-time.Now().Unix()))
 
-	response.SuccessWithDetailed(sysResp.LoginResponse{
+	// 写入登录日志
+	clientIP := c.ClientIP()               // 获取客户端IP
+	userAgent := c.GetHeader("User-Agent") // 获取浏览器信息
+	loginLog := system.SysLogLogin{
+		UserId:    systemUser.ID,
+		Type:      1,
+		IP:        clientIP,
+		UserAgent: userAgent,
+	}
+	err = global.DB.Create(&loginLog).Error
+	if err != nil {
+	}
+
+	response.SuccessWithDetailed(systemResponse.LoginResponse{
 		User:      systemUser,
 		Token:     token,
 		ExpiresAt: claims.RegisteredClaims.ExpiresAt.Unix() * 1000,
@@ -75,10 +97,16 @@ func Login(c *gin.Context) {
 	}, "登录成功", c)
 }
 
+// Logout 登出
+func Logout(c *gin.Context) {
+	utils.ClearToken(c)
+	response.SuccessWithDefaultMessage(c)
+}
+
 // 获取用户角色和菜单
-func getRoleMenu(userId uint) (sysResp.Role, []sysResp.Menu, error) {
-	var role sysResp.Role
-	var menus []sysResp.Menu
+func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error) {
+	var role systemResponse.Role
+	var menus []systemResponse.Menu
 
 	// 查找用户角色
 	roleErr := global.DB.Model(&system.SysRole{}).
@@ -87,9 +115,9 @@ func getRoleMenu(userId uint) (sysResp.Role, []sysResp.Menu, error) {
 		First(&role).Error
 	if roleErr != nil {
 		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
-			return sysResp.Role{}, []sysResp.Menu{}, fmt.Errorf("账户未匹配角色")
+			return systemResponse.Role{}, []systemResponse.Menu{}, fmt.Errorf("账户未匹配角色")
 		}
-		return sysResp.Role{}, []sysResp.Menu{}, roleErr
+		return systemResponse.Role{}, []systemResponse.Menu{}, roleErr
 	}
 
 	// 查找角色对应菜单
@@ -99,9 +127,9 @@ func getRoleMenu(userId uint) (sysResp.Role, []sysResp.Menu, error) {
 		Scan(&menus).Error
 	if menuErr != nil {
 		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
-			return sysResp.Role{}, []sysResp.Menu{}, fmt.Errorf("角色未匹配菜单")
+			return systemResponse.Role{}, []systemResponse.Menu{}, fmt.Errorf("角色未匹配菜单")
 		}
-		return sysResp.Role{}, []sysResp.Menu{}, menuErr
+		return systemResponse.Role{}, []systemResponse.Menu{}, menuErr
 	}
 
 	return role, menus, nil
