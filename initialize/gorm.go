@@ -1,16 +1,26 @@
-package migration
+package initialize
 
 import (
 	"fmt"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/utils"
+	"gorm.io/gorm"
 )
 
-// Migrate 表和数据迁移
-func Migrate() {
+func Gorm() *gorm.DB {
+	switch global.GGB_CONFIG.System.DbType {
+	case "mysql":
+		return GormMysql()
+	default:
+		return GormMysql()
+	}
+}
+
+func RegisterTables() {
 	// 1、创建数据表
-	err := global.GGB_DB.AutoMigrate(
+	db := global.GGB_DB
+	err := db.AutoMigrate(
 		system.SysUser{},
 		system.SysMenu{},
 		system.SysRole{},
@@ -35,7 +45,8 @@ func initSystemData() {
 
 	if adminUser.ID == 0 {
 		// 将超级管理员默认密码 hash 处理
-		var hashPassword = utils.BcryptHash("admin")
+		var adminPassword = "admin" // 默认超管密码
+		var hashPassword = utils.BcryptHash(adminPassword)
 
 		// 创建 admin（超级管理员） 账户
 		var adminUser = system.SysUser{

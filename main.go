@@ -1,18 +1,10 @@
 package main
 
 import (
-	"fmt"
+	"github.com/wangyupo/GGB/core"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/initialize"
-	"github.com/wangyupo/GGB/migration"
-	"github.com/wangyupo/GGB/router"
-	"os"
 )
-
-func init() {
-	initialize.LoadEnvVariable()
-	initialize.ConnectDB()
-}
 
 //go:generate go env -w GO111MODULE=on
 //go:generate go env -w GOPROXY=https://goproxy.cn,direct
@@ -20,15 +12,13 @@ func init() {
 //go:generate go mod download
 
 func main() {
-	r := router.InitRouter()
-
+	global.GGB_VP = core.Viper()      // 初始化Viper
+	global.GGB_DB = initialize.Gorm() // gorm连接数据库
 	if global.GGB_DB != nil {
-		migration.Migrate()
-		fmt.Print(123)
+		initialize.RegisterTables()
 		// 程序结束前关闭数据库链接
 		db, _ := global.GGB_DB.DB()
 		defer db.Close()
 	}
-
-	r.Run(os.Getenv("SERVER_PORT"))
+	core.RunWindowsServer()
 }
