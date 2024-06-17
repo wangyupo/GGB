@@ -21,7 +21,7 @@ func GetLoginLogList(c *gin.Context) {
 	var total int64
 
 	// 准备数据库查询
-	db := global.DB.Model(&system.SysLogLogin{})
+	db := global.GGB_DB.Model(&system.SysLogLogin{})
 	if userId != "" {
 		db = db.Where("user_id = ?", "%"+userId+"%")
 	}

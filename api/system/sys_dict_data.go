@@ -24,7 +24,7 @@ func GetSysDictDataList(c *gin.Context) {
 	var total int64
 
 	// 准备数据库查询
-	db := global.DB.Model(&system.SysDictData{}).Where("category_id = ?", categoryId)
+	db := global.GGB_DB.Model(&system.SysDictData{}).Where("category_id = ?", categoryId)
 	if label != "" {
 		db = db.Where("label LIKE ?", "%"+label+"%")
 	}
@@ -63,17 +63,17 @@ func CreateSysDictData(c *gin.Context) {
 		return
 	}
 
-	if !errors.Is(global.DB.Where("label = ?", req.Label).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("label = ?", req.Label).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("字典键 %s 已存在", req.Label), c)
 		return
 	}
-	if !errors.Is(global.DB.Where("value = ?", req.Value).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("value = ?", req.Value).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("字典值 %s 已存在", req.Value), c)
 		return
 	}
 
 	// 创建 sysDictData 记录
-	if err := global.DB.Create(&req).Error; err != nil {
+	if err := global.GGB_DB.Create(&req).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -92,7 +92,7 @@ func GetSysDictData(c *gin.Context) {
 	var sysDictData system.SysDictData
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&sysDictData, id).Error; err != nil {
+	if err := global.GGB_DB.First(&sysDictData, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -111,7 +111,7 @@ func UpdateSysDictData(c *gin.Context) {
 	var req system.SysDictData
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&req, id).Error; err != nil {
+	if err := global.GGB_DB.First(&req, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -124,17 +124,17 @@ func UpdateSysDictData(c *gin.Context) {
 		return
 	}
 
-	if !errors.Is(global.DB.Where("label = ? AND id != ?", req.Label, id).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("label = ? AND id != ?", req.Label, id).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("字典键 %s 已存在", req.Label), c)
 		return
 	}
-	if !errors.Is(global.DB.Where("value = ? AND id != ?", req.Value, id).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("value = ? AND id != ?", req.Value, id).First(&system.SysDictData{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("字典值 %s 已存在", req.Value), c)
 		return
 	}
 
 	// 更新用户记录
-	if err := global.DB.Save(&req).Error; err != nil {
+	if err := global.GGB_DB.Save(&req).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -150,7 +150,7 @@ func DeleteSysDictData(c *gin.Context) {
 	id := c.Param("id")
 
 	// 根据指定 ID 删除数据
-	if err := global.DB.Delete(&system.SysDictData{}, id).Error; err != nil {
+	if err := global.GGB_DB.Delete(&system.SysDictData{}, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return

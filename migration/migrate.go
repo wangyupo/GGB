@@ -10,7 +10,7 @@ import (
 // Migrate 表和数据迁移
 func Migrate() {
 	// 1、创建数据表
-	err := global.DB.AutoMigrate(
+	err := global.GGB_DB.AutoMigrate(
 		system.SysUser{},
 		system.SysMenu{},
 		system.SysRole{},
@@ -31,7 +31,7 @@ func Migrate() {
 // 初始化admin账号和菜单
 func initSystemData() {
 	var adminUser system.SysUser
-	global.DB.Where("user_name = ?", "admin").First(&adminUser)
+	global.GGB_DB.Where("user_name = ?", "admin").First(&adminUser)
 
 	if adminUser.ID == 0 {
 		// 将超级管理员默认密码 hash 处理
@@ -45,7 +45,7 @@ func initSystemData() {
 			Password: hashPassword,
 			Status:   1,
 		}
-		global.DB.Create(&adminUser)
+		global.GGB_DB.Create(&adminUser)
 
 		// 创建 admin（超级管理员） 角色
 		var adminRole = system.SysRole{
@@ -54,10 +54,10 @@ func initSystemData() {
 			Description: "系统超级管理员角色",
 			Status:      1,
 		}
-		global.DB.Create(&adminRole)
+		global.GGB_DB.Create(&adminRole)
 
 		// 创建系统管理菜单
-		global.DB.Create(&[]system.SysMenu{
+		global.GGB_DB.Create(&[]system.SysMenu{
 			// 系统管理
 			{Label: "系统管理", Path: "", Icon: "", ParentId: 0, Sort: 1, Type: 1},
 			{Label: "用户管理", Path: "/systemManage/user", Icon: "", ParentId: 1, Sort: 1, Type: 1},
@@ -72,14 +72,14 @@ func initSystemData() {
 		})
 
 		// 关联 admin（超级管理员） 用户和角色
-		global.DB.Create(&system.SysRoleUser{
+		global.GGB_DB.Create(&system.SysRoleUser{
 			UserID: adminUser.ID,
 			RoleID: adminRole.ID,
 		})
 
 		// 关联 admin（超级管理员） 角色和菜单
 		var allMenu []system.SysMenu
-		global.DB.Find(&allMenu)
+		global.GGB_DB.Find(&allMenu)
 		var adminRoleMenus []system.SysRoleMenu
 		for _, menu := range allMenu {
 			adminRoleMenus = append(adminRoleMenus, system.SysRoleMenu{
@@ -87,6 +87,6 @@ func initSystemData() {
 				MenuID: menu.ID,
 			})
 		}
-		global.DB.Create(&adminRoleMenus)
+		global.GGB_DB.Create(&adminRoleMenus)
 	}
 }

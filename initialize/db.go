@@ -21,5 +21,5 @@ func ConnectDB() {
 	if err != nil {
 		fmt.Print("数据库链接错误")
 	}
-	global.DB = db
+	global.GGB_DB = db
 }

@@ -21,7 +21,7 @@ func LoginLog(ActionType uint) gin.HandlerFunc {
 			IP:        clientIP,
 			UserAgent: userAgent,
 		}
-		err := global.DB.Create(&loginLog).Error
+		err := global.GGB_DB.Create(&loginLog).Error
 		if err != nil {
 		}
 

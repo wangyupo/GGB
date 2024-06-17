@@ -24,7 +24,7 @@ func GetSysRoleList(c *gin.Context) {
 	var total int64
 
 	// 准备数据库查询
-	db := global.DB.Model(&system.SysRole{})
+	db := global.GGB_DB.Model(&system.SysRole{})
 	if name != "" {
 		db = db.Where("role_name LIKE ?", "%"+name+"%")
 	}
@@ -63,17 +63,17 @@ func CreateSysRole(c *gin.Context) {
 		return
 	}
 
-	if !errors.Is(global.DB.Where("role_name = ?", sysRole.RoleName).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("role_name = ?", sysRole.RoleName).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("角色 %s 已存在", sysRole.RoleName), c)
 		return
 	}
-	if !errors.Is(global.DB.Where("role_code = ?", sysRole.RoleCode).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("role_code = ?", sysRole.RoleCode).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("角色标识码 %s 已存在", sysRole.RoleCode), c)
 		return
 	}
 
 	// 创建 sysRole 记录
-	if err := global.DB.Create(&sysRole).Error; err != nil {
+	if err := global.GGB_DB.Create(&sysRole).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -92,7 +92,7 @@ func GetSysRole(c *gin.Context) {
 	var sysRole system.SysRole
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&sysRole, id).Error; err != nil {
+	if err := global.GGB_DB.First(&sysRole, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -111,7 +111,7 @@ func UpdateSysRole(c *gin.Context) {
 	var sysRole system.SysRole
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&sysRole, id).Error; err != nil {
+	if err := global.GGB_DB.First(&sysRole, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -124,17 +124,17 @@ func UpdateSysRole(c *gin.Context) {
 		return
 	}
 
-	if !errors.Is(global.DB.Where("id != ? AND role_name = ?", id, sysRole.RoleName).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("id != ? AND role_name = ?", id, sysRole.RoleName).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("角色 %s 已存在", sysRole.RoleName), c)
 		return
 	}
-	if !errors.Is(global.DB.Where("id != ? AND role_code = ?", id, sysRole.RoleCode).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("id != ? AND role_code = ?", id, sysRole.RoleCode).First(&system.SysRole{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("角色标识码 %s 已存在", sysRole.RoleCode), c)
 		return
 	}
 
 	// 更新用户记录
-	if err := global.DB.Save(&sysRole).Error; err != nil {
+	if err := global.GGB_DB.Save(&sysRole).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -150,7 +150,7 @@ func DeleteSysRole(c *gin.Context) {
 	id := c.Param("id")
 
 	// 根据指定 ID 删除数据
-	if err := global.DB.Delete(&system.SysRole{}, id).Error; err != nil {
+	if err := global.GGB_DB.Delete(&system.SysRole{}, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -168,7 +168,7 @@ func ChangeRoleStatus(c *gin.Context) {
 		return
 	}
 
-	err := global.DB.Model(&system.SysRole{}).
+	err := global.GGB_DB.Model(&system.SysRole{}).
 		Where("id = ?", req.ID).
 		Update("status", req.Status).Error
 	if err != nil {
@@ -188,7 +188,7 @@ func RoleAssignMenu(c *gin.Context) {
 	}
 
 	// 删掉之前的菜单
-	err := global.DB.Where("role_id = ?", req.RoleID).Delete(&system.SysRoleMenu{}).Error
+	err := global.GGB_DB.Where("role_id = ?", req.RoleID).Delete(&system.SysRoleMenu{}).Error
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -203,7 +203,7 @@ func RoleAssignMenu(c *gin.Context) {
 				MenuID: id,
 			})
 		}
-		err = global.DB.Create(&roleMenu).Error
+		err = global.GGB_DB.Create(&roleMenu).Error
 		if err != nil {
 			response.FailWithMessage(err.Error(), c)
 			return
@@ -230,7 +230,7 @@ func RoleAssignUser(c *gin.Context) {
 				UserID: id,
 			})
 		}
-		err := global.DB.Create(roleUser).Error
+		err := global.GGB_DB.Create(roleUser).Error
 		if err != nil {
 			response.FailWithMessage(err.Error(), c)
 			return
@@ -254,13 +254,13 @@ func GetUserByRole(c *gin.Context) {
 	var users []system.SysUser
 	var total int64
 
-	err := global.DB.Model(&system.SysRoleUser{}).Where("role_id = ?", roleId).Count(&total).Error
+	err := global.GGB_DB.Model(&system.SysRoleUser{}).Where("role_id = ?", roleId).Count(&total).Error
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	err = global.DB.Model(&system.SysUser{}).
+	err = global.GGB_DB.Model(&system.SysUser{}).
 		Joins("JOIN sys_role_user ON sys_role_user.user_id = sys_user.id").
 		Where("sys_role_user.role_id = ? AND sys_role_user.deleted_at IS NULL", roleId).
 		Order("sys_role_user.created_at DESC").
@@ -285,7 +285,7 @@ func RoleUnAssignUser(c *gin.Context) {
 		return
 	}
 
-	err := global.DB.Where("role_id = ? AND user_id in (?)", req.RoleID, req.UserIds).
+	err := global.GGB_DB.Where("role_id = ? AND user_id in (?)", req.RoleID, req.UserIds).
 		Delete(&system.SysRoleUser{}).Error
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -305,7 +305,7 @@ func GetMenuByRole(c *gin.Context) {
 
 	// 根据roleId找到对应的菜单
 	var roleMenu []system.SysRoleMenu
-	err := global.DB.Where("role_id = ?", roleId).Find(&roleMenu).Error
+	err := global.GGB_DB.Where("role_id = ?", roleId).Find(&roleMenu).Error
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -318,7 +318,7 @@ func GetMenuByRole(c *gin.Context) {
 
 	// 根据菜单id查找菜单
 	var menus []system.SysMenu
-	err = global.DB.Where("id in (?)", menuIds).Order("sort").Find(&menus).Error
+	err = global.GGB_DB.Where("id in (?)", menuIds).Order("sort").Find(&menus).Error
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

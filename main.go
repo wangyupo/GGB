@@ -22,11 +22,11 @@ func init() {
 func main() {
 	r := router.InitRouter()
 
-	if global.DB != nil {
+	if global.GGB_DB != nil {
 		migration.Migrate()
 		fmt.Print(123)
 		// 程序结束前关闭数据库链接
-		db, _ := global.DB.DB()
+		db, _ := global.GGB_DB.DB()
 		defer db.Close()
 	}
 

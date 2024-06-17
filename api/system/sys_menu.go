@@ -21,7 +21,7 @@ func GetSysMenuList(c *gin.Context) {
 	var total int64
 
 	// 准备数据库查询
-	db := global.DB.Model(&system.SysMenu{})
+	db := global.GGB_DB.Model(&system.SysMenu{})
 	if name != "" {
 		db = db.Where("name LIKE ?", "%"+name+"%")
 	}
@@ -61,7 +61,7 @@ func CreateSysMenu(c *gin.Context) {
 	}
 
 	// 创建 sysMenu 记录
-	if err := global.DB.Create(&sysMenu).Error; err != nil {
+	if err := global.GGB_DB.Create(&sysMenu).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -80,7 +80,7 @@ func GetSysMenu(c *gin.Context) {
 	var sysMenu system.SysMenu
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&sysMenu, id).Error; err != nil {
+	if err := global.GGB_DB.First(&sysMenu, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -103,7 +103,7 @@ func UpdateSysMenu(c *gin.Context) {
 	var sysMenu system.SysMenu
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&sysMenu, id).Error; err != nil {
+	if err := global.GGB_DB.First(&sysMenu, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -117,7 +117,7 @@ func UpdateSysMenu(c *gin.Context) {
 	}
 
 	// 更新用户记录
-	if err := global.DB.Save(&sysMenu).Error; err != nil {
+	if err := global.GGB_DB.Save(&sysMenu).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -133,7 +133,7 @@ func DeleteSysMenu(c *gin.Context) {
 	id := c.Param("id")
 
 	// 根据指定 ID 删除数据
-	if err := global.DB.Delete(&system.SysMenu{}, id).Error; err != nil {
+	if err := global.GGB_DB.Delete(&system.SysMenu{}, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -164,12 +164,12 @@ func MoveSysMenu(c *gin.Context) {
 
 	// 找到源菜单、目标菜单
 	var originMenu, targetMenu system.SysMenu
-	err := global.DB.Where("id = ?", req.OriginID).First(&originMenu).Error
+	err := global.GGB_DB.Where("id = ?", req.OriginID).First(&originMenu).Error
 	if err != nil {
 		response.FailWithMessage("移动菜单未找到", c)
 		return
 	}
-	err = global.DB.Where("id = ?", req.TargetID).First(&targetMenu).Error
+	err = global.GGB_DB.Where("id = ?", req.TargetID).First(&targetMenu).Error
 	if err != nil {
 		response.FailWithMessage("目标菜单未找到", c)
 		return
@@ -194,7 +194,7 @@ func MoveSysMenu(c *gin.Context) {
 	}
 
 	// 注：使用map更新，防止gorm的updates方法把sort=0跳过
-	err = global.DB.Model(&system.SysMenu{}).
+	err = global.GGB_DB.Model(&system.SysMenu{}).
 		Where("id = ?", originMenu.ID).
 		Updates(map[string]interface{}{
 			"ParentId": parentId,

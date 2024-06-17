@@ -36,7 +36,7 @@ func Login(c *gin.Context) {
 	// 声明 system.SysUser 类型的变量以存储找出来的用户
 	var systemUser system.SysUser
 	// 根据 userName 找用户（userName 是唯一的）
-	global.DB.Where("user_name=?", loginForm.UserName).First(&systemUser)
+	global.GGB_DB.Where("user_name=?", loginForm.UserName).First(&systemUser)
 	if systemUser.ID == 0 {
 		response.FailWithMessage("用户不存在", c)
 		return
@@ -84,7 +84,7 @@ func Login(c *gin.Context) {
 		IP:        clientIP,
 		UserAgent: userAgent,
 	}
-	err = global.DB.Create(&loginLog).Error
+	err = global.GGB_DB.Create(&loginLog).Error
 	if err != nil {
 	}
 
@@ -109,7 +109,7 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 	var menus []systemResponse.Menu
 
 	// 查找用户角色
-	roleErr := global.DB.Model(&system.SysRole{}).
+	roleErr := global.GGB_DB.Model(&system.SysRole{}).
 		Joins("join sys_role_user on sys_role_user.role_id=sys_role.id").
 		Where("sys_role_user.user_id = ?", userId).
 		First(&role).Error
@@ -121,7 +121,7 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 	}
 
 	// 查找角色对应菜单
-	menuErr := global.DB.Model(&system.SysMenu{}).
+	menuErr := global.GGB_DB.Model(&system.SysMenu{}).
 		Joins("join sys_role_menu on sys_role_menu.menu_id = sys_menu.id").
 		Where("sys_role_menu.role_id = ?", role.ID).
 		Scan(&menus).Error
@@ -151,7 +151,7 @@ func ChangePassword(c *gin.Context) {
 	}
 	// 根据id查找用户
 	var systemUser system.SysUser
-	if err := global.DB.Where("id = ?", userId).First(&systemUser).Error; err != nil {
+	if err := global.GGB_DB.Where("id = ?", userId).First(&systemUser).Error; err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -162,7 +162,7 @@ func ChangePassword(c *gin.Context) {
 	}
 	// 原密码正确，hash新密码，更新sys_user
 	systemUser.Password = utils.BcryptHash(req.NewPassword)
-	if err := global.DB.Save(&systemUser).Error; err != nil {
+	if err := global.GGB_DB.Save(&systemUser).Error; err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -178,7 +178,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	err := global.DB.Model(&system.SysUser{}).
+	err := global.GGB_DB.Model(&system.SysUser{}).
 		Where("id = ?", id).
 		Update("password", utils.BcryptHash(global.DefaultLoginPassword)).Error
 	if err != nil {
@@ -199,7 +199,7 @@ func GetSystemUserInfo(c *gin.Context) {
 	}
 
 	var systemUser system.SysUser
-	if err := global.DB.Model(&system.SysUser{}).Where("id = ?", id).First(&systemUser).Error; err != nil {
+	if err := global.GGB_DB.Model(&system.SysUser{}).Where("id = ?", id).First(&systemUser).Error; err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -219,7 +219,7 @@ func GetSystemUserList(c *gin.Context) {
 	var total int64
 
 	// 准备数据库查询
-	db := global.DB.Model(&system.SysUser{})
+	db := global.GGB_DB.Model(&system.SysUser{})
 	if userName != "" {
 		db = db.Where("user_name LIKE ?", "%"+userName+"%")
 	}
@@ -259,7 +259,7 @@ func CreateSystemUser(c *gin.Context) {
 	}
 
 	// 检查 UserName 是否重复
-	if !errors.Is(global.DB.Where("user_name = ?", systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("user_name = ?", systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("用户名 %s 已存在", systemUser.UserName), c)
 		return
 	}
@@ -267,7 +267,7 @@ func CreateSystemUser(c *gin.Context) {
 	systemUser.Password = utils.BcryptHash(global.DefaultLoginPassword)
 
 	// 创建 systemUser 记录
-	if err := global.DB.Create(&systemUser).Error; err != nil {
+	if err := global.GGB_DB.Create(&systemUser).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -286,7 +286,7 @@ func GetSystemUser(c *gin.Context) {
 	var systemUser system.SysUser
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&systemUser, id).Error; err != nil {
+	if err := global.GGB_DB.First(&systemUser, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -305,7 +305,7 @@ func UpdateSystemUser(c *gin.Context) {
 	var systemUser system.SysUser
 
 	// 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&systemUser, id).Error; err != nil {
+	if err := global.GGB_DB.First(&systemUser, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -318,13 +318,13 @@ func UpdateSystemUser(c *gin.Context) {
 		return
 	}
 
-	if !errors.Is(global.DB.Where("id != ? AND user_name = ?", id, systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
+	if !errors.Is(global.GGB_DB.Where("id != ? AND user_name = ?", id, systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
 		response.FailWithMessage(fmt.Sprintf("用户名 %s 已存在", systemUser.UserName), c)
 		return
 	}
 
 	// 更新用户记录
-	if err := global.DB.Save(&systemUser).Error; err != nil {
+	if err := global.GGB_DB.Save(&systemUser).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -340,7 +340,7 @@ func DeleteSystemUser(c *gin.Context) {
 	id := c.Param("id")
 
 	// 根据指定 ID 删除数据
-	if err := global.DB.Delete(&system.SysUser{}, id).Error; err != nil {
+	if err := global.GGB_DB.Delete(&system.SysUser{}, id).Error; err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -360,7 +360,7 @@ func ChangeSystemUserStatus(c *gin.Context) {
 		return
 	}
 
-	err := global.DB.Model(&system.SysUser{}).
+	err := global.GGB_DB.Model(&system.SysUser{}).
 		Where("id = ?", id).
 		Update("status", req.Status).Error
 	if err != nil {
