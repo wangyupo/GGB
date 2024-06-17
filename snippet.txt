@@ -10,7 +10,7 @@ func Get$Items$(c *gin.Context) {
 	var total int64
 
     // 准备数据库查询
-	db := global.DB.Model(&$model${})
+	db := global.GGB_DB.Model(&$model${})
 	if name != "" {
 		db = db.Where("name LIKE ?", "%" + name + "%")
 	}
@@ -50,7 +50,7 @@ func Create$Item$(c *gin.Context) {
 	}
 
     // 创建 $item$ 记录
-	if err := global.DB.Create(&$item$).Error; err != nil {
+	if err := global.GGB_DB.Create(&$item$).Error; err != nil {
 	    // 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -73,7 +73,7 @@ func Get$Item$(c *gin.Context) {
 	var $item$ $model$
 
     // 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&$item$, id).Error; err != nil {
+	if err := global.GGB_DB.First(&$item$, id).Error; err != nil {
 	    // 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -96,7 +96,7 @@ func Update$Item$(c *gin.Context) {
 	var $item$ $model$
 
     // 从数据库中查找具有指定 ID 的数据
-	if err := global.DB.First(&$item$, id).Error; err != nil {
+	if err := global.GGB_DB.First(&$item$, id).Error; err != nil {
 	    // 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -110,7 +110,7 @@ func Update$Item$(c *gin.Context) {
 	}
 
     // 更新用户记录
-	if err := global.DB.Save(&$item$).Error; err != nil {
+	if err := global.GGB_DB.Save(&$item$).Error; err != nil {
 	    // 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -130,7 +130,7 @@ func Delete$Item$(c *gin.Context) {
 	}
 
     // 根据指定 ID 删除数据
-	if err := global.DB.Delete(&$model${}, id).Error; err != nil {
+	if err := global.GGB_DB.Delete(&$model${}, id).Error; err != nil {
 	    // 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
