@@ -5,8 +5,10 @@ import (
 	"github.com/wangyupo/GGB/api/system"
 )
 
-func SysUserRouter(r *gin.RouterGroup) {
-	sysUserRouter := r.Group("/system/user")
+type UserRouter struct{}
+
+func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
+	sysUserRouter := Router.Group("/system/user")
 	{
 		sysUserRouter.GET("", system.GetSystemUserList)
 		sysUserRouter.GET("/:id", system.GetSystemUser)

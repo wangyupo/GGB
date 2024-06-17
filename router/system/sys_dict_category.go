@@ -5,8 +5,10 @@ import (
 	"github.com/wangyupo/GGB/api/system"
 )
 
-func SysDictCategoryRouter(r *gin.RouterGroup) {
-	sysDictCategoryRouter := r.Group("/system/dictCategory")
+type DictCategoryRouter struct{}
+
+func (s *DictCategoryRouter) InitDictCategoryRouter(Router *gin.RouterGroup) {
+	sysDictCategoryRouter := Router.Group("/system/dictCategory")
 	{
 		sysDictCategoryRouter.GET("", system.GetSysDictCategoryList)
 		sysDictCategoryRouter.POST("", system.CreateSysDictCategory)

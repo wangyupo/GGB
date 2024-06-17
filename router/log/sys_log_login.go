@@ -5,8 +5,10 @@ import (
 	"github.com/wangyupo/GGB/api/log"
 )
 
-func LoginRouter(r *gin.RouterGroup) {
-	logLoginRouter := r.Group("/log/login")
+type LoginLogRouter struct{}
+
+func (s *LoginLogRouter) InitLoginLogRouter(Router *gin.RouterGroup) {
+	logLoginRouter := Router.Group("/log/login")
 	{
 		logLoginRouter.GET("", log.GetLoginLogList)
 	}

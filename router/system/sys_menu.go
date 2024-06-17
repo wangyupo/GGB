@@ -5,8 +5,10 @@ import (
 	"github.com/wangyupo/GGB/api/system"
 )
 
-func SysMenuRouter(r *gin.RouterGroup) {
-	sysMenuRouter := r.Group("/system/menu")
+type MenuRouter struct{}
+
+func (s *MenuRouter) InitMenuRouter(Router *gin.RouterGroup) {
+	sysMenuRouter := Router.Group("/system/menu")
 	{
 		sysMenuRouter.GET("", system.GetSysMenuList)
 		sysMenuRouter.POST("", system.CreateSysMenu)

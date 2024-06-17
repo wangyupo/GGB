@@ -5,8 +5,10 @@ import (
 	"github.com/wangyupo/GGB/api/system"
 )
 
-func SysRoleRouter(r *gin.RouterGroup) {
-	sysRoleRouter := r.Group("/system/role")
+type RoleRouter struct{}
+
+func (s *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
+	sysRoleRouter := Router.Group("/system/role")
 	{
 		sysRoleRouter.GET("", system.GetSysRoleList)
 		sysRoleRouter.POST("", system.CreateSysRole)

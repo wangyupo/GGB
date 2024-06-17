@@ -5,8 +5,10 @@ import (
 	"github.com/wangyupo/GGB/api/system"
 )
 
-func SysDictDataRouter(r *gin.RouterGroup) {
-	sysDictDataRouter := r.Group("/system/dictData")
+type DictDataRouter struct{}
+
+func (s *DictDataRouter) InitDictDataRouter(Router *gin.RouterGroup) {
+	sysDictDataRouter := Router.Group("/system/dictData")
 	{
 		sysDictDataRouter.GET("", system.GetSysDictDataList)
 		sysDictDataRouter.POST("", system.CreateSysDictData)

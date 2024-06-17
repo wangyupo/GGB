@@ -3,13 +3,13 @@ package core
 import (
 	"fmt"
 	"github.com/wangyupo/GGB/global"
-	"github.com/wangyupo/GGB/router"
+	"github.com/wangyupo/GGB/initialize"
 	"net/http"
 	"time"
 )
 
 func RunWindowsServer() {
-	Router := router.InitRouter()
+	Router := initialize.Routers()
 	address := fmt.Sprintf(":%s", global.GGB_CONFIG.System.Addr)
 
 	server := &http.Server{
