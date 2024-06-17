@@ -14,6 +14,10 @@ import (
 	"time"
 )
 
+var (
+	DefaultPassword string = "123456"
+)
+
 // Login 登录
 func Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
@@ -180,7 +184,7 @@ func ResetPassword(c *gin.Context) {
 
 	err := global.GGB_DB.Model(&system.SysUser{}).
 		Where("id = ?", id).
-		Update("password", utils.BcryptHash(global.DefaultLoginPassword)).Error
+		Update("password", utils.BcryptHash(DefaultPassword)).Error
 	if err != nil {
 		fmt.Print(err)
 		response.FailWithMessage("密码重置失败！", c)
@@ -264,7 +268,7 @@ func CreateSystemUser(c *gin.Context) {
 		return
 	}
 
-	systemUser.Password = utils.BcryptHash(global.DefaultLoginPassword)
+	systemUser.Password = utils.BcryptHash(DefaultPassword)
 
 	// 创建 systemUser 记录
 	if err := global.GGB_DB.Create(&systemUser).Error; err != nil {
