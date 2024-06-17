@@ -3,8 +3,11 @@ package utils
 import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/wangyupo/GGB/model/system/request"
-	"os"
 	"time"
+)
+
+const (
+	TOKEN_SECRET = "c2VjcmV0X1hZUkFMUlJGVEtIWUdDWkhFNDNfSkpCSFBFVFpIUVFZVVRLTE5CRkFEUg=="
 )
 
 // CreateClaims 创建token主体信息
@@ -20,7 +23,7 @@ func CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
 
 // CreateToken 生成token
 func CreateToken(claims request.CustomClaims) (string, error) {
-	signingKey := []byte(os.Getenv("TOKEN_SECRET"))
+	signingKey := []byte(TOKEN_SECRET)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(signingKey)
 }
@@ -28,7 +31,7 @@ func CreateToken(claims request.CustomClaims) (string, error) {
 // ParseToken 解析token
 func ParseToken(tokenString string) (*request.CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("TOKEN_SECRET")), nil
+		return []byte(TOKEN_SECRET), nil
 	})
 	if err != nil {
 		return nil, err
