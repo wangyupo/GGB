@@ -5,7 +5,6 @@ import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
-	response2 "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 )
 
@@ -17,7 +16,7 @@ func GetLoginLogList(c *gin.Context) {
 	userId := c.Query("userId")
 
 	// 声明 log.SysLogLogin 类型的变量以存储查询结果
-	loginLogList := make([]response2.LoginLogResponse, 0)
+	loginLogList := make([]system.SysLogLogin, 0)
 	var total int64
 
 	// 准备数据库查询
@@ -34,21 +33,25 @@ func GetLoginLogList(c *gin.Context) {
 	}
 
 	// 获取分页数据
-	err := db.Table("sys_log_login").
-		Select("sys_log_login.*, sys_user.user_name").
-		Joins("JOIN sys_user ON sys_log_login.user_id = sys_user.id").
-		Offset(offset).Limit(limit).
-		Order("created_at DESC").
-		Find(&loginLogList).Error
+	err := db.Offset(offset).Limit(limit).Preload("User").Find(&loginLogList).Error
 	if err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
+	// 结果集增加 userName 字段
+	results := make([]map[string]interface{}, len(loginLogList))
+	for i, log := range loginLogList {
+		logMap, _ := utils.ExcludeNestedFields(log, []string{"User"})
+		// 添加用户名
+		logMap["userName"] = log.User.UserName
+		results[i] = logMap
+	}
+
 	// 返回响应结果
 	response.SuccessWithData(response.PageResult{
-		List:  loginLogList,
+		List:  results,
 		Total: total,
 	}, c)
 }
