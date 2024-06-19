@@ -1,8 +1,13 @@
 package request
 
+import "github.com/wangyupo/GGB/model/system"
+
+type SysRoleQuery struct {
+	system.SysRole
+}
+
 type ChangeRoleStatus struct {
-	ID     uint `json:"id"`
-	Status int  `json:"status"`
+	Status int `json:"status"`
 }
 
 type RoleAssignMenu struct {
