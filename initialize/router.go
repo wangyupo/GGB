@@ -2,7 +2,7 @@ package initialize
 
 import (
 	"github.com/gin-gonic/gin"
-	apiSystem "github.com/wangyupo/GGB/api/system"
+	"github.com/wangyupo/GGB/api"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/middleware"
 	middlewareLog "github.com/wangyupo/GGB/middleware/log"
@@ -20,18 +20,19 @@ func Routers() *gin.Engine {
 
 	systemRouter := router.RouterGroupApp.System
 	logRouter := router.RouterGroupApp.Log
+	sysUserApi := api.ApiGroupApp.SysApiGroup.SysUserApi
 
 	// 路由-不做鉴权
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
 	{
-		PublicGroup.POST("/login", apiSystem.Login) // 登录
+		PublicGroup.POST("/login", sysUserApi.Login) // 登录
 	}
 
 	// 路由-需要鉴权
 	PrivateGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
 	PrivateGroup.Use(middleware.Logger(logger)).Use(middleware.Jwt())
 	{
-		PrivateGroup.POST("/logout", middlewareLog.LoginLog(2), apiSystem.Logout) // 登出
+		PrivateGroup.POST("/logout", middlewareLog.LoginLog(2), sysUserApi.Logout) // 登出
 
 		systemRouter.InitUserRouter(PrivateGroup)         // 用户管理
 		systemRouter.InitRoleRouter(PrivateGroup)         // 角色管理
