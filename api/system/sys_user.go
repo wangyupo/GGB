@@ -18,8 +18,10 @@ var (
 	DefaultPassword string = "123456"
 )
 
+type SysUserApi struct{}
+
 // Login 登录
-func Login(c *gin.Context) {
+func (s *SysUserApi) Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
 	var loginForm request.Login
 	if err := c.BindJSON(&loginForm); err != nil {
@@ -102,7 +104,7 @@ func Login(c *gin.Context) {
 }
 
 // Logout 登出
-func Logout(c *gin.Context) {
+func (s *SysUserApi) Logout(c *gin.Context) {
 	utils.ClearToken(c)
 	response.SuccessWithDefaultMessage(c)
 }
@@ -115,7 +117,7 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 	// 查找用户角色
 	roleErr := global.GGB_DB.Model(&system.SysRole{}).
 		Joins("join sys_role_user on sys_role_user.role_id=sys_role.id").
-		Where("sys_role_user.user_id = ?", userId).
+		Where("sys_role_user.user_id = ? AND sys_role_user.deleted_at IS NULL", userId).
 		First(&role).Error
 	if roleErr != nil {
 		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
@@ -127,7 +129,7 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 	// 查找角色对应菜单
 	menuErr := global.GGB_DB.Model(&system.SysMenu{}).
 		Joins("join sys_role_menu on sys_role_menu.menu_id = sys_menu.id").
-		Where("sys_role_menu.role_id = ?", role.ID).
+		Where("sys_role_menu.role_id = ? AND sys_role_menu.deleted_at IS NULL", role.ID).
 		Scan(&menus).Error
 	if menuErr != nil {
 		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
@@ -140,7 +142,7 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 }
 
 // ChangePassword 修改密码
-func ChangePassword(c *gin.Context) {
+func (s *SysUserApi) ChangePassword(c *gin.Context) {
 	var req request.ChangePassword
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.FailWithMessage(err.Error(), c)
@@ -153,20 +155,9 @@ func ChangePassword(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	// 根据id查找用户
-	var systemUser system.SysUser
-	if err := global.GGB_DB.Where("id = ?", userId).First(&systemUser).Error; err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	// 校验原密码
-	if ok := utils.BcryptCheck(req.Password, systemUser.Password); !ok {
-		response.FailWithMessage("修改失败，原密码与当前账户不符", c)
-		return
-	}
-	// 原密码正确，hash新密码，更新sys_user
-	systemUser.Password = utils.BcryptHash(req.NewPassword)
-	if err := global.GGB_DB.Save(&systemUser).Error; err != nil {
+
+	err = sysUserService.ChangePassword(userId, req)
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -175,19 +166,16 @@ func ChangePassword(c *gin.Context) {
 }
 
 // ResetPassword 重置用户登录密码
-func ResetPassword(c *gin.Context) {
+func (s *SysUserApi) ResetPassword(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		response.FailWithMessage("用户id不能为空", c)
 		return
 	}
 
-	err := global.GGB_DB.Model(&system.SysUser{}).
-		Where("id = ?", id).
-		Update("password", utils.BcryptHash(DefaultPassword)).Error
+	err := sysUserService.ResetPassword(id, DefaultPassword)
 	if err != nil {
-		fmt.Print(err)
-		response.FailWithMessage("密码重置失败！", c)
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
@@ -195,15 +183,15 @@ func ResetPassword(c *gin.Context) {
 }
 
 // GetSystemUserInfo 根据token获取用户信息
-func GetSystemUserInfo(c *gin.Context) {
+func (s *SysUserApi) GetSystemUserInfo(c *gin.Context) {
 	id, err := utils.GetUserID(c)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	var systemUser system.SysUser
-	if err := global.GGB_DB.Model(&system.SysUser{}).Where("id = ?", id).First(&systemUser).Error; err != nil {
+	systemUser, err := sysUserService.GetSystemUserInfo(id)
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -212,46 +200,31 @@ func GetSystemUserInfo(c *gin.Context) {
 }
 
 // GetSystemUserList 列表
-func GetSystemUserList(c *gin.Context) {
+func (s *SysUserApi) GetSystemUserList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
-	userName := c.Query("userName")
-
-	// 声明 system.SysUser 类型的变量以存储查询结果
-	systemUserList := make([]system.SysUser, 0)
-	var total int64
-
-	// 准备数据库查询
-	db := global.GGB_DB.Model(&system.SysUser{})
-	if userName != "" {
-		db = db.Where("user_name LIKE ?", "%"+userName+"%")
-	}
-
-	// 获取总数
-	if err := db.Count(&total).Error; err != nil {
-		// 错误处理
+	var query request.SystemUserList
+	if err := c.ShouldBindQuery(&query); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	// 获取分页数据
-	err := db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&systemUserList).Error
+	list, total, err := sysUserService.GetSystemUserList(query, offset, limit)
 	if err != nil {
-		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	// 返回响应结果
 	response.SuccessWithData(response.PageResult{
-		List:  systemUserList,
+		List:  list,
 		Total: total,
 	}, c)
 }
 
 // CreateSystemUser 新建
-func CreateSystemUser(c *gin.Context) {
+func (s *SysUserApi) CreateSystemUser(c *gin.Context) {
 	// 声明 system.SysUser 类型的变量以存储 JSON 数据
 	var systemUser system.SysUser
 
@@ -262,17 +235,8 @@ func CreateSystemUser(c *gin.Context) {
 		return
 	}
 
-	// 检查 UserName 是否重复
-	if !errors.Is(global.GGB_DB.Where("user_name = ?", systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
-		response.FailWithMessage(fmt.Sprintf("用户名 %s 已存在", systemUser.UserName), c)
-		return
-	}
-
-	systemUser.Password = utils.BcryptHash(DefaultPassword)
-
-	// 创建 systemUser 记录
-	if err := global.GGB_DB.Create(&systemUser).Error; err != nil {
-		// 错误处理
+	err := sysUserService.CreateSystemUser(systemUser, DefaultPassword)
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -282,16 +246,16 @@ func CreateSystemUser(c *gin.Context) {
 }
 
 // GetSystemUser 详情
-func GetSystemUser(c *gin.Context) {
+func (s *SysUserApi) GetSystemUser(c *gin.Context) {
 	// 获取路径参数
-	id := c.Param("id")
+	id, err := utils.Str2uint(c.Param("id"))
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 
-	// 声明 system.SysUser 类型的变量以存储查询结果
-	var systemUser system.SysUser
-
-	// 从数据库中查找具有指定 ID 的数据
-	if err := global.GGB_DB.First(&systemUser, id).Error; err != nil {
-		// 错误处理
+	systemUser, err := sysUserService.GetSystemUserInfo(id)
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -301,20 +265,16 @@ func GetSystemUser(c *gin.Context) {
 }
 
 // UpdateSystemUser 编辑
-func UpdateSystemUser(c *gin.Context) {
+func (s *SysUserApi) UpdateSystemUser(c *gin.Context) {
 	// 获取路径参数
-	id := c.Param("id")
-
-	// 声明 system.SysUser 类型的变量以存储查询结果
-	var systemUser system.SysUser
-
-	// 从数据库中查找具有指定 ID 的数据
-	if err := global.GGB_DB.First(&systemUser, id).Error; err != nil {
-		// 错误处理
+	id, err := utils.Str2uint(c.Param("id"))
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
+	// 声明 system.SysUser 类型的变量以存储查询结果
+	var systemUser system.SysUser
 	// 绑定请求参数到数据对象
 	if err := c.ShouldBindJSON(&systemUser); err != nil {
 		// 错误处理
@@ -322,14 +282,8 @@ func UpdateSystemUser(c *gin.Context) {
 		return
 	}
 
-	if !errors.Is(global.GGB_DB.Where("id != ? AND user_name = ?", id, systemUser.UserName).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
-		response.FailWithMessage(fmt.Sprintf("用户名 %s 已存在", systemUser.UserName), c)
-		return
-	}
-
-	// 更新用户记录
-	if err := global.GGB_DB.Save(&systemUser).Error; err != nil {
-		// 错误处理
+	err = sysUserService.UpdateSystemUser(systemUser, id)
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -339,13 +293,16 @@ func UpdateSystemUser(c *gin.Context) {
 }
 
 // DeleteSystemUser 删除用户
-func DeleteSystemUser(c *gin.Context) {
+func (s *SysUserApi) DeleteSystemUser(c *gin.Context) {
 	// 获取路径参数
-	id := c.Param("id")
+	id, err := utils.Str2uint(c.Param("id"))
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 
-	// 根据指定 ID 删除数据
-	if err := global.GGB_DB.Delete(&system.SysUser{}, id).Error; err != nil {
-		// 错误处理
+	err = sysUserService.DeleteSystemUser(id)
+	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -355,8 +312,12 @@ func DeleteSystemUser(c *gin.Context) {
 }
 
 // ChangeSystemUserStatus 修改用户状态
-func ChangeSystemUserStatus(c *gin.Context) {
-	id := c.Param("id")
+func (s *SysUserApi) ChangeSystemUserStatus(c *gin.Context) {
+	id, err := utils.Str2uint(c.Param("id"))
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 
 	var req request.ChangeSystemUserStatus
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -364,9 +325,7 @@ func ChangeSystemUserStatus(c *gin.Context) {
 		return
 	}
 
-	err := global.GGB_DB.Model(&system.SysUser{}).
-		Where("id = ?", id).
-		Update("status", req.Status).Error
+	err = sysUserService.ChangeSystemUserStatus(id, req.Status)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return

@@ -5,7 +5,7 @@ import "github.com/wangyupo/GGB/global"
 // SysUser 系统用户
 type SysUser struct {
 	global.BaseModel
-	UserName string `json:"userName" gorm:"size:64;index;unique;not null;comment:用户登录名"`
+	UserName string `json:"userName" form:"userName" gorm:"size:64;index;unique;not null;comment:用户登录名"`
 	NickName string `json:"nickName" gorm:"size:64;default:系统用户;comment:用户昵称"`
 	Email    string `json:"email" gorm:"size:128;comment:用户邮箱"`
 	Password string `json:"-" gorm:"comment:密码"`
