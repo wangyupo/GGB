@@ -8,8 +8,7 @@ import (
 	"github.com/wangyupo/GGB/utils"
 )
 
-type SysDictDataApi struct {
-}
+type SysDictDataApi struct{}
 
 // GetSysDictDataList 列表
 func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
