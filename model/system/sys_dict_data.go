@@ -6,7 +6,7 @@ import "github.com/wangyupo/GGB/global"
 type SysDictData struct {
 	global.BaseModel
 	CategoryID  uint   `json:"categoryId" gorm:"index"`
-	Label       string `json:"label" gorm:"size:128;comment:字典键"`
+	Label       string `json:"label" form:"label" gorm:"size:128;comment:字典键"`
 	Value       string `json:"value" gorm:"size:255;comment:字典值"`
 	Description string `json:"description" gorm:"size:255;comment:字典项描述"`
 }
