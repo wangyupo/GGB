@@ -21,7 +21,7 @@ func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 		return
 	}
 
-	list, total, err := SysDictDataService.GetSysDictDataList(query, offset, limit)
+	list, total, err := sysDictDataService.GetSysDictDataList(query, offset, limit)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -46,7 +46,7 @@ func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 		return
 	}
 
-	err := SysDictDataService.CreateSysDictData(req)
+	err := sysDictDataService.CreateSysDictData(req)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -65,7 +65,7 @@ func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	}
 	id, _ := utils.Str2uint(c.Param("id"))
 
-	sysDictData, err := SysDictDataService.GetSysDictData(id)
+	sysDictData, err := sysDictDataService.GetSysDictData(id)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -93,7 +93,7 @@ func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 		return
 	}
 
-	err := SysDictDataService.UpdateSysDictData(req, id)
+	err := sysDictDataService.UpdateSysDictData(req, id)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
@@ -112,7 +112,7 @@ func (s *SysDictDataApi) DeleteSysDictData(c *gin.Context) {
 	}
 	id, _ := utils.Str2uint(c.Param("id"))
 
-	err := SysDictDataService.DeleteSysDictData(id)
+	err := sysDictDataService.DeleteSysDictData(id)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
