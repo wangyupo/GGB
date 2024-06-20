@@ -9,7 +9,8 @@ type ApiGroup struct {
 }
 
 var (
-	sysUserService = service.ServiceGroupApp.SystemServiceGroup.SysUserService
-	sysRoleService = service.ServiceGroupApp.SystemServiceGroup.SysRoleService
-	sysMenuService = service.ServiceGroupApp.SystemServiceGroup.SysMenuService
+	sysUserService         = service.ServiceGroupApp.SystemServiceGroup.SysUserService
+	sysRoleService         = service.ServiceGroupApp.SystemServiceGroup.SysRoleService
+	sysMenuService         = service.ServiceGroupApp.SystemServiceGroup.SysMenuService
+	sysDictCategoryService = service.ServiceGroupApp.SystemServiceGroup.SysDictCategoryService
 )
