@@ -50,7 +50,7 @@ func initSystemData() {
 		var hashPassword = utils.BcryptHash(adminPassword)
 
 		// 创建 admin（超级管理员） 账户
-		var adminUser = system.SysUser{
+		adminUser = system.SysUser{
 			UserName: "admin",
 			NickName: "超级管理员",
 			Email:    "",
@@ -60,7 +60,7 @@ func initSystemData() {
 		global.GGB_DB.Create(&adminUser)
 
 		// 创建 admin（超级管理员） 角色
-		var adminRole = system.SysRole{
+		adminRole := system.SysRole{
 			RoleName:    "超级管理员",
 			RoleCode:    "ADMIN",
 			Description: "系统超级管理员角色",
@@ -69,7 +69,7 @@ func initSystemData() {
 		global.GGB_DB.Create(&adminRole)
 
 		// 创建系统管理菜单
-		global.GGB_DB.Create(&[]system.SysMenu{
+		menus := []system.SysMenu{
 			// 系统管理
 			{Label: "系统管理", Path: "", Icon: "", ParentId: 0, Sort: 1, Type: 1},
 			{Label: "用户管理", Path: "/systemManage/user", Icon: "", ParentId: 1, Sort: 1, Type: 1},
@@ -81,7 +81,8 @@ func initSystemData() {
 			// 日志管理
 			{Label: "日志管理", Path: "", Icon: "", ParentId: 0, Sort: 2, Type: 1},
 			{Label: "登录日志", Path: "/logManage/loginLog", Icon: "", ParentId: 8, Sort: 1, Type: 1},
-		})
+		}
+		global.GGB_DB.Create(&menus)
 
 		// 关联 admin（超级管理员） 用户和角色
 		global.GGB_DB.Create(&system.SysRoleUser{
@@ -90,10 +91,8 @@ func initSystemData() {
 		})
 
 		// 关联 admin（超级管理员） 角色和菜单
-		var allMenu []system.SysMenu
-		global.GGB_DB.Find(&allMenu)
 		var adminRoleMenus []system.SysRoleMenu
-		for _, menu := range allMenu {
+		for _, menu := range menus {
 			adminRoleMenus = append(adminRoleMenus, system.SysRoleMenu{
 				RoleID: adminRole.ID,
 				MenuID: menu.ID,
