@@ -36,12 +36,12 @@ func (sysDictDataService *SysDictDataService) GetSysDictDataList(query request.S
 
 // CreateSysDictData 新建字典数据
 func (sysDictDataService *SysDictDataService) CreateSysDictData(req system.SysDictData) (err error) {
-	err = global.GGB_DB.Where("label = ?", req.Label).First(&system.SysDictData{}).Error
+	err = global.GGB_DB.Where("label = ? AND category_id = ?", req.Label, req.CategoryID).First(&system.SysDictData{}).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New(fmt.Sprintf("字典键 %s 已存在", req.Label))
 	}
 
-	err = global.GGB_DB.Where("value = ?", req.Value).First(&system.SysDictData{}).Error
+	err = global.GGB_DB.Where("value = ? AND category_id = ?", req.Value, req.CategoryID).First(&system.SysDictData{}).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New(fmt.Sprintf("字典值 %s 已存在", req.Value))
 	}
