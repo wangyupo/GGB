@@ -1,8 +1,10 @@
 package response
 
-import "github.com/wangyupo/GGB/model/system"
+import (
+	"github.com/wangyupo/GGB/model/log"
+)
 
 type LoginLogResponse struct {
-	system.SysLogLogin
+	log.SysLogLogin
 	UserName string `json:"userName"`
 }

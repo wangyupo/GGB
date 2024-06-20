@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
+	"github.com/wangyupo/GGB/model/log"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
 	systemResponse "github.com/wangyupo/GGB/model/system/response"
@@ -84,7 +85,7 @@ func (s *SysUserApi) Login(c *gin.Context) {
 	// 写入登录日志
 	clientIP := c.ClientIP()               // 获取客户端IP
 	userAgent := c.GetHeader("User-Agent") // 获取浏览器信息
-	loginLog := system.SysLogLogin{
+	loginLog := log.SysLogLogin{
 		UserId:    systemUser.ID,
 		Type:      1,
 		IP:        clientIP,

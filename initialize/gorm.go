@@ -3,6 +3,7 @@ package initialize
 import (
 	"fmt"
 	"github.com/wangyupo/GGB/global"
+	"github.com/wangyupo/GGB/model/log"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/utils"
 	"gorm.io/gorm"
@@ -28,7 +29,7 @@ func RegisterTables() {
 		system.SysRoleUser{},
 		system.SysDictCategory{},
 		system.SysDictData{},
-		system.SysLogLogin{},
+		log.SysLogLogin{},
 	)
 	if err != nil {
 		fmt.Print(err)
