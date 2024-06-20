@@ -8,8 +8,10 @@ import (
 	"github.com/wangyupo/GGB/utils"
 )
 
+type SysDictCategoryApi struct{}
+
 // GetSysDictCategoryList 列表
-func GetSysDictCategoryList(c *gin.Context) {
+func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
@@ -33,7 +35,7 @@ func GetSysDictCategoryList(c *gin.Context) {
 }
 
 // CreateSysDictCategory 新建
-func CreateSysDictCategory(c *gin.Context) {
+func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 	// 声明 system.SysDictCategory 类型的变量以存储 JSON 数据
 	var req system.SysDictCategory
 
@@ -55,7 +57,7 @@ func CreateSysDictCategory(c *gin.Context) {
 }
 
 // GetSysDictCategory 详情
-func GetSysDictCategory(c *gin.Context) {
+func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：id", c)
@@ -74,7 +76,7 @@ func GetSysDictCategory(c *gin.Context) {
 }
 
 // UpdateSysDictCategory 编辑
-func UpdateSysDictCategory(c *gin.Context) {
+func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：id", c)
@@ -102,7 +104,7 @@ func UpdateSysDictCategory(c *gin.Context) {
 }
 
 // DeleteSysDictCategory 删除
-func DeleteSysDictCategory(c *gin.Context) {
+func (s *SysDictCategoryApi) DeleteSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：id", c)

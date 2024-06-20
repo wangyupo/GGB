@@ -6,6 +6,7 @@ type ApiGroup struct {
 	SysUserApi
 	SysRoleApi
 	SysMenuApi
+	SysDictCategoryApi
 	SysDictDataApi
 }
 
