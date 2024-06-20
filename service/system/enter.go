@@ -5,4 +5,5 @@ type ServiceGroup struct {
 	SysRoleService
 	SysMenuService
 	SysDictCategoryService
+	SysDictDataService
 }

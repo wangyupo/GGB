@@ -25,7 +25,6 @@ func (sysDictCategoryService *SysDictCategoryService) GetSysDictCategoryList(que
 	// 获取总数
 	err = db.Count(&total).Error
 	if err != nil {
-		// 错误处理
 		return
 	}
 
