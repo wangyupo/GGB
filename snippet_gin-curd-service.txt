@@ -1,0 +1,77 @@
+type $Name$Service struct{}
+
+// Get$Name$List 获取$ChineseName$列表
+func ($RECEIVER$ *$Name$Service) Get$Name$List(query request.$Name$Query, offset int, limit int) (list interface{}, total int64, err error) {
+	// 声明 system.$Name$ 类型的变量以存储查询结果
+	$name$List := make([]system.$Name$, 0)
+
+	// 准备数据库查询
+	db := global.GGB_DB.Model(&system.$Name${})
+	if query.Label != "" {
+		db = db.Where("label LIKE ?", "%"+query.Label+"%")
+	}
+
+	// 获取总数
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+
+	// 获取分页数据
+	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&$name$List).Error
+
+	return $name$List, total, err
+}
+
+// Create$Name$ 创建$ChineseName$
+func ($RECEIVER$ *$Name$Service) Create$Name$(req system.$Name$) (err error) {
+    // 唯一值判断
+	//err = global.GGB_DB.Where("label = ?", req.Label).First(&system.$Name${}).Error
+	//if !errors.Is(err, gorm.ErrRecordNotFound) {
+	//	return errors.New(fmt.Sprintf("$ChineseName$ %s 已存在", req.Label))
+	//}
+
+	// 创建 $name$ 记录
+	err = global.GGB_DB.Create(&req).Error
+
+	return err
+}
+
+// Get$Name$ 获取$ChineseName$详情
+func ($RECEIVER$ *$Name$Service) Get$Name$($name$Id uint) ($name$ system.$Name$, err error) {
+	err = global.GGB_DB.Where("id = ?", $name$Id).First(&$name$).Error
+	return $name$, err
+}
+
+// Update$Name$ 更新$ChineseName$
+func ($RECEIVER$ *$Name$Service) Update$Name$(req system.$Name$, $name$Id uint) (err error) {
+	var old$Name$ system.$Name$
+
+	// 从数据库中查找具有指定 ID 的数据
+	err = global.GGB_DB.Where("id = ?", $name$Id).First(&old$Name$).Error
+	if err != nil {
+		return err
+	}
+
+    // 唯一值判断
+	//err = global.GGB_DB.Where("label = ? AND id != ?", req.Label, $name$Id).First(&system.$Name${}).Error
+	//if !errors.Is(err, gorm.ErrRecordNotFound) {
+	//	return errors.New(fmt.Sprintf("$ChineseName$ %s 已存在", req.Label))
+	//}
+
+	$name$Map := map[string]interface{}{
+		"Label":       req.Label,
+		"LabelCode":   req.LabelCode,
+		"Description": req.Description,
+	}
+	// 更新用户记录
+	err = global.GGB_DB.Model(&old$Name$).Updates($name$Map).Error
+
+	return err
+}
+
+// Delete$Name$ 删除$ChineseName$
+func ($RECEIVER$ *$Name$Service) Delete$Name$($name$Id uint) (err error) {
+	err = global.GGB_DB.Where("id = ?", $name$Id).Delete(&system.$Name${}).Error
+	return err
+}
