@@ -8,7 +8,7 @@ import (
 
 type SysLoginLogService struct{}
 
-func (sysLoginLogService *SysLoginLogService) GetLoginLogList(userId uint, offset int, limit int) (list interface{}, total int64, err error) {
+func (sysLoginLogService *SysLoginLogService) GetSysLoginLogList(userId uint, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 log.SysLogLogin 类型的变量以存储查询结果
 	loginLogList := make([]log.SysLogLogin, 0)
 
