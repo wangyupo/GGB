@@ -12,7 +12,7 @@ import (
 
 type SysDictDataApi struct{}
 
-// GetSysDictDataList 列表
+// GetSysDictDataList 查询字典列表
 func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -37,12 +37,12 @@ func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 	}, c)
 }
 
-// CreateSysDictData 新建
+// CreateSysDictData 新建字典
 func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 	// 声明 system.SysDictData 类型的变量以存储 JSON 数据
 	var req system.SysDictData
 
-	// 绑定 JSON 请求体中的数据到 sysDictData 结构体
+	// 绑定 JSON 请求体中的数据到 SysDictData 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
@@ -60,7 +60,7 @@ func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSysDictData 详情
+// GetSysDictData 获取字典详情
 func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -80,7 +80,7 @@ func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	response.SuccessWithData(sysDictData, c)
 }
 
-// UpdateSysDictData 编辑
+// UpdateSysDictData 编辑字典
 func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -109,7 +109,7 @@ func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSysDictData 删除
+// DeleteSysDictData 删除字典
 func (s *SysDictDataApi) DeleteSysDictData(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {

@@ -12,7 +12,7 @@ import (
 
 type SysDictCategoryApi struct{}
 
-// GetSysDictCategoryList 列表
+// GetSysDictCategoryList 查询字典类型列表
 func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -25,7 +25,7 @@ func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 
 	list, total, err := sysDictCategoryService.GetSysDictCategoryList(query, offset, limit)
 	if err != nil {
-		global.GGB_LOG.Error("获取字典类型列表失败！", zap.Error(err))
+		global.GGB_LOG.Error("查询字典类型列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -37,12 +37,12 @@ func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 	}, c)
 }
 
-// CreateSysDictCategory 新建
+// CreateSysDictCategory 新建字典类型
 func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 	// 声明 system.SysDictCategory 类型的变量以存储 JSON 数据
 	var req system.SysDictCategory
 
-	// 绑定 JSON 请求体中的数据到 sysDictCategory 结构体
+	// 绑定 JSON 请求体中的数据到 SysDictCategory 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
 		// 错误处理
 		response.FailWithMessage(err.Error(), c)
@@ -60,7 +60,7 @@ func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSysDictCategory 详情
+// GetSysDictCategory 获取字典类型详情
 func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -80,7 +80,7 @@ func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 	response.SuccessWithData(sysDictCategory, c)
 }
 
-// UpdateSysDictCategory 编辑
+// UpdateSysDictCategory 编辑字典类型
 func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -109,7 +109,7 @@ func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSysDictCategory 删除
+// DeleteSysDictCategory 删除字典类型
 func (s *SysDictCategoryApi) DeleteSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
