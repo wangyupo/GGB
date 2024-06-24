@@ -1,141 +1,118 @@
-// Get$Items$ 列表
-func Get$Items$(c *gin.Context) {
+type $Name$Api struct {}
+
+// Get$Name$List 查询$ChineseName$列表
+func ($RECEIVER$ *$Name$Api) Get$Name$List(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
-	name := c.Query("name")
-
-	// 声明 $model_1$ 类型的变量以存储查询结果
-    $items$ := make([]$model$, 0)
-	var total int64
-
-    // 准备数据库查询
-	db := global.GGB_DB.Model(&$model${})
-	if name != "" {
-		db = db.Where("name LIKE ?", "%" + name + "%")
-	}
-
-    // 获取总数
-    if err := db.Count(&total).Error; err != nil {
-        // 错误处理
+	var query request.$Name$Query
+    if err := c.ShouldBindQuery(&query); err != nil {
         response.FailWithMessage(err.Error(), c)
         return
     }
 
-    // 获取分页数据
-	err := db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&$items$).Error
+	list, total, err := $name$Service.Get$Name$List(query, offset, limit)
     if err != nil {
-        // 错误处理
+        global.GGB_LOG.Error("查询$ChineseName$列表失败！", zap.Error(err))
         response.FailWithMessage(err.Error(), c)
         return
     }
 
     // 返回响应结果
 	response.SuccessWithData(response.PageResult{
-        List:  $items$,
+        List:  list,
         Total: total,
     }, c)
 }
 
-// Create$Item$ 新建
-func Create$Item$(c *gin.Context) {
-    // 声明 $model_1$ 类型的变量以存储 JSON 数据
-	var $item$ $model$
+// Create$Name$ 新建$ChineseName$
+func ($RECEIVER$ *$Name$Api) Create$Name$(c *gin.Context) {
+	// 声明 $package$.$Name$ 类型的变量以存储 JSON 数据
+	var req $package$.$Name$
 
-	// 绑定 JSON 请求体中的数据到 $item$ 结构体
-	if err := c.ShouldBindJSON(&$item$); err != nil {
-	    // 错误处理
+	// 绑定 JSON 请求体中的数据到 $Name$ 结构体
+	if err := c.ShouldBindJSON(&req); err != nil {
+		// 错误处理
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-    // 创建 $item$ 记录
-	if err := global.GGB_DB.Create(&$item$).Error; err != nil {
-	    // 错误处理
+	err := $name$Service.Create$Name$(req)
+	if err != nil {
+		global.GGB_LOG.Error("新建$ChineseName$失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-    // 返回响应结果
-    response.SuccessWithDefaultMessage(c)
-}
-
-// Get$Item$ 详情
-func Get$Item$(c *gin.Context) {
-	// 获取路径参数
-	id := c.Param("id")
-	if id == "" {
-		response.FailWithMessage("缺少参数：id", c)
-		return
-	}
-
-    // 声明 $model_1$ 类型的变量以存储查询结果
-	var $item$ $model$
-
-    // 从数据库中查找具有指定 ID 的数据
-	if err := global.GGB_DB.First(&$item$, id).Error; err != nil {
-	    // 错误处理
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-
-    // 返回响应结果
-	response.SuccessWithData($item$, c)
-}
-
-// Update$Item$ 编辑
-func Update$Item$(c *gin.Context) {
-	// 获取路径参数
-	id := c.Param("id")
-	if id == "" {
-		response.FailWithMessage("缺少参数：id", c)
-		return
-	}
-
-	// 声明 $model_1$ 类型的变量以存储查询结果
-	var $item$ $model$
-
-    // 从数据库中查找具有指定 ID 的数据
-	if err := global.GGB_DB.First(&$item$, id).Error; err != nil {
-	    // 错误处理
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-
-    // 绑定请求参数到数据对象
-	if err := c.ShouldBindJSON(&$item$); err != nil {
-	    // 错误处理
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-
-    // 更新用户记录
-	if err := global.GGB_DB.Save(&$item$).Error; err != nil {
-	    // 错误处理
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-
-    // 返回响应结果
+	// 返回响应结果
 	response.SuccessWithDefaultMessage(c)
 }
 
-// Delete$Item$ 删除
-func Delete$Item$(c *gin.Context) {
-    // 获取路径参数
-	id := c.Param("id")
-	if id == "" {
+// Get$Name$ 获取$ChineseName$详情
+func ($RECEIVER$ *$Name$Api) Get$Name$(c *gin.Context) {
+	// 获取路径参数
+	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：id", c)
 		return
 	}
+	id, _ := utils.Str2uint(c.Param("id"))
 
-    // 根据指定 ID 删除数据
-	if err := global.GGB_DB.Delete(&$model${}, id).Error; err != nil {
-	    // 错误处理
+	$name$, err := $name$Service.Get$Name$(id)
+	if err != nil {
+		global.GGB_LOG.Error("获取$ChineseName$详情失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-    // 返回响应结果
+	// 返回响应结果
+	response.SuccessWithData($name$, c)
+}
+
+// Update$Name$ 编辑$ChineseName$
+func ($RECEIVER$ *$Name$Api) Update$Name$(c *gin.Context) {
+	// 获取路径参数
+	if c.Param("id") == "" {
+		response.FailWithMessage("缺少参数：id", c)
+		return
+	}
+	id, _ := utils.Str2uint(c.Param("id"))
+
+	// 声明 $package$.$Name$ 类型的变量以存储查询结果
+	var req $package$.$Name$
+	// 绑定请求参数到数据对象
+	if err := c.ShouldBindJSON(&req); err != nil {
+		// 错误处理
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	err := $name$Service.Update$Name$(req, id)
+	if err != nil {
+		global.GGB_LOG.Error("编辑$ChineseName$失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	// 返回响应结果
+	response.SuccessWithDefaultMessage(c)
+}
+
+// Delete$Name$ 删除$ChineseName$
+func ($RECEIVER$ *$Name$Api) Delete$Name$(c *gin.Context) {
+	// 获取路径参数
+	if c.Param("id") == "" {
+		response.FailWithMessage("缺少参数：id", c)
+		return
+	}
+	id, _ := utils.Str2uint(c.Param("id"))
+
+	err := $name$Service.Delete$Name$(id)
+	if err != nil {
+		global.GGB_LOG.Error("删除$ChineseName$失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	// 返回响应结果
 	response.SuccessWithDefaultMessage(c)
 }
