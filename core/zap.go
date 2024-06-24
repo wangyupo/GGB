@@ -76,7 +76,7 @@ func getEncoder() zapcore.Encoder {
 		CallerKey:     "caller",
 		FunctionKey:   zapcore.OmitKey,
 		MessageKey:    "msg",
-		StacktraceKey: "stacktrace",
+		StacktraceKey: global.GGB_CONFIG.Zap.StacktraceKey, // 堆栈跟踪信息的key
 		LineEnding:    zapcore.DefaultLineEnding,
 		EncodeLevel:   zapcore.LowercaseLevelEncoder,
 		EncodeTime: func(t time.Time, encoder zapcore.PrimitiveArrayEncoder) {
