@@ -11,6 +11,7 @@ import (
 	"github.com/wangyupo/GGB/model/system/request"
 	systemResponse "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"time"
 )
@@ -75,6 +76,7 @@ func (s *SysUserApi) Login(c *gin.Context) {
 	})
 	token, err := utils.CreateToken(claims)
 	if err != nil {
+		global.GGB_LOG.Error("登录失败！获取token失败！", zap.Error(err))
 		response.FailWithMessage("获取token失败", c)
 		return
 	}
@@ -93,6 +95,7 @@ func (s *SysUserApi) Login(c *gin.Context) {
 	}
 	err = global.GGB_DB.Create(&loginLog).Error
 	if err != nil {
+		global.GGB_LOG.Error("写入登录日志失败！", zap.Error(err))
 	}
 
 	response.SuccessWithDetailed(systemResponse.LoginResponse{
@@ -153,12 +156,14 @@ func (s *SysUserApi) ChangePassword(c *gin.Context) {
 	// 从token获取用户id
 	userId, err := utils.GetUserID(c)
 	if err != nil {
+		global.GGB_LOG.Error("修改失败！获取userId失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	err = sysUserService.ChangePassword(userId, req)
 	if err != nil {
+		global.GGB_LOG.Error("修改用户密码失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -176,6 +181,7 @@ func (s *SysUserApi) ResetPassword(c *gin.Context) {
 
 	err := sysUserService.ResetPassword(id, DefaultPassword)
 	if err != nil {
+		global.GGB_LOG.Error("重置用户密码失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -193,6 +199,7 @@ func (s *SysUserApi) GetSystemUserInfo(c *gin.Context) {
 
 	systemUser, err := sysUserService.GetSystemUserInfo(id)
 	if err != nil {
+		global.GGB_LOG.Error("获取用户信息失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -213,6 +220,7 @@ func (s *SysUserApi) GetSystemUserList(c *gin.Context) {
 
 	list, total, err := sysUserService.GetSystemUserList(query, offset, limit)
 	if err != nil {
+		global.GGB_LOG.Error("获取用户列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -238,6 +246,7 @@ func (s *SysUserApi) CreateSystemUser(c *gin.Context) {
 
 	err := sysUserService.CreateSystemUser(systemUser, DefaultPassword)
 	if err != nil {
+		global.GGB_LOG.Error("新建用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -285,6 +294,7 @@ func (s *SysUserApi) UpdateSystemUser(c *gin.Context) {
 
 	err = sysUserService.UpdateSystemUser(systemUser, id)
 	if err != nil {
+		global.GGB_LOG.Error("编辑用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -304,6 +314,7 @@ func (s *SysUserApi) DeleteSystemUser(c *gin.Context) {
 
 	err = sysUserService.DeleteSystemUser(id)
 	if err != nil {
+		global.GGB_LOG.Error("删除用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -328,6 +339,7 @@ func (s *SysUserApi) ChangeSystemUserStatus(c *gin.Context) {
 
 	err = sysUserService.ChangeSystemUserStatus(id, req.Status)
 	if err != nil {
+		global.GGB_LOG.Error("修改用户状态失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}

@@ -2,10 +2,12 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
+	"go.uber.org/zap"
 )
 
 type SysDictCategoryApi struct{}
@@ -23,6 +25,7 @@ func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 
 	list, total, err := sysDictCategoryService.GetSysDictCategoryList(query, offset, limit)
 	if err != nil {
+		global.GGB_LOG.Error("获取字典类型列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -48,6 +51,7 @@ func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 
 	err := sysDictCategoryService.CreateSysDictCategory(req)
 	if err != nil {
+		global.GGB_LOG.Error("新建字典类型失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -67,6 +71,7 @@ func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 
 	sysDictCategory, err := sysDictCategoryService.GetSysDictCategory(id)
 	if err != nil {
+		global.GGB_LOG.Error("获取字典类型详情失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -95,6 +100,7 @@ func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 
 	err := sysDictCategoryService.UpdateSysDictCategory(req, id)
 	if err != nil {
+		global.GGB_LOG.Error("编辑字典类型失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -114,6 +120,7 @@ func (s *SysDictCategoryApi) DeleteSysDictCategory(c *gin.Context) {
 
 	err := sysDictCategoryService.DeleteSysDictCategory(id)
 	if err != nil {
+		global.GGB_LOG.Error("删除字典类型失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}

@@ -2,8 +2,10 @@ package log
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/utils"
+	"go.uber.org/zap"
 )
 
 type SysLoginLogApi struct{}
@@ -17,6 +19,7 @@ func (s *SysLoginLogApi) GetLoginLogList(c *gin.Context) {
 
 	list, total, err := sysLoginLogService.GetLoginLogList(userId, offset, limit)
 	if err != nil {
+		global.GGB_LOG.Error("获取登录日志列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}

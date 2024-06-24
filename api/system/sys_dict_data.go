@@ -2,10 +2,12 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
+	"go.uber.org/zap"
 )
 
 type SysDictDataApi struct{}
@@ -23,6 +25,7 @@ func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 
 	list, total, err := sysDictDataService.GetSysDictDataList(query, offset, limit)
 	if err != nil {
+		global.GGB_LOG.Error("查询字典列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -48,6 +51,7 @@ func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 
 	err := sysDictDataService.CreateSysDictData(req)
 	if err != nil {
+		global.GGB_LOG.Error("新建字典失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -67,6 +71,7 @@ func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 
 	sysDictData, err := sysDictDataService.GetSysDictData(id)
 	if err != nil {
+		global.GGB_LOG.Error("获取字典详情失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -95,6 +100,7 @@ func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 
 	err := sysDictDataService.UpdateSysDictData(req, id)
 	if err != nil {
+		global.GGB_LOG.Error("编辑字典失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -114,6 +120,7 @@ func (s *SysDictDataApi) DeleteSysDictData(c *gin.Context) {
 
 	err := sysDictDataService.DeleteSysDictData(id)
 	if err != nil {
+		global.GGB_LOG.Error("删除字典失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}

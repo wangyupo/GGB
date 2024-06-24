@@ -2,10 +2,12 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
+	"go.uber.org/zap"
 )
 
 type SysMenuApi struct{}
@@ -21,6 +23,7 @@ func (s *SysMenuApi) GetSysMenuList(c *gin.Context) {
 
 	list, total, err := sysMenuService.GetSysMenuList(query)
 	if err != nil {
+		global.GGB_LOG.Error("获取菜单列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -46,6 +49,7 @@ func (s *SysMenuApi) CreateSysMenu(c *gin.Context) {
 
 	err := sysMenuService.CreateSysMenu(sysMenu)
 	if err != nil {
+		global.GGB_LOG.Error("新建菜单失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -65,6 +69,7 @@ func (s *SysMenuApi) GetSysMenu(c *gin.Context) {
 
 	sysMenu, err := sysMenuService.GetSysMenu(id)
 	if err != nil {
+		global.GGB_LOG.Error("获取菜单详情失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -93,6 +98,7 @@ func (s *SysMenuApi) UpdateSysMenu(c *gin.Context) {
 
 	err := sysMenuService.UpdateSysMenu(sysMenu, id)
 	if err != nil {
+		global.GGB_LOG.Error("编辑菜单失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -112,6 +118,7 @@ func (s *SysMenuApi) DeleteSysMenu(c *gin.Context) {
 
 	err := sysMenuService.DeleteSysMenu(id)
 	if err != nil {
+		global.GGB_LOG.Error("删除菜单失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -141,6 +148,7 @@ func (s *SysMenuApi) MoveSysMenu(c *gin.Context) {
 
 	err := sysMenuService.MoveSysMenu(req)
 	if err != nil {
+		global.GGB_LOG.Error("移动菜单失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}

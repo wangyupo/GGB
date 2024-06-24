@@ -2,10 +2,12 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
+	"go.uber.org/zap"
 )
 
 type SysRoleApi struct{}
@@ -23,6 +25,7 @@ func (s *SysRoleApi) GetSysRoleList(c *gin.Context) {
 
 	list, total, err := sysRoleService.GetSysRoleList(query, offset, limit)
 	if err != nil {
+		global.GGB_LOG.Error("获取角色列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -48,6 +51,7 @@ func (s *SysRoleApi) CreateSysRole(c *gin.Context) {
 
 	err := sysRoleService.CreateSysRole(sysRole)
 	if err != nil {
+		global.GGB_LOG.Error("新建角色失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -67,6 +71,7 @@ func (s *SysRoleApi) GetSysRole(c *gin.Context) {
 
 	sysRole, err := sysRoleService.GetSysRole(id)
 	if err != nil {
+		global.GGB_LOG.Error("获取角色详情失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -95,6 +100,7 @@ func (s *SysRoleApi) UpdateSysRole(c *gin.Context) {
 
 	err = sysRoleService.UpdateSysRole(sysRole, id)
 	if err != nil {
+		global.GGB_LOG.Error("编辑角色失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -110,6 +116,7 @@ func (s *SysRoleApi) DeleteSysRole(c *gin.Context) {
 
 	err := sysRoleService.DeleteSysRole(id)
 	if err != nil {
+		global.GGB_LOG.Error("删除角色失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -134,6 +141,7 @@ func (s *SysRoleApi) ChangeRoleStatus(c *gin.Context) {
 
 	err := sysRoleService.ChangeRoleStatus(roleId, req.Status)
 	if err != nil {
+		global.GGB_LOG.Error("修改角色状态失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -151,6 +159,7 @@ func (s *SysRoleApi) RoleAssignMenu(c *gin.Context) {
 
 	err := sysRoleService.RoleAssignMenu(req)
 	if err != nil {
+		global.GGB_LOG.Error("角色分配菜单失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -168,6 +177,7 @@ func (s *SysRoleApi) RoleAssignUser(c *gin.Context) {
 
 	err := sysRoleService.RoleAssignUser(req)
 	if err != nil {
+		global.GGB_LOG.Error("角色分配用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -188,6 +198,7 @@ func (s *SysRoleApi) GetUserByRole(c *gin.Context) {
 
 	list, total, err := sysRoleService.GetUserByRole(roleId, offset, limit)
 	if err != nil {
+		global.GGB_LOG.Error("获取角色绑定的用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -208,6 +219,7 @@ func (s *SysRoleApi) RoleUnAssignUser(c *gin.Context) {
 
 	err := sysRoleService.RoleUnAssignUser(req)
 	if err != nil {
+		global.GGB_LOG.Error("角色取消绑定用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -225,6 +237,7 @@ func (s *SysRoleApi) GetMenuByRole(c *gin.Context) {
 
 	menus, err := sysRoleService.GetMenuByRole(roleId)
 	if err != nil {
+		global.GGB_LOG.Error("根据角色id查对应菜单败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
