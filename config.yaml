@@ -5,7 +5,6 @@ zap:
   prefix: "[github.com/wangyupo/GGB]"
   director: log
   show-line: true
-  encode-level: LowercaseColorLevelEncoder
   stacktrace-key: stacktrace
   log-in-console: true
 
