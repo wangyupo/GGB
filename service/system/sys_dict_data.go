@@ -12,7 +12,7 @@ import (
 type SysDictDataService struct{}
 
 // GetSysDictDataList 获取字典数据列表
-func (sysDictDataService *SysDictDataService) GetSysDictDataList(query request.SysDictDataQuery, offset int, limit int) (list interface{}, total int64, err error) {
+func (s *SysDictDataService) GetSysDictDataList(query request.SysDictDataQuery, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 system.SysDictData 类型的变量以存储查询结果
 	sysDictDataList := make([]system.SysDictData, 0)
 
@@ -35,7 +35,7 @@ func (sysDictDataService *SysDictDataService) GetSysDictDataList(query request.S
 }
 
 // CreateSysDictData 新建字典数据
-func (sysDictDataService *SysDictDataService) CreateSysDictData(req system.SysDictData) (err error) {
+func (s *SysDictDataService) CreateSysDictData(req system.SysDictData) (err error) {
 	err = global.GGB_DB.Where("label = ? AND category_id = ?", req.Label, req.CategoryID).First(&system.SysDictData{}).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New(fmt.Sprintf("字典键 %s 已存在", req.Label))
@@ -53,13 +53,13 @@ func (sysDictDataService *SysDictDataService) CreateSysDictData(req system.SysDi
 }
 
 // GetSysDictData 获取字典数据
-func (sysDictDataService *SysDictDataService) GetSysDictData(sysDictDataId uint) (sysDictData system.SysDictData, err error) {
+func (s *SysDictDataService) GetSysDictData(sysDictDataId uint) (sysDictData system.SysDictData, err error) {
 	err = global.GGB_DB.First(&sysDictData, sysDictDataId).Error
 	return sysDictData, err
 }
 
 // UpdateSysDictData 编辑字典数据
-func (sysDictDataService *SysDictDataService) UpdateSysDictData(req system.SysDictData, sysDictDataId uint) (err error) {
+func (s *SysDictDataService) UpdateSysDictData(req system.SysDictData, sysDictDataId uint) (err error) {
 	// 从数据库中查找具有指定 ID 的数据
 	var oldSysDictData system.SysDictData
 	err = global.GGB_DB.Where("id = ?", sysDictDataId).First(&oldSysDictData).Error
@@ -90,7 +90,7 @@ func (sysDictDataService *SysDictDataService) UpdateSysDictData(req system.SysDi
 }
 
 // DeleteSysDictData 删除字典数据
-func (sysDictDataService *SysDictDataService) DeleteSysDictData(sysDictDataId uint) (err error) {
+func (s *SysDictDataService) DeleteSysDictData(sysDictDataId uint) (err error) {
 	err = global.GGB_DB.Delete(&system.SysDictData{}, sysDictDataId).Error
 	return err
 }

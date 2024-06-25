@@ -10,7 +10,7 @@ import (
 type SysMenuService struct{}
 
 // GetSysMenuList 获取所有菜单
-func (sysMenuService *SysMenuService) GetSysMenuList(query request.SysMenuQuery) (list interface{}, total int64, err error) {
+func (s *SysMenuService) GetSysMenuList(query request.SysMenuQuery) (list interface{}, total int64, err error) {
 	// 声明 system.SysMenu 类型的变量以存储查询结果
 	sysMenuList := make([]system.SysMenu, 0)
 
@@ -33,19 +33,19 @@ func (sysMenuService *SysMenuService) GetSysMenuList(query request.SysMenuQuery)
 }
 
 // CreateSysMenu 新建菜单
-func (sysMenuService *SysMenuService) CreateSysMenu(sysMenu system.SysMenu) (err error) {
+func (s *SysMenuService) CreateSysMenu(sysMenu system.SysMenu) (err error) {
 	err = global.GGB_DB.Create(&sysMenu).Error
 	return err
 }
 
 // GetSysMenu 菜单详情
-func (sysMenuService *SysMenuService) GetSysMenu(menuId uint) (sysMenu system.SysMenu, err error) {
+func (s *SysMenuService) GetSysMenu(menuId uint) (sysMenu system.SysMenu, err error) {
 	err = global.GGB_DB.First(&sysMenu, menuId).Error
 	return sysMenu, err
 }
 
 // UpdateSysMenu 编辑菜单
-func (sysMenuService *SysMenuService) UpdateSysMenu(sysMenu system.SysMenu, menuId uint) (err error) {
+func (s *SysMenuService) UpdateSysMenu(sysMenu system.SysMenu, menuId uint) (err error) {
 	// 从数据库中查找具有指定 ID 的数据
 	var oldSysMenu system.SysMenu
 	err = global.GGB_DB.First(&oldSysMenu, menuId).Error
@@ -68,13 +68,13 @@ func (sysMenuService *SysMenuService) UpdateSysMenu(sysMenu system.SysMenu, menu
 }
 
 // DeleteSysMenu 删除菜单
-func (sysMenuService *SysMenuService) DeleteSysMenu(menuId uint) (err error) {
+func (s *SysMenuService) DeleteSysMenu(menuId uint) (err error) {
 	err = global.GGB_DB.Where("id = ?", menuId).Delete(&system.SysMenu{}).Error
 	return err
 }
 
 // MoveSysMenu 菜单排序
-func (sysMenuService *SysMenuService) MoveSysMenu(req request.MoveMenu) (err error) {
+func (s *SysMenuService) MoveSysMenu(req request.MoveMenu) (err error) {
 	// 找到源菜单、目标菜单
 	var originMenu, targetMenu system.SysMenu
 	err = global.GGB_DB.Where("id = ?", req.OriginID).First(&originMenu).Error

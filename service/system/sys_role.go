@@ -11,7 +11,7 @@ import (
 
 type SysRoleService struct{}
 
-func (sysRoleService *SysRoleService) GetSysRoleList(query request.SysRoleQuery, offset int, limit int) (list interface{}, total int64, err error) {
+func (s *SysRoleService) GetSysRoleList(query request.SysRoleQuery, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 system.SysRole 类型的变量以存储查询结果
 	sysRoleList := make([]system.SysRole, 0)
 
@@ -33,7 +33,7 @@ func (sysRoleService *SysRoleService) GetSysRoleList(query request.SysRoleQuery,
 }
 
 // CreateSysRole 创建角色
-func (sysRoleService *SysRoleService) CreateSysRole(sysRole system.SysRole) (err error) {
+func (s *SysRoleService) CreateSysRole(sysRole system.SysRole) (err error) {
 	err = global.GGB_DB.Where("role_name = ?", sysRole.RoleName).First(&system.SysRole{}).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New(fmt.Sprintf("角色 %s 已存在", sysRole.RoleName))
@@ -50,13 +50,13 @@ func (sysRoleService *SysRoleService) CreateSysRole(sysRole system.SysRole) (err
 }
 
 // GetSysRole 获取角色
-func (sysRoleService *SysRoleService) GetSysRole(userId uint) (sysRole system.SysRole, err error) {
+func (s *SysRoleService) GetSysRole(userId uint) (sysRole system.SysRole, err error) {
 	err = global.GGB_DB.First(&sysRole, userId).Error
 	return sysRole, err
 }
 
 // UpdateSysRole 更新角色信息
-func (sysRoleService *SysRoleService) UpdateSysRole(sysRole system.SysRole, roleId uint) (err error) {
+func (s *SysRoleService) UpdateSysRole(sysRole system.SysRole, roleId uint) (err error) {
 	var oldSysRole system.SysRole
 	err = global.GGB_DB.Where("id = ?", roleId).First(&oldSysRole).Error
 	if err != nil {
@@ -86,13 +86,13 @@ func (sysRoleService *SysRoleService) UpdateSysRole(sysRole system.SysRole, role
 }
 
 // DeleteSysRole 删除角色
-func (sysRoleService *SysRoleService) DeleteSysRole(roleId uint) (err error) {
+func (s *SysRoleService) DeleteSysRole(roleId uint) (err error) {
 	err = global.GGB_DB.Where("id = ?", roleId).Delete(&system.SysRole{}).Error
 	return err
 }
 
 // ChangeRoleStatus 修改角色状态
-func (sysRoleService *SysRoleService) ChangeRoleStatus(roleId uint, status int) (err error) {
+func (s *SysRoleService) ChangeRoleStatus(roleId uint, status int) (err error) {
 	err = global.GGB_DB.Model(&system.SysRole{}).
 		Where("id = ?", roleId).
 		Update("status", status).Error
@@ -100,7 +100,7 @@ func (sysRoleService *SysRoleService) ChangeRoleStatus(roleId uint, status int) 
 }
 
 // RoleAssignMenu 角色分配菜单
-func (sysRoleService *SysRoleService) RoleAssignMenu(req request.RoleAssignMenu) (err error) {
+func (s *SysRoleService) RoleAssignMenu(req request.RoleAssignMenu) (err error) {
 	// 删掉之前的菜单
 	err = global.GGB_DB.Where("role_id = ?", req.RoleID).Delete(&system.SysRoleMenu{}).Error
 	if err != nil {
@@ -125,7 +125,7 @@ func (sysRoleService *SysRoleService) RoleAssignMenu(req request.RoleAssignMenu)
 }
 
 // RoleAssignUser 角色分配给用户
-func (sysRoleService *SysRoleService) RoleAssignUser(req request.RoleAssignUser) (err error) {
+func (s *SysRoleService) RoleAssignUser(req request.RoleAssignUser) (err error) {
 	if len(req.UserIds) == 0 {
 		return nil
 	}
@@ -144,7 +144,7 @@ func (sysRoleService *SysRoleService) RoleAssignUser(req request.RoleAssignUser)
 }
 
 // GetUserByRole 获取角色绑定的用户
-func (sysRoleService *SysRoleService) GetUserByRole(roleId uint, offset int, limit int) (list interface{}, total int64, err error) {
+func (s *SysRoleService) GetUserByRole(roleId uint, offset int, limit int) (list interface{}, total int64, err error) {
 	var users []system.SysUser
 
 	err = global.GGB_DB.Model(&system.SysRoleUser{}).Where("role_id = ?", roleId).Count(&total).Error
@@ -162,14 +162,14 @@ func (sysRoleService *SysRoleService) GetUserByRole(roleId uint, offset int, lim
 }
 
 // RoleUnAssignUser 角色取消绑定用户
-func (sysRoleService *SysRoleService) RoleUnAssignUser(req request.RoleAssignUser) (err error) {
+func (s *SysRoleService) RoleUnAssignUser(req request.RoleAssignUser) (err error) {
 	err = global.GGB_DB.Where("role_id = ? AND user_id in (?)", req.RoleID, req.UserIds).
 		Delete(&system.SysRoleUser{}).Error
 	return err
 }
 
 // GetMenuByRole 根据角色id查对应菜单
-func (sysRoleService *SysRoleService) GetMenuByRole(roleId uint) (menus []system.SysMenu, err error) {
+func (s *SysRoleService) GetMenuByRole(roleId uint) (menus []system.SysMenu, err error) {
 	// 根据roleId找到对应的菜单
 	var roleMenu []system.SysRoleMenu
 	err = global.GGB_DB.Where("role_id = ?", roleId).Find(&roleMenu).Error

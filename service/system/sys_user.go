@@ -13,7 +13,7 @@ import (
 type SysUserService struct{}
 
 // ChangePassword 用户修改密码
-func (sysUserService *SysUserService) ChangePassword(userId uint, req request.ChangePassword) (err error) {
+func (s *SysUserService) ChangePassword(userId uint, req request.ChangePassword) (err error) {
 	// 根据id查找用户
 	var systemUser system.SysUser
 	err = global.GGB_DB.Where("id = ?", userId).First(&systemUser).Error
@@ -31,7 +31,7 @@ func (sysUserService *SysUserService) ChangePassword(userId uint, req request.Ch
 }
 
 // ResetPassword 重置用户密码
-func (sysUserService *SysUserService) ResetPassword(userId string, DefaultPassword string) (err error) {
+func (s *SysUserService) ResetPassword(userId string, DefaultPassword string) (err error) {
 	err = global.GGB_DB.Model(&system.SysUser{}).
 		Where("id = ?", userId).
 		Update("password", utils.BcryptHash(DefaultPassword)).Error
@@ -39,13 +39,13 @@ func (sysUserService *SysUserService) ResetPassword(userId string, DefaultPasswo
 }
 
 // GetSystemUserInfo 获取用户信息
-func (sysUserService *SysUserService) GetSystemUserInfo(userId uint) (systemUser system.SysUser, err error) {
+func (s *SysUserService) GetSystemUserInfo(userId uint) (systemUser system.SysUser, err error) {
 	err = global.GGB_DB.Model(&system.SysUser{}).Where("id = ?", userId).First(&systemUser).Error
 	return systemUser, err
 }
 
 // GetSystemUserList 获取用户列表
-func (sysUserService *SysUserService) GetSystemUserList(info request.SystemUserList, offset int, limit int) (list interface{}, total int64, err error) {
+func (s *SysUserService) GetSystemUserList(info request.SystemUserList, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 system.SysUser 类型的变量以存储查询结果
 	systemUserList := make([]system.SysUser, 0)
 
@@ -69,7 +69,7 @@ func (sysUserService *SysUserService) GetSystemUserList(info request.SystemUserL
 }
 
 // CreateSystemUser 新建用户
-func (sysUserService *SysUserService) CreateSystemUser(systemUser system.SysUser, DefaultPassword string) (err error) {
+func (s *SysUserService) CreateSystemUser(systemUser system.SysUser, DefaultPassword string) (err error) {
 	// 检查 UserName 是否重复
 	err = global.GGB_DB.Where("user_name = ?", systemUser.UserName).First(&system.SysUser{}).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -85,7 +85,7 @@ func (sysUserService *SysUserService) CreateSystemUser(systemUser system.SysUser
 }
 
 // UpdateSystemUser 更新用户信息
-func (sysUserService *SysUserService) UpdateSystemUser(systemUser system.SysUser, userId uint) (err error) {
+func (s *SysUserService) UpdateSystemUser(systemUser system.SysUser, userId uint) (err error) {
 	var oldSystemUser system.SysUser
 	// 从数据库中查找具有指定 ID 的数据
 	err = global.GGB_DB.Where("id = ?", userId).First(&oldSystemUser).Error
@@ -112,13 +112,13 @@ func (sysUserService *SysUserService) UpdateSystemUser(systemUser system.SysUser
 }
 
 // DeleteSystemUser 删除用户
-func (sysUserService *SysUserService) DeleteSystemUser(userId uint) (err error) {
+func (s *SysUserService) DeleteSystemUser(userId uint) (err error) {
 	err = global.GGB_DB.Where("id = ?", userId).Delete(&system.SysUser{}).Error
 	return err
 }
 
 // ChangeSystemUserStatus 修改用户状态
-func (sysUserService *SysUserService) ChangeSystemUserStatus(userId uint, status int) (err error) {
+func (s *SysUserService) ChangeSystemUserStatus(userId uint, status int) (err error) {
 	err = global.GGB_DB.Model(&system.SysUser{}).
 		Where("id = ?", userId).
 		Update("status", status).Error

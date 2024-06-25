@@ -12,7 +12,7 @@ import (
 type SysDictCategoryService struct{}
 
 // GetSysDictCategoryList 获取字典类型列表
-func (sysDictCategoryService *SysDictCategoryService) GetSysDictCategoryList(query request.SysDictCategoryQuery, offset int, limit int) (list interface{}, total int64, err error) {
+func (s *SysDictCategoryService) GetSysDictCategoryList(query request.SysDictCategoryQuery, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 system.SysDictCategory 类型的变量以存储查询结果
 	sysDictCategoryList := make([]system.SysDictCategory, 0)
 
@@ -35,7 +35,7 @@ func (sysDictCategoryService *SysDictCategoryService) GetSysDictCategoryList(que
 }
 
 // CreateSysDictCategory 创建字典类型
-func (sysDictCategoryService *SysDictCategoryService) CreateSysDictCategory(req system.SysDictCategory) (err error) {
+func (s *SysDictCategoryService) CreateSysDictCategory(req system.SysDictCategory) (err error) {
 	err = global.GGB_DB.Where("label = ?", req.Label).First(&system.SysDictCategory{}).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return errors.New(fmt.Sprintf("字典 %s 已存在", req.Label))
@@ -53,13 +53,13 @@ func (sysDictCategoryService *SysDictCategoryService) CreateSysDictCategory(req 
 }
 
 // GetSysDictCategory 获取字典类型详情
-func (sysDictCategoryService *SysDictCategoryService) GetSysDictCategory(dictCategoryId uint) (sysDictCategory system.SysDictCategory, err error) {
+func (s *SysDictCategoryService) GetSysDictCategory(dictCategoryId uint) (sysDictCategory system.SysDictCategory, err error) {
 	err = global.GGB_DB.Where("id = ?", dictCategoryId).First(&sysDictCategory).Error
 	return sysDictCategory, err
 }
 
 // UpdateSysDictCategory 更新字典类型
-func (sysDictCategoryService *SysDictCategoryService) UpdateSysDictCategory(req system.SysDictCategory, dictCategoryId uint) (err error) {
+func (s *SysDictCategoryService) UpdateSysDictCategory(req system.SysDictCategory, dictCategoryId uint) (err error) {
 	var oldSysDictCategory system.SysDictCategory
 
 	// 从数据库中查找具有指定 ID 的数据
@@ -90,7 +90,7 @@ func (sysDictCategoryService *SysDictCategoryService) UpdateSysDictCategory(req 
 }
 
 // DeleteSysDictCategory 删除字典类型
-func (sysDictCategoryService *SysDictCategoryService) DeleteSysDictCategory(dictCategoryId uint) (err error) {
+func (s *SysDictCategoryService) DeleteSysDictCategory(dictCategoryId uint) (err error) {
 	err = global.GGB_DB.Delete(&system.SysDictCategory{}, dictCategoryId).Error
 	return err
 }
