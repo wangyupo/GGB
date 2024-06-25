@@ -1,8 +1,8 @@
-package api
+package v1
 
 import (
-	"github.com/wangyupo/GGB/api/log"
-	"github.com/wangyupo/GGB/api/system"
+	"github.com/wangyupo/GGB/api/v1/log"
+	"github.com/wangyupo/GGB/api/v1/system"
 )
 
 type ApiGroup struct {

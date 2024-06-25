@@ -2,14 +2,14 @@ package log
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/GGB/api"
+	"github.com/wangyupo/GGB/api/v1"
 )
 
 type LoginLogRouter struct{}
 
 func (s *LoginLogRouter) InitLoginLogRouter(Router *gin.RouterGroup) {
 	logLoginRouter := Router.Group("/log/login")
-	sysLoginLogApi := api.ApiGroupApp.LogApiGroup.SysLogLoginApi
+	sysLoginLogApi := v1.ApiGroupApp.LogApiGroup.SysLogLoginApi
 	{
 		logLoginRouter.GET("", sysLoginLogApi.GetSysLogLoginList)
 	}

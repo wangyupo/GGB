@@ -2,7 +2,7 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/GGB/api"
+	"github.com/wangyupo/GGB/api/v1"
 	"github.com/wangyupo/GGB/middleware"
 )
 
@@ -11,7 +11,7 @@ type UserRouter struct{}
 func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 	userRouter := Router.Group("/system/user").Use(middleware.OperationRecord())
 	userRouterWithoutRecord := Router.Group("/system/user")
-	userApi := api.ApiGroupApp.SysApiGroup.SysUserApi
+	userApi := v1.ApiGroupApp.SysApiGroup.SysUserApi
 	{
 		userRouter.POST("", userApi.CreateSystemUser)                   // 新建用户
 		userRouter.PUT("/:id", userApi.UpdateSystemUser)                // 编辑用户

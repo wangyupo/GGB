@@ -2,7 +2,7 @@ package initialize
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/GGB/api"
+	"github.com/wangyupo/GGB/api/v1"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/middleware"
 	"github.com/wangyupo/GGB/router"
@@ -19,7 +19,7 @@ func Routers() *gin.Engine {
 
 	systemRouter := router.RouterGroupApp.System
 	logRouter := router.RouterGroupApp.Log
-	sysUserApi := api.ApiGroupApp.SysApiGroup.SysUserApi
+	sysUserApi := v1.ApiGroupApp.SysApiGroup.SysUserApi
 
 	// 路由-不做鉴权
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)

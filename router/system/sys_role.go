@@ -2,7 +2,7 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/GGB/api"
+	"github.com/wangyupo/GGB/api/v1"
 	"github.com/wangyupo/GGB/middleware"
 )
 
@@ -11,7 +11,7 @@ type RoleRouter struct{}
 func (s *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	roleRouter := Router.Group("/system/role").Use(middleware.OperationRecord())
 	roleRouterWithoutRecord := Router.Group("/system/role")
-	roleApi := api.ApiGroupApp.SysApiGroup.SysRoleApi
+	roleApi := v1.ApiGroupApp.SysApiGroup.SysRoleApi
 	{
 		roleRouter.POST("", roleApi.CreateSysRole)                // 新建角色
 		roleRouter.PUT("/:id", roleApi.UpdateSysRole)             // 编辑角色
