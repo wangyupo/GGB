@@ -17,7 +17,7 @@ import (
 )
 
 var (
-	DefaultPassword string = "123456"
+	DefaultPassword string = "123456" // 重置密码的默认密码
 )
 
 type SysUserApi struct{}
@@ -84,19 +84,7 @@ func (s *SysUserApi) Login(c *gin.Context) {
 	// 设置cookie
 	utils.SetToken(c, token, int(claims.RegisteredClaims.ExpiresAt.Unix()-time.Now().Unix()))
 
-	// 写入登录日志
-	clientIP := c.ClientIP()               // 获取客户端IP
-	userAgent := c.GetHeader("User-Agent") // 获取浏览器信息
-	loginLog := log.SysLogLogin{
-		UserId:    systemUser.ID,
-		Type:      1,
-		IP:        clientIP,
-		UserAgent: userAgent,
-	}
-	err = global.GGB_DB.Create(&loginLog).Error
-	if err != nil {
-		global.GGB_LOG.Error("写入登录日志失败！", zap.Error(err))
-	}
+	setLoginLog(c, systemUser.ID, 1)
 
 	response.SuccessWithDetailed(systemResponse.LoginResponse{
 		User:      systemUser,
@@ -109,6 +97,12 @@ func (s *SysUserApi) Login(c *gin.Context) {
 
 // Logout 登出
 func (s *SysUserApi) Logout(c *gin.Context) {
+	userId, err := utils.GetUserID(c) // 从token获取用户id
+	if err != nil {
+		global.GGB_LOG.Error("获取用户id失败！", zap.Error(err))
+	} else {
+		setLoginLog(c, userId, 2)
+	}
 	utils.ClearToken(c)
 	response.SuccessWithDefaultMessage(c)
 }
@@ -143,6 +137,25 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 	}
 
 	return role, menus, nil
+}
+
+// 写入登入/登出日志
+func setLoginLog(c *gin.Context, userId uint, loginType uint) {
+	// 写入登录日志
+	clientIP := c.ClientIP()               // 获取客户端IP
+	userAgent := c.GetHeader("User-Agent") // 获取浏览器信息
+
+	loginLog := log.SysLogLogin{
+		UserId:    userId,
+		Type:      loginType,
+		IP:        clientIP,
+		UserAgent: userAgent,
+	}
+
+	err := global.GGB_DB.Create(&loginLog).Error
+	if err != nil {
+		global.GGB_LOG.Error("写入登录日志失败！", zap.Error(err))
+	}
 }
 
 // ChangePassword 修改密码
