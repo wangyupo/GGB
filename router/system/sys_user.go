@@ -3,22 +3,25 @@ package system
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/api"
+	"github.com/wangyupo/GGB/middleware"
 )
 
 type UserRouter struct{}
 
 func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
-	sysUserRouter := Router.Group("/system/user")
-	sysUserApi := api.ApiGroupApp.SysApiGroup.SysUserApi
+	userRouter := Router.Group("/system/user").Use(middleware.OperationRecord())
+	userRouterWithoutRecord := Router.Group("/system/user")
+	userApi := api.ApiGroupApp.SysApiGroup.SysUserApi
 	{
-		sysUserRouter.GET("", sysUserApi.GetSystemUserList)
-		sysUserRouter.GET("/:id", sysUserApi.GetSystemUser)
-		sysUserRouter.POST("", sysUserApi.CreateSystemUser)
-		sysUserRouter.PUT("/:id", sysUserApi.UpdateSystemUser)
-		sysUserRouter.DELETE("/:id", sysUserApi.DeleteSystemUser)
-
-		sysUserRouter.PATCH("/password", sysUserApi.ChangePassword)
-		sysUserRouter.PATCH("/:id/reset-password", sysUserApi.ResetPassword)
-		sysUserRouter.PATCH("/:id/status", sysUserApi.ChangeSystemUserStatus)
+		userRouter.POST("", userApi.CreateSystemUser)                   // 新建用户
+		userRouter.PUT("/:id", userApi.UpdateSystemUser)                // 编辑用户
+		userRouter.DELETE("/:id", userApi.DeleteSystemUser)             // 删除用户
+		userRouter.PATCH("/password", userApi.ChangePassword)           // 修改用户密码
+		userRouter.PATCH("/:id/reset-password", userApi.ResetPassword)  // 重置用户密码
+		userRouter.PATCH("/:id/status", userApi.ChangeSystemUserStatus) // 修改用户状态
+	}
+	{
+		userRouterWithoutRecord.GET("", userApi.GetSystemUserList) // 获取用户列表
+		userRouterWithoutRecord.GET("/:id", userApi.GetSystemUser) // 获取用户详情
 	}
 }
