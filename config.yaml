@@ -1,3 +1,8 @@
+# jwt configuration
+jwt:
+  signing-key: "c2VjcmV0X1hZUkFMUlJGVEtIWUdDWkhFNDNfSkpCSFBFVFpIUVFZVVRLTE5CRkFEUg=="
+  expires-time: 7d
+  issuer: GGB
 # zap logger configuration
 zap:
   level: info

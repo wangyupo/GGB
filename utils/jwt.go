@@ -2,20 +2,20 @@ package utils
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/system/request"
 	"time"
 )
 
-const (
-	TOKEN_SECRET = "c2VjcmV0X1hZUkFMUlJGVEtIWUdDWkhFNDNfSkpCSFBFVFpIUVFZVVRLTE5CRkFEUg=="
-)
-
 // CreateClaims 创建token主体信息
 func CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
+	ep, _ := ParseDuration(global.GGB_CONFIG.JWT.ExpiresTime)
 	claims := request.CustomClaims{
 		BaseClaims: baseClaims,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24 * 7)), // 过期时间 7天
+			NotBefore: jwt.NewNumericDate(time.Now().Add(-1000)), // 签名生效时间
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)),    // 过期时间 7天
+			Issuer:    global.GGB_CONFIG.JWT.Issuer,              // 签名的发行者
 		},
 	}
 	return claims
@@ -23,7 +23,7 @@ func CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
 
 // CreateToken 生成token
 func CreateToken(claims request.CustomClaims) (string, error) {
-	signingKey := []byte(TOKEN_SECRET)
+	signingKey := []byte(global.GGB_CONFIG.JWT.SigningKey)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(signingKey)
 }
@@ -31,7 +31,7 @@ func CreateToken(claims request.CustomClaims) (string, error) {
 // ParseToken 解析token
 func ParseToken(tokenString string) (*request.CustomClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(TOKEN_SECRET), nil
+		return []byte(global.GGB_CONFIG.JWT.SigningKey), nil
 	})
 	if err != nil {
 		return nil, err
