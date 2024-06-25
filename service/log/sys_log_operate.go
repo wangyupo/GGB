@@ -30,7 +30,8 @@ func (s *SysLogOperateService) GetSysLogOperateList(query request.SysLogOperateQ
 	}
 
 	// 获取分页数据
-	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Preload("User").Find(&sysLogOperateList).Error
+	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Unscoped().
+		Preload("User").Find(&sysLogOperateList).Error
 
 	// 结果集增加 userName 字段
 	results := make([]map[string]interface{}, len(sysLogOperateList))

@@ -25,7 +25,8 @@ func (s *SysLogLoginService) GetSysLogLoginList(userId uint, offset int, limit i
 	}
 
 	// 获取分页数据
-	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Preload("User").Find(&loginLogList).Error
+	err = db.Offset(offset).Limit(limit).Order("created_at DESC").
+		Unscoped().Preload("User").Find(&loginLogList).Error
 	if err != nil {
 		return
 	}
