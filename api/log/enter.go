@@ -3,9 +3,11 @@ package log
 import "github.com/wangyupo/GGB/service"
 
 type ApiGroup struct {
-	SysLoginLogApi
+	SysLogLoginApi
+	SysLogOperateApi
 }
 
 var (
-	sysLoginLogService = service.ServiceGroupApp.SystemLogGroup.SysLoginLogService
+	sysLoginLogService   = service.ServiceGroupApp.LogServiceGroup.SysLogLoginService
+	sysLogOperateService = service.ServiceGroupApp.LogServiceGroup.SysLogOperateService
 )

@@ -7,7 +7,7 @@ import (
 
 type ServiceGroup struct {
 	SystemServiceGroup system.ServiceGroup
-	SystemLogGroup     log.ServiceGroup
+	LogServiceGroup    log.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

@@ -9,8 +9,8 @@ type LoginLogRouter struct{}
 
 func (s *LoginLogRouter) InitLoginLogRouter(Router *gin.RouterGroup) {
 	logLoginRouter := Router.Group("/log/login")
-	sysLoginLogApi := api.ApiGroupApp.SysLogApiGroup.SysLoginLogApi
+	sysLoginLogApi := api.ApiGroupApp.LogApiGroup.SysLogLoginApi
 	{
-		logLoginRouter.GET("", sysLoginLogApi.GetLoginLogList)
+		logLoginRouter.GET("", sysLoginLogApi.GetSysLogLoginList)
 	}
 }

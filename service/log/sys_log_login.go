@@ -6,9 +6,9 @@ import (
 	"github.com/wangyupo/GGB/utils"
 )
 
-type SysLoginLogService struct{}
+type SysLogLoginService struct{}
 
-func (sysLoginLogService *SysLoginLogService) GetSysLoginLogList(userId uint, offset int, limit int) (list interface{}, total int64, err error) {
+func (s *SysLogLoginService) GetSysLogLoginList(userId uint, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 log.SysLogLogin 类型的变量以存储查询结果
 	loginLogList := make([]log.SysLogLogin, 0)
 
@@ -25,7 +25,7 @@ func (sysLoginLogService *SysLoginLogService) GetSysLoginLogList(userId uint, of
 	}
 
 	// 获取分页数据
-	err = db.Offset(offset).Limit(limit).Preload("User").Find(&loginLogList).Error
+	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Preload("User").Find(&loginLogList).Error
 	if err != nil {
 		return
 	}

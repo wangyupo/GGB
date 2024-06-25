@@ -8,16 +8,16 @@ import (
 	"go.uber.org/zap"
 )
 
-type SysLoginLogApi struct{}
+type SysLogLoginApi struct{}
 
-// GetSysLoginLogList 获取登录日志列表
-func (sysLoginLog *SysLoginLogApi) GetSysLoginLogList(c *gin.Context) {
+// GetSysLogLoginList 获取登录日志列表
+func (s *SysLogLoginApi) GetSysLogLoginList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
 	userId, _ := utils.Str2uint(c.Query("userId"))
 
-	list, total, err := sysLoginLogService.GetSysLoginLogList(userId, offset, limit)
+	list, total, err := sysLoginLogService.GetSysLogLoginList(userId, offset, limit)
 	if err != nil {
 		global.GGB_LOG.Error("获取登录日志列表失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)

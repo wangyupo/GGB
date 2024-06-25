@@ -5,7 +5,6 @@ import (
 	"github.com/wangyupo/GGB/api"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/middleware"
-	middlewareLog "github.com/wangyupo/GGB/middleware/log"
 	"github.com/wangyupo/GGB/router"
 	"go.uber.org/zap"
 )
@@ -32,7 +31,7 @@ func Routers() *gin.Engine {
 	PrivateGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
 	PrivateGroup.Use(middleware.Logger(logger)).Use(middleware.Jwt())
 	{
-		PrivateGroup.POST("/logout", middlewareLog.LoginLog(2), sysUserApi.Logout) // 登出
+		PrivateGroup.POST("/logout", sysUserApi.Logout) // 登出
 
 		systemRouter.InitUserRouter(PrivateGroup)         // 用户管理
 		systemRouter.InitRoleRouter(PrivateGroup)         // 角色管理
@@ -40,7 +39,8 @@ func Routers() *gin.Engine {
 		systemRouter.InitDictCategoryRouter(PrivateGroup) // 字典类型管理
 		systemRouter.InitDictDataRouter(PrivateGroup)     // 字典数据管理
 
-		logRouter.InitLoginLogRouter(PrivateGroup) // 登录日志
+		logRouter.InitLoginLogRouter(PrivateGroup)      // 登录日志
+		logRouter.InitSysLogOperateRouter(PrivateGroup) // 操作日志
 	}
 
 	return Router

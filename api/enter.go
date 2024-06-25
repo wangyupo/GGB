@@ -6,8 +6,8 @@ import (
 )
 
 type ApiGroup struct {
-	SysApiGroup    system.ApiGroup
-	SysLogApiGroup log.ApiGroup
+	SysApiGroup system.ApiGroup
+	LogApiGroup log.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)

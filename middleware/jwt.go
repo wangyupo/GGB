@@ -8,6 +8,7 @@ import (
 	"github.com/wangyupo/GGB/utils"
 )
 
+// Jwt 登录认证的中间件
 func Jwt() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 从浏览器 cookie 中拿 x-token
