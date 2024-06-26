@@ -30,7 +30,7 @@ func RegisterTables() {
 		system.SysDictCategory{},
 		system.SysDictData{},
 		log.SysLogLogin{},
-		system.SysLogOperate{},
+		log.SysLogOperate{},
 	)
 	if err != nil {
 		fmt.Print(err)

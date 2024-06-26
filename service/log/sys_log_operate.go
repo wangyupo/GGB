@@ -2,7 +2,7 @@ package log
 
 import (
 	"github.com/wangyupo/GGB/global"
-	"github.com/wangyupo/GGB/model/system"
+	"github.com/wangyupo/GGB/model/log"
 	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
 )
@@ -12,10 +12,10 @@ type SysLogOperateService struct{}
 // GetSysLogOperateList 获取系统操作日志列表
 func (s *SysLogOperateService) GetSysLogOperateList(query request.SysLogOperateQuery, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 system.SysLogOperate 类型的变量以存储查询结果
-	sysLogOperateList := make([]system.SysLogOperate, 0)
+	sysLogOperateList := make([]log.SysLogOperate, 0)
 
 	// 准备数据库查询
-	db := global.GGB_DB.Model(&system.SysLogOperate{})
+	db := global.GGB_DB.Model(&log.SysLogOperate{})
 	if query.Ip != "" {
 		db = db.Where("ip LIKE ?", "%"+query.Ip+"%")
 	}
@@ -46,7 +46,7 @@ func (s *SysLogOperateService) GetSysLogOperateList(query request.SysLogOperateQ
 }
 
 // CreateSysLogOperate 创建系统操作日志
-func (s *SysLogOperateService) CreateSysLogOperate(req system.SysLogOperate) (err error) {
+func (s *SysLogOperateService) CreateSysLogOperate(req log.SysLogOperate) (err error) {
 	// 创建 sysLogOperate 记录
 	err = global.GGB_DB.Create(&req).Error
 
@@ -54,13 +54,13 @@ func (s *SysLogOperateService) CreateSysLogOperate(req system.SysLogOperate) (er
 }
 
 // GetSysLogOperate 获取系统操作日志详情
-func (s *SysLogOperateService) GetSysLogOperate(sysLogOperateId uint) (sysLogOperate system.SysLogOperate, err error) {
+func (s *SysLogOperateService) GetSysLogOperate(sysLogOperateId uint) (sysLogOperate log.SysLogOperate, err error) {
 	err = global.GGB_DB.Where("id = ?", sysLogOperateId).First(&sysLogOperate).Error
 	return sysLogOperate, err
 }
 
 // DeleteSysLogOperate 删除系统操作日志
 func (s *SysLogOperateService) DeleteSysLogOperate(sysLogOperateId uint) (err error) {
-	err = global.GGB_DB.Where("id = ?", sysLogOperateId).Delete(&system.SysLogOperate{}).Error
+	err = global.GGB_DB.Where("id = ?", sysLogOperateId).Delete(&log.SysLogOperate{}).Error
 	return err
 }

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/global"
-	"github.com/wangyupo/GGB/model/system"
+	"github.com/wangyupo/GGB/model/log"
 	"github.com/wangyupo/GGB/service"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
@@ -39,10 +39,10 @@ func OperationRecord() gin.HandlerFunc {
 
 		userId, _ := utils.GetUserID(c)
 
-		record := system.SysLogOperate{
+		record := log.SysLogOperate{
 			Ip:     c.ClientIP(),
 			Method: c.Request.Method,
-			Path:   c.Request.URL.Path,
+			Path:   c.Request.RequestURI,
 			Agent:  c.Request.UserAgent(),
 			Body:   getBodyContent(body, c.GetHeader("Content-Type")),
 			UserID: userId,

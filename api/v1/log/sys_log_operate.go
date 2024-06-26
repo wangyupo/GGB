@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
-	"github.com/wangyupo/GGB/model/system"
+	"github.com/wangyupo/GGB/model/log"
 	"github.com/wangyupo/GGB/model/system/request"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
@@ -40,7 +40,7 @@ func (s *SysLogOperateApi) GetSysLogOperateList(c *gin.Context) {
 // CreateSysLogOperate 新建系统操作日志
 func (s *SysLogOperateApi) CreateSysLogOperate(c *gin.Context) {
 	// 声明 system.SysLogOperate 类型的变量以存储 JSON 数据
-	var req system.SysLogOperate
+	var req log.SysLogOperate
 
 	// 绑定 JSON 请求体中的数据到 SysLogOperate 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
