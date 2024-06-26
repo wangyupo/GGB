@@ -11,6 +11,6 @@ func (s *LoginLogRouter) InitLoginLogRouter(Router *gin.RouterGroup) {
 	logLoginRouter := Router.Group("/log/login")
 	sysLoginLogApi := v1.ApiGroupApp.LogApiGroup.SysLogLoginApi
 	{
-		logLoginRouter.GET("", sysLoginLogApi.GetSysLogLoginList)
+		logLoginRouter.GET("", sysLoginLogApi.GetSysLogLoginList) // 获取登录日志列表
 	}
 }

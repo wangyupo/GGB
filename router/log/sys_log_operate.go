@@ -11,8 +11,8 @@ func (o *OperateLogRouter) InitSysLogOperateRouter(r *gin.RouterGroup) {
 	logOperateRouter := r.Group("/log/operate")
 	logOperateApi := v1.ApiGroupApp.LogApiGroup.SysLogOperateApi
 	{
-		logOperateRouter.GET("", logOperateApi.GetSysLogOperateList)
-		logOperateRouter.POST("", logOperateApi.CreateSysLogOperate)
-		logOperateRouter.DELETE("/:id", logOperateApi.DeleteSysLogOperate)
+		logOperateRouter.GET("", logOperateApi.GetSysLogOperateList)       // 获取操作日志列表
+		logOperateRouter.POST("", logOperateApi.CreateSysLogOperate)       // 创建操作日志
+		logOperateRouter.DELETE("/:id", logOperateApi.DeleteSysLogOperate) // 删除操作日志
 	}
 }

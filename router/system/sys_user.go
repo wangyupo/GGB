@@ -16,7 +16,7 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouter.POST("", userApi.CreateSystemUser)                   // 新建用户
 		userRouter.PUT("/:id", userApi.UpdateSystemUser)                // 编辑用户
 		userRouter.DELETE("/:id", userApi.DeleteSystemUser)             // 删除用户
-		userRouter.PATCH("/password", userApi.ChangePassword)           // 修改用户密码
+		userRouter.PATCH("/password", userApi.ChangePassword)           // 修改用户自身密码
 		userRouter.PATCH("/:id/reset-password", userApi.ResetPassword)  // 重置用户密码
 		userRouter.PATCH("/:id/status", userApi.ChangeSystemUserStatus) // 修改用户状态
 	}
