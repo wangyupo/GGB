@@ -21,14 +21,17 @@ func (u *UploadFileApi) UploadFile(c *gin.Context) {
 	}
 
 	userId, _ := utils.GetUserID(c)
-	err = uploadFileService.UploadFile(fileHeader, userId)
+	filePath, fileName, err := uploadFileService.UploadFile(fileHeader, userId)
 	if err != nil {
 		global.GGB_LOG.Error("文件上传失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	response.SuccessWithMessage("文件上传成功！", c)
+	response.SuccessWithDetailed(response.UploadFileResponse{
+		FilePath: filePath,
+		FileName: fileName,
+	}, "文件上传成功", c)
 }
 
 // DeleteFile 删除文件
@@ -39,14 +42,17 @@ func (u *UploadFileApi) DeleteFile(c *gin.Context) {
 	}
 	fileId, _ := utils.Str2uint(c.Param("id"))
 
-	err := uploadFileService.DeleteFile(fileId)
+	filePath, fileName, err := uploadFileService.DeleteFile(fileId)
 	if err != nil {
 		global.GGB_LOG.Error("删除文件失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	response.SuccessWithMessage("删除成功！", c)
+	response.SuccessWithDetailed(response.UploadFileResponse{
+		FilePath: filePath,
+		FileName: fileName,
+	}, "文件删除成功", c)
 }
 
 // GetUploadFileList 查询上传文件列表

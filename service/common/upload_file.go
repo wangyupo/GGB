@@ -35,11 +35,11 @@ func (u *UploadFileService) GetUploadFileList(query request.UploadFileQuery, off
 }
 
 // UploadFile 上传文件并将文件信息添加到数据库
-func (u *UploadFileService) UploadFile(fileHeader *multipart.FileHeader, userId uint) (err error) {
+func (u *UploadFileService) UploadFile(fileHeader *multipart.FileHeader, userId uint) (filePath string, fileName string, err error) {
 	oss := upload.NewOss()
-	filePath, fileName, err := oss.UploadFile(fileHeader)
+	filePath, fileName, err = oss.UploadFile(fileHeader)
 	if err != nil {
-		return err
+		return
 	}
 
 	fileType := fileHeader.Header.Get("Content-Type") // 获取 MIME 类型
@@ -55,7 +55,7 @@ func (u *UploadFileService) UploadFile(fileHeader *multipart.FileHeader, userId 
 	}
 
 	err = global.GGB_DB.Create(&file).Error
-	return err
+	return filePath, fileHeader.Filename, err
 }
 
 // FindFile 查询文件
@@ -65,7 +65,7 @@ func (u *UploadFileService) FindFile(id uint) (file common.UploadFile, err error
 }
 
 // DeleteFile 将文件信息从数据库中删除并删除文件
-func (u *UploadFileService) DeleteFile(fileId uint) (err error) {
+func (u *UploadFileService) DeleteFile(fileId uint) (filePath string, fileName string, err error) {
 	// 1-根据id从数据库找出文件
 	var file common.UploadFile
 	file, err = u.FindFile(fileId)
@@ -77,11 +77,11 @@ func (u *UploadFileService) DeleteFile(fileId uint) (err error) {
 	oss := upload.NewOss()
 	err = oss.DeleteFile(file.UploadedFileName)
 	if err != nil {
-		return errors.New("文件删除失败")
+		return file.FilePath, file.FileName, errors.New("文件删除失败")
 	}
 
 	// 3-从数据库删除文件信息记录（永久删除）
 	err = global.GGB_DB.Where("id = ?", fileId).Unscoped().Delete(&file).Error
 
-	return err
+	return file.FilePath, file.FileName, err
 }
