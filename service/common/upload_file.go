@@ -11,6 +11,29 @@ import (
 
 type UploadFileService struct{}
 
+// GetUploadFileList 获取列表
+func (u *UploadFileService) GetUploadFileList(query request.UploadFileQuery, offset int, limit int) (list interface{}, total int64, err error) {
+	// 声明 system.UploadFile 类型的变量以存储查询结果
+	uploadFileList := make([]common.UploadFile, 0)
+
+	// 准备数据库查询
+	db := global.GGB_DB.Model(&common.UploadFile{})
+	if query.FileName != "" {
+		db = db.Where("file_name LIKE ?", "%"+query.FileName+"%")
+	}
+
+	// 获取总数
+	err = db.Count(&total).Error
+	if err != nil {
+		return
+	}
+
+	// 获取分页数据
+	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&uploadFileList).Error
+
+	return uploadFileList, total, err
+}
+
 // UploadFile 上传文件并将文件信息添加到数据库
 func (u *UploadFileService) UploadFile(fileHeader *multipart.FileHeader, userId uint) (err error) {
 	oss := upload.NewOss()
@@ -61,27 +84,4 @@ func (u *UploadFileService) DeleteFile(fileId uint) (err error) {
 	err = global.GGB_DB.Where("id = ?", fileId).Unscoped().Delete(&file).Error
 
 	return err
-}
-
-// GetUploadFileList 获取列表
-func (u *UploadFileService) GetUploadFileList(query request.UploadFileQuery, offset int, limit int) (list interface{}, total int64, err error) {
-	// 声明 system.UploadFile 类型的变量以存储查询结果
-	uploadFileList := make([]common.UploadFile, 0)
-
-	// 准备数据库查询
-	db := global.GGB_DB.Model(&common.UploadFile{})
-	if query.FileName != "" {
-		db = db.Where("file_name LIKE ?", "%"+query.FileName+"%")
-	}
-
-	// 获取总数
-	err = db.Count(&total).Error
-	if err != nil {
-		return
-	}
-
-	// 获取分页数据
-	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Find(&uploadFileList).Error
-
-	return uploadFileList, total, err
 }
