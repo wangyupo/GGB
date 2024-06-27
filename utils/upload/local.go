@@ -57,8 +57,8 @@ func (*Local) UploadFile(file *multipart.FileHeader) (filePath string, fileName 
 }
 
 // DeleteFile 删除文件
-func (l *Local) DeleteFile(key string) (err error) {
-	p := global.GGB_CONFIG.Local.StorePath + "/" + key
+func (l *Local) DeleteFile(fileStoreName string) (err error) {
+	p := global.GGB_CONFIG.Local.StorePath + "/" + fileStoreName
 	if strings.Contains(p, global.GGB_CONFIG.Local.StorePath) {
 		err = os.Remove(p)
 		if err != nil {
