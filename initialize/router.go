@@ -17,6 +17,7 @@ func Routers() *gin.Engine {
 
 	Router := gin.Default()
 
+	commonRouter := router.RouterGroupApp.Common
 	systemRouter := router.RouterGroupApp.System
 	logRouter := router.RouterGroupApp.Log
 	sysUserApi := v1.ApiGroupApp.SysApiGroup.SysUserApi
@@ -32,6 +33,8 @@ func Routers() *gin.Engine {
 	PrivateGroup.Use(middleware.Logger(logger)).Use(middleware.Jwt())
 	{
 		PrivateGroup.POST("/logout", sysUserApi.Logout) // 登出
+
+		commonRouter.InitUploadFileRouter(PrivateGroup) // 上传文件
 
 		systemRouter.InitUserRouter(PrivateGroup)         // 用户管理
 		systemRouter.InitRoleRouter(PrivateGroup)         // 角色管理
