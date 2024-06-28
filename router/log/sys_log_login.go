@@ -12,5 +12,6 @@ func (s *LoginLogRouter) InitLoginLogRouter(Router *gin.RouterGroup) {
 	sysLoginLogApi := v1.ApiGroupApp.LogApiGroup.SysLogLoginApi
 	{
 		logLoginRouter.GET("", sysLoginLogApi.GetSysLogLoginList) // 获取登录日志列表
+		logLoginRouter.GET("/excel", sysLoginLogApi.ExportExcel)  // 获取登录日志列表
 	}
 }

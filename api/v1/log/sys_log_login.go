@@ -30,3 +30,16 @@ func (s *SysLogLoginApi) GetSysLogLoginList(c *gin.Context) {
 		Total: total,
 	}, c)
 }
+
+func (s *SysLogLoginApi) ExportExcel(c *gin.Context) {
+	userId, _ := utils.Str2uint(c.Query("userId"))
+
+	list, _, err := sysLoginLogService.GetSysLogLoginList(userId, 1, 999)
+	if err != nil {
+		global.GGB_LOG.Error("获取登录日志列表失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	_ = utils.ExportExcelByTemplate("登录日志.xlsx", list)
+}

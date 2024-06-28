@@ -1,5 +1,6 @@
 package config
 
 type Excel struct {
-	Dir string `mapstructure:"dir" json:"dir" yaml:"dir"`
+	TemplateDir string `mapstructure:"template-dir" json:"template-dir" yaml:"template-dir"`
+	OutputDir   string `mapstructure:"output-dir" json:"output-dir" yaml:"output-dir"`
 }

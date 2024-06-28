@@ -37,4 +37,5 @@ local:
 
 # excel configuration
 excel:
-  dir: ./resource/excel/
+  template-dir: resource/excel/template/
+  output-dir: resource/excel/output/
