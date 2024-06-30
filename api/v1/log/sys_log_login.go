@@ -31,6 +31,7 @@ func (s *SysLogLoginApi) GetSysLogLoginList(c *gin.Context) {
 	}, c)
 }
 
+// ExportExcel 导出Excel
 func (s *SysLogLoginApi) ExportExcel(c *gin.Context) {
 	userId, _ := utils.Str2uint(c.Query("userId"))
 
@@ -41,5 +42,8 @@ func (s *SysLogLoginApi) ExportExcel(c *gin.Context) {
 		return
 	}
 
-	_ = utils.ExportExcelByTemplate("登录日志.xlsx", list)
+	filePath, _ := utils.ExportExcelByTemplate("登录日志.xlsx", list)
+
+	// 使用Gin的c.File方法直接提供该文件进行下载
+	c.File(filePath)
 }
