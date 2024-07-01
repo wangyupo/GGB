@@ -125,7 +125,7 @@ func initSystemData() {
 				global.GGB_LOG.Error("关联超级用户和菜单失败！", zap.Error(err))
 			}
 		} else {
-			global.GGB_LOG.Error("数据表原始数据填充错误", zap.Error(err))
+			global.GGB_LOG.Error("数据表原始数据填充错误！", zap.Error(err))
 		}
 	}
 }
