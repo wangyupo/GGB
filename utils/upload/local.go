@@ -2,6 +2,7 @@ package upload
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
@@ -10,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 )
 
 type Local struct{}
@@ -22,7 +22,7 @@ func (*Local) UploadFile(file *multipart.FileHeader) (filePath string, fileName 
 	name := strings.TrimSuffix(file.Filename, ext)
 	name = utils.MD5V([]byte(name))
 	// 拼接新文件名
-	fileName = name + "_" + time.Now().Format("20060102150405") + ext
+	fileName = uuid.New().String() + ext
 	// 尝试创建此路径
 	mkdirErr := os.MkdirAll(global.GGB_CONFIG.Local.StorePath, os.ModePerm)
 	if mkdirErr != nil {
