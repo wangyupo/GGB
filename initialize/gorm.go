@@ -22,7 +22,7 @@ func Gorm() *gorm.DB {
 }
 
 func RegisterTables() {
-	// 1、创建数据表
+	// 1-创建数据表
 	db := global.GGB_DB
 	err := db.AutoMigrate(
 		system.SysUser{},
@@ -40,7 +40,7 @@ func RegisterTables() {
 		fmt.Print(err)
 	}
 
-	// 2、初始化默认数据
+	// 2-初始化默认数据
 	initSystemData()
 }
 
@@ -50,12 +50,12 @@ func initSystemData() {
 	err := global.GGB_DB.Where("user_name = ?", "admin").First(&adminUser).Error
 
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if errors.Is(err, gorm.ErrRecordNotFound) { // 判断admin账户是否已创建
 			// 将超级管理员默认密码 hash 处理
 			var adminPassword = "admin" // 默认超管密码
 			var hashPassword = utils.BcryptHash(adminPassword)
 
-			// 创建 admin（超级管理员） 账户
+			// 1-创建 admin（超级管理员） 账户
 			adminUser = system.SysUser{
 				UserName: "admin",
 				NickName: "超级管理员",
@@ -63,18 +63,24 @@ func initSystemData() {
 				Password: hashPassword,
 				Status:   1,
 			}
-			global.GGB_DB.Create(&adminUser)
+			err = global.GGB_DB.Create(&adminUser).Error
+			if err != nil {
+				global.GGB_LOG.Error("写入超级用户失败！", zap.Error(err))
+			}
 
-			// 创建 admin（超级管理员） 角色
+			// 2-创建 admin（超级管理员） 角色
 			adminRole := system.SysRole{
 				RoleName:    "超级管理员",
 				RoleCode:    "ADMIN",
 				Description: "系统超级管理员角色",
 				Status:      1,
 			}
-			global.GGB_DB.Create(&adminRole)
+			err = global.GGB_DB.Create(&adminRole).Error
+			if err != nil {
+				global.GGB_LOG.Error("写入超级用户角色失败！", zap.Error(err))
+			}
 
-			// 创建系统管理菜单
+			// 3-创建系统管理菜单
 			menus := []system.SysMenu{
 				// 系统管理
 				{Label: "系统管理", Path: "", Icon: "", ParentId: 0, Sort: 1, Type: 1},
@@ -92,15 +98,21 @@ func initSystemData() {
 				{Label: "示例页面", Path: "", Icon: "", ParentId: 0, Sort: 3, Type: 1},
 				{Label: "文件管理", Path: "/demo/file", Icon: "", ParentId: 11, Sort: 1, Type: 1},
 			}
-			global.GGB_DB.Create(&menus)
+			err = global.GGB_DB.Create(&menus).Error
+			if err != nil {
+				global.GGB_LOG.Error("写入系统默认菜单失败！", zap.Error(err))
+			}
 
-			// 关联 admin（超级管理员） 用户和角色
-			global.GGB_DB.Create(&system.SysRoleUser{
+			// 4-关联 admin（超级管理员） 用户和角色
+			err = global.GGB_DB.Create(&system.SysRoleUser{
 				UserID: adminUser.ID,
 				RoleID: adminRole.ID,
-			})
+			}).Error
+			if err != nil {
+				global.GGB_LOG.Error("关联超级用户和角色失败！", zap.Error(err))
+			}
 
-			// 关联 admin（超级管理员） 角色和菜单
+			// 5-关联 admin（超级管理员） 角色和菜单
 			var adminRoleMenus []system.SysRoleMenu
 			for _, menu := range menus {
 				adminRoleMenus = append(adminRoleMenus, system.SysRoleMenu{
@@ -108,7 +120,10 @@ func initSystemData() {
 					MenuID: menu.ID,
 				})
 			}
-			global.GGB_DB.Create(&adminRoleMenus)
+			err = global.GGB_DB.Create(&adminRoleMenus).Error
+			if err != nil {
+				global.GGB_LOG.Error("关联超级用户和菜单失败！", zap.Error(err))
+			}
 		} else {
 			global.GGB_LOG.Error("数据表原始数据填充错误", zap.Error(err))
 		}
