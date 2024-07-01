@@ -9,5 +9,5 @@ type SysUser struct {
 	NickName string `json:"nickName" gorm:"size:64;default:系统用户;comment:用户昵称"`
 	Email    string `json:"email" gorm:"size:128;comment:用户邮箱"`
 	Password string `json:"-" gorm:"comment:密码"`
-	Status   int    `json:"status" gorm:"default:1;comment:用户状态 1正常 2冻结"`
+	Status   uint   `json:"status" gorm:"default:0;comment:用户状态 0禁用 1启用"`
 }

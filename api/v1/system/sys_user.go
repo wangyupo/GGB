@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/wangyupo/GGB/enums"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/log"
@@ -101,7 +102,7 @@ func (s *SysUserApi) Logout(c *gin.Context) {
 	if err != nil {
 		global.GGB_LOG.Error("获取用户id失败！", zap.Error(err))
 	} else {
-		setLoginLog(c, userId, 2)
+		setLoginLog(c, userId, 0)
 	}
 	utils.ClearToken(c)
 	response.SuccessWithDefaultMessage(c)
@@ -140,7 +141,7 @@ func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error
 }
 
 // 写入登入/登出日志
-func setLoginLog(c *gin.Context, userId uint, loginType uint) {
+func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
 	// 写入登录日志
 	clientIP := c.ClientIP()               // 获取客户端IP
 	userAgent := c.GetHeader("User-Agent") // 获取浏览器信息

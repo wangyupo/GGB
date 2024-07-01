@@ -6,6 +6,8 @@ import (
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
+	"reflect"
+	"time"
 )
 
 type SysLogLoginApi struct{}
@@ -42,7 +44,23 @@ func (s *SysLogLoginApi) ExportExcel(c *gin.Context) {
 		return
 	}
 
-	filePath, _ := utils.ExportExcelByTemplate("登录日志.xlsx", list)
+	var ExcelList [][]interface{}
+	ExcelList = append(ExcelList, []interface{}{"用户名称", "ip地址", "操作类型", "记录时间"})
+
+	ColumnKey := []string{"userName", "ip", "type", "createdAt"}
+	for _, listItem := range list.([]map[string]interface{}) {
+		var listValueItem []interface{}
+		for _, key := range ColumnKey {
+			value := listItem[key]
+			if reflect.TypeOf(listItem[key]) == reflect.TypeOf(time.Time{}) {
+				value = value.(time.Time).Format(time.DateTime)
+			}
+			listValueItem = append(listValueItem, value)
+		}
+		ExcelList = append(ExcelList, listValueItem)
+	}
+
+	filePath, _ := utils.ExportExcelByTemplate(ExcelList)
 
 	// 使用Gin的c.File方法直接提供该文件进行下载
 	c.File(filePath)

@@ -8,5 +8,5 @@ type SysRole struct {
 	RoleName    string `json:"roleName" form:"roleName" gorm:"unique;index;size:128;comment:角色名，用于显示"`
 	RoleCode    string `json:"roleCode" gorm:"unique;comment:角色的唯一标识码"`
 	Description string `json:"description" gorm:"comment:角色描述等信息"`
-	Status      uint   `json:"status" gorm:"default:1;comment:角色状态 1启用 2禁用"`
+	Status      uint   `json:"status" gorm:"default:0;comment:角色状态 0禁用 1启用"`
 }
