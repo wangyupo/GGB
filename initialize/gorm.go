@@ -84,6 +84,10 @@ func initSystemData() {
 			// 日志管理
 			{Label: "日志管理", Path: "", Icon: "", ParentId: 0, Sort: 2, Type: 1},
 			{Label: "登录日志", Path: "/logManage/loginLog", Icon: "", ParentId: 8, Sort: 1, Type: 1},
+			{Label: "操作日志", Path: "/logManage/operateLog", Icon: "", ParentId: 8, Sort: 2, Type: 1},
+			// 示例页面
+			{Label: "示例页面", Path: "", Icon: "", ParentId: 0, Sort: 3, Type: 1},
+			{Label: "文件管理", Path: "/demo/file", Icon: "", ParentId: 11, Sort: 1, Type: 1},
 		}
 		global.GGB_DB.Create(&menus)
 
