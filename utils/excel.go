@@ -7,15 +7,28 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// CreateExcelByList 根据给定list创建Excel
-func CreateExcelByList(list [][]interface{}) (filePath string, err error) {
+// CreateExcelByList 根据给定 list 创建 Excel
+func CreateExcelByList(list [][]interface{}, sheetName string) (filePath string, err error) {
+	// 1-填充Excel
+	f, err := ExtraExcelAfterList(list, sheetName)
+	if err != nil {
+		return
+	}
+
+	// 2-保存文件到指定位置
+	filePath, err = SaveExcelByExcelize(f)
+
+	return filePath, err
+}
+
+// ExtraExcelAfterList 根据给定 list 填充 Excel，并返回文件对象供后续操作（合并单元格、计算总数、添加图表等操作）
+func ExtraExcelAfterList(list [][]interface{}, sheetName string) (file *excelize.File, err error) {
 	// 1-新建Excel
 	f := excelize.NewFile()
 	defer func() {
 		if err := f.Close(); err != nil {
 		}
 	}()
-	sheetName := "Sheet1"
 
 	// 1-1 设置首行冻结
 	_ = f.SetPanes("Sheet1", &excelize.Panes{
@@ -28,7 +41,7 @@ func CreateExcelByList(list [][]interface{}) (filePath string, err error) {
 	})
 
 	// 1-2 设置首行样式
-	firstRowStyle, _ := f.NewStyle(&excelize.Style{
+	firstRowStyle, err := f.NewStyle(&excelize.Style{
 		Fill: excelize.Fill{
 			Type:    "pattern",
 			Pattern: 1,
@@ -43,7 +56,7 @@ func CreateExcelByList(list [][]interface{}) (filePath string, err error) {
 	})
 
 	// 1-3 设置内容样式
-	contentRowStyle, _ := f.NewStyle(&excelize.Style{
+	contentRowStyle, err := f.NewStyle(&excelize.Style{
 		Alignment: &excelize.Alignment{
 			Horizontal: "left", // 水平方向上文本左对齐
 		},
@@ -62,8 +75,16 @@ func CreateExcelByList(list [][]interface{}) (filePath string, err error) {
 
 	}
 
-	// 2-保存文件
-	filePath = global.GGB_CONFIG.Excel.OutputDir + uuid.New().String() + ".xlsx"
+	return f, err
+}
+
+// SaveExcelByExcelize 通过 Excelize 保存 Excel 文件到指定位置
+func SaveExcelByExcelize(f *excelize.File) (filePath string, err error) {
+	// 1-生成随机名称，并组合储存路径
+	fileName := uuid.New().String() + ".xlsx"
+	filePath = global.GGB_CONFIG.Excel.OutputDir + fileName
+
+	// 2-存储文件到指定位置
 	err = f.SaveAs(filePath)
 	if err != nil {
 		global.GGB_LOG.Error("保存Excel失败")
