@@ -28,7 +28,7 @@ zap:
 system:
   # 数据库类型
   db-type: mysql
-  # 控制oss选择走本地还是 七牛等其他仓，默认本地
+  # 控制oss选择走本地还是七牛等其他仓，默认本地
   oss-type: local
   # 程序监听端口
   addr: 5312
@@ -49,7 +49,7 @@ mysql:
   password: ""
   # 编码方式
   charset: "utf8mb4"
-  # 字符集(utf8mb4_general_ci速度比utf8mb4_unicode_ci快些)
+  # 字符集（utf8mb4_general_ci速度比utf8mb4_unicode_ci快些）
   collation: utf8mb4_general_ci
 
 # local configuration
@@ -61,7 +61,7 @@ local:
 
 # excel configuration
 excel:
-  # Excel模板存放路径
+  # Excel模板存放路径（通常用于通过Excel模板导入数据）
   template-dir: resource/excel/template/
-  # Excel输出路径
+  # Excel输出路径（导出Excel时，Excel文件的临时存放目录）
   output-dir: resource/excel/output/
