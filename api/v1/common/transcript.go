@@ -7,6 +7,7 @@ import (
 	"github.com/wangyupo/GGB/model/common/request"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/utils"
+	"github.com/xuri/excelize/v2"
 	"go.uber.org/zap"
 )
 
@@ -40,13 +41,14 @@ func (t *TranscriptApi) ImportByExcel(c *gin.Context) {
 
 // ExportExcel 导出Excel
 func (t *TranscriptApi) ExportExcel(c *gin.Context) {
-	// 获取其它查询参数
+	// 1-获取其它查询参数
 	var query request.TranscriptQuery
 	if err := c.ShouldBindQuery(&query); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
+	// 2-获取列表
 	list, _, err := transcriptService.GetTranscriptList(query, 0, 999)
 	if err != nil {
 		global.GGB_LOG.Error("查询成绩列表失败！", zap.Error(err))
@@ -54,9 +56,9 @@ func (t *TranscriptApi) ExportExcel(c *gin.Context) {
 		return
 	}
 
+	// 3-组装数据
 	var ExcelList [][]interface{}
-	// 组装数据
-	titleRow := []interface{}{"姓名", "语文", "数学", "英语", "地理", "政治"}
+	titleRow := []interface{}{"姓名", "语文", "数学", "英语", "地理", "政治", "总分"}
 	ExcelList = append(ExcelList, titleRow)
 	for _, row := range list.([]common.Transcript) {
 		var rowValues []interface{}
@@ -64,8 +66,48 @@ func (t *TranscriptApi) ExportExcel(c *gin.Context) {
 		ExcelList = append(ExcelList, rowValues)
 	}
 
-	// 生成Excel并返回路径
-	filePath, _ := utils.CreateExcelByList(ExcelList)
+	// 4-新建excel并填充数据
+	f, err := utils.ExtraExcelAfterList(ExcelList, "Sheet1")
+
+	// 5-插入图表
+	_ = f.AddChart("Sheet1", "I5", &excelize.Chart{
+		Type: excelize.Col, // 柱状图
+		Title: []excelize.RichTextRun{
+			{
+				Text: "成绩单", // 图表标题
+			},
+		},
+		Series: []excelize.ChartSeries{
+			{
+				Name:       "Sheet1!$B$1",      // 柱的名称
+				Categories: "Sheet1!$A$2:$A$4", // 柱代表分类
+				Values:     "Sheet1!$B$2:$B$4", // 柱对应的值
+			},
+			{
+				Name:       "Sheet1!$C$1",
+				Categories: "Sheet1!$A$2:$A$4",
+				Values:     "Sheet1!$C$2:$C$4",
+			},
+			{
+				Name:       "Sheet1!$D$1",
+				Categories: "Sheet1!$A$2:$A$4",
+				Values:     "Sheet1!$D$2:$D$4",
+			},
+		},
+		PlotArea: excelize.ChartPlotArea{
+			ShowVal: true, // 显示数据标签
+		},
+	})
+
+	// 6-保存文件
+	filePath, err := utils.SaveExcelByExcelize(f)
+	if err != nil {
+		global.GGB_LOG.Error("导出成绩列表Excel失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	// 7-返回文件流
 	c.File(filePath)
 }
 

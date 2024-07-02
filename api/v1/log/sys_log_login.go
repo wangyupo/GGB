@@ -52,7 +52,12 @@ func (s *SysLogLoginApi) ExportExcel(c *gin.Context) {
 		ExcelList = append(ExcelList, listValueItem)
 	}
 
-	filePath, _ := utils.CreateExcelByList(ExcelList)
+	filePath, err := utils.CreateExcelByList(ExcelList, "Sheet1")
+	if err != nil {
+		global.GGB_LOG.Error("导出登录日志Excel失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 
 	// 使用Gin的c.File方法直接提供该文件进行下载
 	c.File(filePath)
