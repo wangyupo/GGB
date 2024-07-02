@@ -3,6 +3,7 @@ package log
 import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/system"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -19,4 +20,10 @@ type SysLogOperate struct {
 	Response     string         `json:"response" form:"response" gorm:"响应Body"`
 	UserID       uint           `json:"userId" form:"userId" gorm:"comment:用户id"`
 	User         system.SysUser `json:"user"`
+	UserName     string         `json:"userName" gorm:"-"`
+}
+
+func (s *SysLogOperate) AfterFind(tx *gorm.DB) (err error) {
+	s.UserName = s.User.UserName
+	return
 }

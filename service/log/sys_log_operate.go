@@ -4,7 +4,6 @@ import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/log"
 	"github.com/wangyupo/GGB/model/system/request"
-	"github.com/wangyupo/GGB/utils"
 )
 
 type SysLogOperateService struct{}
@@ -33,16 +32,7 @@ func (s *SysLogOperateService) GetSysLogOperateList(query request.SysLogOperateQ
 	err = db.Offset(offset).Limit(limit).Order("created_at DESC").Unscoped().
 		Preload("User").Find(&sysLogOperateList).Error
 
-	// 结果集增加 userName 字段
-	results := make([]map[string]interface{}, len(sysLogOperateList))
-	for i, operateLog := range sysLogOperateList {
-		logMap, _ := utils.ExcludeNestedFields(operateLog, []string{"User"})
-		// 添加用户名
-		logMap["userName"] = operateLog.User.UserName
-		results[i] = logMap
-	}
-
-	return results, total, err
+	return sysLogOperateList, total, err
 }
 
 // CreateSysLogOperate 创建系统操作日志

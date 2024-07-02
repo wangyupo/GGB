@@ -15,9 +15,11 @@ type SysLogLogin struct {
 	IP        string          `json:"ip" gorm:"size:128;comment:请求ip"`
 	UserAgent string          `json:"userAgent" gorm:"comment:用户设备和浏览器"`
 	User      system.SysUser  `json:"user" gorm:"foreignKey:UserId;references:ID"`
+	UserName  string          `json:"userName" gorm:"-"` //  gorm:"-" 用于告诉 GORM 字段只在应用层面使用，不需要持久化到数据库。这意味着这个字段不会被映射到数据库表中的任何列上。
 }
 
 func (s *SysLogLogin) AfterFind(tx *gorm.DB) (err error) {
 	s.TypeText = s.Type.Text()
+	s.UserName = s.User.UserName
 	return
 }

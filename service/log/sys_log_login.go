@@ -3,7 +3,6 @@ package log
 import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/log"
-	"github.com/wangyupo/GGB/utils"
 )
 
 type SysLogLoginService struct{}
@@ -31,14 +30,5 @@ func (s *SysLogLoginService) GetSysLogLoginList(userId uint, offset int, limit i
 		return
 	}
 
-	// 结果集增加 userName 字段
-	results := make([]map[string]interface{}, len(loginLogList))
-	for i, loginLog := range loginLogList {
-		logMap, _ := utils.ExcludeNestedFields(loginLog, []string{"User"})
-		// 添加用户名
-		logMap["userName"] = loginLog.User.UserName
-		results[i] = logMap
-	}
-
-	return results, total, err
+	return loginLogList, total, err
 }
