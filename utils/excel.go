@@ -7,8 +7,8 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// ExportExcelByTemplate 根据指定模板导出Excel
-func ExportExcelByTemplate(list [][]interface{}) (filePath string, err error) {
+// CreateExcelByList 根据指定模板导出Excel
+func CreateExcelByList(list [][]interface{}) (filePath string, err error) {
 	// 1-新建Excel
 	f := excelize.NewFile()
 	defer func() {
