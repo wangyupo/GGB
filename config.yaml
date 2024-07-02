@@ -15,7 +15,7 @@ zap:
   format: console
   # 日志前缀
   prefix: "[github.com/wangyupo/GGB]"
-  # 日志路径
+  # 日志存放路径
   director: log
   # 显示行号
   show-line: true
@@ -49,6 +49,8 @@ mysql:
   password: ""
   # 编码方式
   charset: "utf8mb4"
+  # 字符集(utf8mb4_general_ci速度比utf8mb4_unicode_ci快些)
+  collation: utf8mb4_general_ci
 
 # local configuration
 local:

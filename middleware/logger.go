@@ -8,16 +8,16 @@ import (
 
 func Logger(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 记录请求开始时间
+		// 1-记录请求开始时间
 		start := time.Now()
 
-		// 处理请求
+		// 2-处理请求
 		c.Next()
 
-		// 记录请求结束时间和处理时长
+		// 3-记录请求结束时间和处理时长
 		duration := time.Since(start)
 
-		// 记录请求的详细信息
+		// 4-记录请求的详细信息
 		logger.Info("HTTP Request",
 			zap.String("method", c.Request.Method),
 			zap.String("path", c.Request.URL.Path),
@@ -28,6 +28,7 @@ func Logger(logger *zap.Logger) gin.HandlerFunc {
 			zap.String("referer", c.Request.Referer()),
 		)
 
+		// 5-记录错误日志
 		if len(c.Errors) > 0 {
 			for _, e := range c.Errors.Errors() {
 				logger.Error("HTTP Request Error",

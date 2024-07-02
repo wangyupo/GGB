@@ -14,7 +14,7 @@ func CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
 		BaseClaims: baseClaims,
 		RegisteredClaims: jwt.RegisteredClaims{
 			NotBefore: jwt.NewNumericDate(time.Now().Add(-1000)), // 签名生效时间
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)),    // 过期时间 7天
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)),    // 设置过期时间
 			Issuer:    global.GGB_CONFIG.JWT.Issuer,              // 签名的发行者
 		},
 	}
@@ -24,8 +24,8 @@ func CreateClaims(baseClaims request.BaseClaims) request.CustomClaims {
 // CreateToken 生成token
 func CreateToken(claims request.CustomClaims) (string, error) {
 	signingKey := []byte(global.GGB_CONFIG.JWT.SigningKey)
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(signingKey)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims) // 创建jwt对象（签名方法：jwt.SigningMethodHS256, 声明：claims）
+	return token.SignedString(signingKey)                      // 使用密钥进行签名，并返回最终token
 }
 
 // ParseToken 解析token

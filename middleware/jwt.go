@@ -11,7 +11,7 @@ import (
 // Jwt 登录认证的中间件
 func Jwt() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// 从浏览器 cookie 中拿 x-token
+		// 1-从浏览器 cookie 中拿 x-token
 		token := utils.GetToken(c)
 		if token == "" {
 			response.NoAuth("未登录或非法访问", c)
@@ -19,7 +19,7 @@ func Jwt() gin.HandlerFunc {
 			return
 		}
 
-		// parseToken 解析 token 包含的信息
+		// 2-解析 token 包含的信息
 		claims, err := utils.ParseToken(token)
 		if err != nil {
 			if errors.Is(err, jwt.ErrTokenExpired) {
@@ -34,7 +34,10 @@ func Jwt() gin.HandlerFunc {
 			return
 		}
 
+		// 3-在Context上下文储存键值对
 		c.Set("claims", claims)
+
+		// 4-继续处理接下来的处理方法
 		c.Next()
 	}
 }
