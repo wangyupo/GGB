@@ -14,10 +14,10 @@ func (t *TranscriptRouter) InitTranscriptRouter(Router *gin.RouterGroup) {
 	transcriptApi := v1.ApiGroupApp.CommonApiGroup.TranscriptApi
 	{
 		transcriptRouter.GET("/template", transcriptApi.DownloadExcelTemplate) // 下载Excel模板
-		transcriptRouter.GET("/export", transcriptApi.ExportExcel)             // 导出Excel
 		transcriptRouter.POST("", transcriptApi.ImportByExcel)                 // 通过Excel导入数据
 	}
 	{
-		transcriptRouterWithoutRecord.GET("", transcriptApi.GetTranscriptList) // 获取文件列表
+		transcriptRouterWithoutRecord.GET("", transcriptApi.GetTranscriptList)  // 获取文件列表
+		transcriptRouterWithoutRecord.GET("/export", transcriptApi.ExportExcel) // 导出Excel
 	}
 }
