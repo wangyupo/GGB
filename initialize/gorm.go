@@ -35,6 +35,7 @@ func RegisterTables() {
 		log.SysLogLogin{},
 		log.SysLogOperate{},
 		common.UploadFile{},
+		common.Transcript{},
 	)
 	if err != nil {
 		fmt.Print(err)
@@ -97,6 +98,7 @@ func initSystemData() {
 				// 示例页面
 				{Label: "示例页面", Path: "", Icon: "", ParentId: 0, Sort: 3, Type: 1},
 				{Label: "文件管理", Path: "/demo/file", Icon: "", ParentId: 11, Sort: 1, Type: 1},
+				{Label: "Excel导入/导出", Path: "/demo/excel", Icon: "", ParentId: 11, Sort: 2, Type: 1},
 			}
 			err = global.GGB_DB.Create(&menus).Error
 			if err != nil {

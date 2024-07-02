@@ -35,6 +35,7 @@ func Routers() *gin.Engine {
 		PrivateGroup.POST("/logout", sysUserApi.Logout) // 登出
 
 		commonRouter.InitUploadFileRouter(PrivateGroup) // 上传文件
+		commonRouter.InitTranscriptRouter(PrivateGroup) // Excel导入/导出
 
 		systemRouter.InitUserRouter(PrivateGroup)         // 用户管理
 		systemRouter.InitRoleRouter(PrivateGroup)         // 角色管理
