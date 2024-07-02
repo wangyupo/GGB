@@ -2,11 +2,11 @@ type $Name$Service struct{}
 
 // Get$Name$List 获取$ChineseName$列表
 func ($RECEIVER$ *$Name$Service) Get$Name$List(query request.$Name$Query, offset int, limit int) (list interface{}, total int64, err error) {
-	// 声明 system.$Name$ 类型的变量以存储查询结果
-	$name$List := make([]system.$Name$, 0)
+	// 声明 $package$.$Name$ 类型的变量以存储查询结果
+	$name$List := make([]$package$.$Name$, 0)
 
 	// 准备数据库查询
-	db := global.GGB_DB.Model(&system.$Name${})
+	db := global.GGB_DB.Model(&$package$.$Name${})
 	if query.Label != "" {
 		db = db.Where("label LIKE ?", "%"+query.Label+"%")
 	}
@@ -24,9 +24,8 @@ func ($RECEIVER$ *$Name$Service) Get$Name$List(query request.$Name$Query, offset
 }
 
 // Create$Name$ 创建$ChineseName$
-func ($RECEIVER$ *$Name$Service) Create$Name$(req system.$Name$) (err error) {
-    // 唯一值判断
-	//err = global.GGB_DB.Where("label = ?", req.Label).First(&system.$Name${}).Error
+func ($RECEIVER$ *$Name$Service) Create$Name$(req $package$.$Name$) (err error) {
+	//err = global.GGB_DB.Where("label = ?", req.Label).First(&$package$.$Name${}).Error
 	//if !errors.Is(err, gorm.ErrRecordNotFound) {
 	//	return errors.New(fmt.Sprintf("$ChineseName$ %s 已存在", req.Label))
 	//}
@@ -38,14 +37,14 @@ func ($RECEIVER$ *$Name$Service) Create$Name$(req system.$Name$) (err error) {
 }
 
 // Get$Name$ 获取$ChineseName$详情
-func ($RECEIVER$ *$Name$Service) Get$Name$($name$Id uint) ($name$ system.$Name$, err error) {
+func ($RECEIVER$ *$Name$Service) Get$Name$($name$Id uint) ($name$ $package$.$Name$, err error) {
 	err = global.GGB_DB.Where("id = ?", $name$Id).First(&$name$).Error
 	return $name$, err
 }
 
 // Update$Name$ 更新$ChineseName$
-func ($RECEIVER$ *$Name$Service) Update$Name$(req system.$Name$, $name$Id uint) (err error) {
-	var old$Name$ system.$Name$
+func ($RECEIVER$ *$Name$Service) Update$Name$(req $package$.$Name$, $name$Id uint) (err error) {
+	var old$Name$ $package$.$Name$
 
 	// 从数据库中查找具有指定 ID 的数据
 	err = global.GGB_DB.Where("id = ?", $name$Id).First(&old$Name$).Error
@@ -53,8 +52,7 @@ func ($RECEIVER$ *$Name$Service) Update$Name$(req system.$Name$, $name$Id uint) 
 		return err
 	}
 
-    // 唯一值判断
-	//err = global.GGB_DB.Where("label = ? AND id != ?", req.Label, $name$Id).First(&system.$Name${}).Error
+	//err = global.GGB_DB.Where("label = ? AND id != ?", req.Label, $name$Id).First(&$package$.$Name${}).Error
 	//if !errors.Is(err, gorm.ErrRecordNotFound) {
 	//	return errors.New(fmt.Sprintf("$ChineseName$ %s 已存在", req.Label))
 	//}
@@ -72,6 +70,6 @@ func ($RECEIVER$ *$Name$Service) Update$Name$(req system.$Name$, $name$Id uint) 
 
 // Delete$Name$ 删除$ChineseName$
 func ($RECEIVER$ *$Name$Service) Delete$Name$($name$Id uint) (err error) {
-	err = global.GGB_DB.Where("id = ?", $name$Id).Delete(&system.$Name${}).Error
+	err = global.GGB_DB.Where("id = ?", $name$Id).Delete(&$package$.$Name${}).Error
 	return err
 }
