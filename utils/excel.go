@@ -7,7 +7,7 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
-// CreateExcelByList 根据指定模板导出Excel
+// CreateExcelByList 根据给定list创建Excel
 func CreateExcelByList(list [][]interface{}) (filePath string, err error) {
 	// 1-新建Excel
 	f := excelize.NewFile()
