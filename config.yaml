@@ -9,7 +9,7 @@ jwt:
 
 # zap logger configuration
 zap:
-  # 日志等级
+  # 日志等级（debug|info|warn|error|dpanic|panic|fatal）
   level: info
   # 输出形式（json-{"level":"error","time":"2024-06-24 09:56:09","msg":"222"} | console-2024-06-23 15:55:59	error	222）
   format: console
@@ -23,6 +23,14 @@ zap:
   stacktrace-key: stacktrace
   # 控制台打印
   log-in-console: true
+  # 大小限制（单位：M）
+  max-size: 50
+  # 备份数量
+  max-backups: 50
+  # 存放时间（单位：天）
+  max-age: 30
+  # 是否压缩
+  compress: false
 
 # system configuration
 system:

@@ -105,11 +105,11 @@ func getWriteSync(level zapcore.Level) zapcore.WriteSyncer {
 
 	// 3-使用 lumberjack 分割日志
 	lumberjackLogger := &lumberjack.Logger{
-		Filename:   fileName, //日志文件存放目录
-		MaxSize:    1,        //文件大小限制,单位MB
-		MaxBackups: 3,        //最大保留日志文件数量
-		MaxAge:     1,        //日志文件保留天数
-		Compress:   false,    //是否压缩处理
+		Filename:   fileName,                         //日志文件存放目录
+		MaxSize:    global.GGB_CONFIG.Zap.MaxSize,    //文件大小限制,单位M
+		MaxBackups: global.GGB_CONFIG.Zap.MaxBackups, //最大保留日志文件数量
+		MaxAge:     global.GGB_CONFIG.Zap.MaxAge,     //日志文件保留天数
+		Compress:   global.GGB_CONFIG.Zap.Compress,   //是否压缩处理
 	}
 
 	// 4-读取 yaml 配置，判断是否将日志输出在控制台上
