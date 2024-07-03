@@ -11,11 +11,11 @@ type ChangeRoleStatus struct {
 }
 
 type RoleAssignMenu struct {
-	RoleID  uint   `json:"roleId"`
-	MenuIds []uint `json:"menuIds"`
+	SysRoleID  uint   `json:"sysRoleId"`
+	SysMenuIds []uint `json:"sysMenuIds"`
 }
 
 type RoleAssignUser struct {
-	RoleID  uint   `json:"roleId"`
-	UserIds []uint `json:"userIds"`
+	SysRoleID  uint   `json:"sysRoleId"`
+	SysUserIds []uint `json:"sysUserIds"`
 }

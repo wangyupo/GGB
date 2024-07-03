@@ -190,13 +190,13 @@ func (s *SysRoleApi) GetUserByRole(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
 	// 获取其它查询参数
-	if c.Query("roleId") == "" {
-		response.FailWithMessage("缺少参数：roleId", c)
+	if c.Query("sysRoleId") == "" {
+		response.FailWithMessage("缺少参数：sysRoleId", c)
 		return
 	}
-	roleId, _ := utils.Str2uint(c.Query("roleId"))
+	sysRoleId, _ := utils.Str2uint(c.Query("sysRoleId"))
 
-	list, total, err := sysRoleService.GetUserByRole(roleId, offset, limit)
+	list, total, err := sysRoleService.GetUserByRole(sysRoleId, offset, limit)
 	if err != nil {
 		global.GGB_LOG.Error("获取角色绑定的用户失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
@@ -233,9 +233,9 @@ func (s *SysRoleApi) GetMenuByRole(c *gin.Context) {
 		response.FailWithMessage("缺少参数：角色id", c)
 		return
 	}
-	roleId, _ := utils.Str2uint(c.Param("id"))
+	sysRoleId, _ := utils.Str2uint(c.Param("id"))
 
-	menus, err := sysRoleService.GetMenuByRole(roleId)
+	menus, err := sysRoleService.GetMenuByRole(sysRoleId)
 	if err != nil {
 		global.GGB_LOG.Error("根据角色id查对应菜单败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)

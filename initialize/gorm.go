@@ -107,8 +107,8 @@ func initSystemData() {
 
 			// 4-关联 admin（超级管理员） 用户和角色
 			err = global.GGB_DB.Create(&system.SysRoleUser{
-				UserID: adminUser.ID,
-				RoleID: adminRole.ID,
+				SysUserID: adminUser.ID,
+				SysRoleID: adminRole.ID,
 			}).Error
 			if err != nil {
 				global.GGB_LOG.Error("关联超级用户和角色失败！", zap.Error(err))
@@ -118,8 +118,8 @@ func initSystemData() {
 			var adminRoleMenus []system.SysRoleMenu
 			for _, menu := range menus {
 				adminRoleMenus = append(adminRoleMenus, system.SysRoleMenu{
-					RoleID: adminRole.ID,
-					MenuID: menu.ID,
+					SysRoleID: adminRole.ID,
+					SysMenuID: menu.ID,
 				})
 			}
 			err = global.GGB_DB.Create(&adminRoleMenus).Error
