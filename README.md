@@ -34,10 +34,12 @@ GGB/
 │   ├── viper.go         # viper初始化
 │   └── zap.go           # zap日志初始化
 ├── enums                # 枚举
-├── global               # 全局常量
+├── global               # 全局变量
+│   └── global.go        # 全局实例
 ├── initialize           # 项目初始化
 │   ├── router.go        # 路由初始化
-│   └── gorm.go          # 数据库初始化
+│   ├── gorm.go          # 数据库初始化
+│   └── timer.go         # 定时器初始化
 ├── log                  # 日志
 │   ├── 2024-10-01       # 按日期分类储存
 │   └── ...
