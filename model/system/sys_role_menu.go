@@ -1,10 +1,9 @@
 package system
 
-import "github.com/wangyupo/GGB/global"
-
-// SysRoleMenu 系统角色和系统菜单关联
+// SysRoleMenu 系统角色和系统菜单的自定义连接表
 type SysRoleMenu struct {
-	global.BaseModel
-	SysRoleID uint `json:"sysRoleId" gorm:"comment:角色ID"`
-	SysMenuID uint `json:"sysMenuId" gorm:"comment:菜单ID"`
+	SysRoleID uint    `json:"sysRoleId" gorm:"primaryKey;comment:角色ID"`
+	SysRole   SysRole `json:"sysRole" gorm:"foreignKey:SysRoleID"`
+	SysMenuID uint    `json:"sysMenuId" gorm:"primaryKey;comment:菜单ID"`
+	SysMenu   SysMenu `json:"sysMenu" gorm:"foreignKey:SysMenuID"`
 }

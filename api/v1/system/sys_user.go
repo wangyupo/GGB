@@ -1,8 +1,6 @@
 package system
 
 import (
-	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/enums"
 	"github.com/wangyupo/GGB/global"
@@ -13,7 +11,6 @@ import (
 	systemResponse "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
-	"gorm.io/gorm"
 	"time"
 )
 
@@ -32,7 +29,6 @@ func (s *SysUserApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-
 	if loginForm.UserName == "" {
 		response.FailWithMessage("缺少账户", c)
 		return
@@ -42,42 +38,22 @@ func (s *SysUserApi) Login(c *gin.Context) {
 		return
 	}
 
-	// 声明 system.SysUser 类型的变量以存储找出来的用户
-	var systemUser system.SysUser
-	// 根据 userName 找用户（userName 是唯一的）
-	global.GGB_DB.Where("user_name=?", loginForm.UserName).First(&systemUser)
-	if systemUser.ID == 0 {
-		response.FailWithMessage("用户不存在", c)
-		return
-	}
-	if systemUser.Status == 2 {
-		response.FailWithMessage("用户已禁用", c)
-		return
-	}
-
-	// 核对密码
-	ok := utils.BcryptCheck(loginForm.Password, systemUser.Password)
-	if !ok {
-		response.FailWithMessage("登录密码错误", c)
-		return
-	}
-
-	// 密码核对正确，查询用户角色和菜单
-	role, menu, err := getRoleMenu(systemUser.ID)
+	user, err := sysUserService.Login(loginForm)
 	if err != nil {
+		global.GGB_LOG.Error("登录失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
 	// 通过jwt生成token
 	claims := utils.CreateClaims(request.BaseClaims{
-		ID:       systemUser.ID,
-		UserName: systemUser.UserName,
-		NickName: systemUser.NickName,
+		ID:       user.ID,
+		UserName: user.UserName,
+		NickName: user.NickName,
 	})
 	token, err := utils.CreateToken(claims)
 	if err != nil {
-		global.GGB_LOG.Error("登录失败！获取token失败！", zap.Error(err))
+		global.GGB_LOG.Error("登录获取token失败！", zap.Error(err))
 		response.FailWithMessage("获取token失败", c)
 		return
 	}
@@ -85,14 +61,13 @@ func (s *SysUserApi) Login(c *gin.Context) {
 	// 设置cookie
 	utils.SetToken(c, token, int(claims.RegisteredClaims.ExpiresAt.Unix()-time.Now().Unix()))
 
-	setLoginLog(c, systemUser.ID, 1)
+	// 记录登录日志
+	setLoginLog(c, user.ID, 1)
 
 	response.SuccessWithDetailed(systemResponse.LoginResponse{
-		User:      systemUser,
+		User:      user,
 		Token:     token,
 		ExpiresAt: claims.RegisteredClaims.ExpiresAt.Unix() * 1000,
-		Role:      role,
-		Menu:      menu,
 	}, "登录成功", c)
 }
 
@@ -106,38 +81,6 @@ func (s *SysUserApi) Logout(c *gin.Context) {
 	}
 	utils.ClearToken(c)
 	response.SuccessWithDefaultMessage(c)
-}
-
-// 获取用户角色和菜单
-func getRoleMenu(userId uint) (systemResponse.Role, []systemResponse.Menu, error) {
-	var role systemResponse.Role
-	var menus []systemResponse.Menu
-
-	// 查找用户角色
-	roleErr := global.GGB_DB.Model(&system.SysRole{}).
-		Joins("join sys_role_user on sys_role_user.role_id=sys_role.id").
-		Where("sys_role_user.user_id = ? AND sys_role_user.deleted_at IS NULL", userId).
-		First(&role).Error
-	if roleErr != nil {
-		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
-			return systemResponse.Role{}, []systemResponse.Menu{}, fmt.Errorf("账户未匹配角色")
-		}
-		return systemResponse.Role{}, []systemResponse.Menu{}, roleErr
-	}
-
-	// 查找角色对应菜单
-	menuErr := global.GGB_DB.Model(&system.SysMenu{}).
-		Joins("join sys_role_menu on sys_role_menu.menu_id = sys_menu.id").
-		Where("sys_role_menu.role_id = ? AND sys_role_menu.deleted_at IS NULL", role.ID).
-		Scan(&menus).Error
-	if menuErr != nil {
-		if errors.Is(roleErr, gorm.ErrRecordNotFound) {
-			return systemResponse.Role{}, []systemResponse.Menu{}, fmt.Errorf("角色未匹配菜单")
-		}
-		return systemResponse.Role{}, []systemResponse.Menu{}, menuErr
-	}
-
-	return role, menus, nil
 }
 
 // 写入登入/登出日志

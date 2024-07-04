@@ -185,30 +185,6 @@ func (s *SysRoleApi) RoleAssignUser(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetUserByRole 获取角色绑定的用户
-func (s *SysRoleApi) GetUserByRole(c *gin.Context) {
-	// 获取分页参数
-	offset, limit := utils.GetPaginationParams(c)
-	// 获取其它查询参数
-	if c.Query("sysRoleId") == "" {
-		response.FailWithMessage("缺少参数：sysRoleId", c)
-		return
-	}
-	sysRoleId, _ := utils.Str2uint(c.Query("sysRoleId"))
-
-	list, total, err := sysRoleService.GetUserByRole(sysRoleId, offset, limit)
-	if err != nil {
-		global.GGB_LOG.Error("获取角色绑定的用户失败！", zap.Error(err))
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-
-	response.SuccessWithData(response.PageResult{
-		List:  list,
-		Total: total,
-	}, c)
-}
-
 // RoleUnAssignUser 角色取消绑定用户
 func (s *SysRoleApi) RoleUnAssignUser(c *gin.Context) {
 	var req request.RoleAssignUser
@@ -227,7 +203,31 @@ func (s *SysRoleApi) RoleUnAssignUser(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetMenuByRole 根据角色id查对应菜单
+// GetUserByRole 获取角色绑定的用户
+func (s *SysRoleApi) GetUserByRole(c *gin.Context) {
+	// 获取分页参数
+	offset, limit := utils.GetPaginationParams(c)
+	// 获取其它查询参数
+	if c.Param("id") == "" {
+		response.FailWithMessage("缺少参数：id", c)
+		return
+	}
+	sysRoleId, _ := utils.Str2uint(c.Param("id"))
+
+	list, total, err := sysRoleService.GetUserByRole(sysRoleId, offset, limit)
+	if err != nil {
+		global.GGB_LOG.Error("获取角色绑定的用户失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	response.SuccessWithData(response.PageResult{
+		List:  list,
+		Total: total,
+	}, c)
+}
+
+// GetMenuByRole 获取角色绑定的菜单
 func (s *SysRoleApi) GetMenuByRole(c *gin.Context) {
 	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：角色id", c)

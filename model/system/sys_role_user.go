@@ -1,10 +1,9 @@
 package system
 
-import "github.com/wangyupo/GGB/global"
-
-// SysRoleUser 系统角色和系统用户关联
+// SysRoleUser 系统角色和系统用户的自定义连接表
 type SysRoleUser struct {
-	global.BaseModel
-	SysUserID uint `json:"sysUserId" gorm:"comment:用户ID"`
-	SysRoleID uint `json:"sysRoleId" gorm:"comment:角色ID"`
+	SysRoleID uint    `json:"sysRoleId" gorm:"primaryKey;comment:角色ID"`
+	SysRole   SysRole `json:"sysRole" gorm:"foreignKey:SysRoleID"`
+	SysUserID uint    `json:"sysUserId" gorm:"primaryKey;comment:用户ID"`
+	SysUser   SysUser `json:"sysUser" gorm:"foreignKey:SysUserID"`
 }

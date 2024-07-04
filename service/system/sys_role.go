@@ -11,6 +11,7 @@ import (
 
 type SysRoleService struct{}
 
+// GetSysRoleList 获取角色列表
 func (s *SysRoleService) GetSysRoleList(query request.SysRoleQuery, offset int, limit int) (list interface{}, total int64, err error) {
 	// 声明 system.SysRole 类型的变量以存储查询结果
 	sysRoleList := make([]system.SysRole, 0)
@@ -101,89 +102,77 @@ func (s *SysRoleService) ChangeRoleStatus(sysRoleId uint, status int) (err error
 
 // RoleAssignMenu 角色分配菜单
 func (s *SysRoleService) RoleAssignMenu(req request.RoleAssignMenu) (err error) {
-	// 删掉之前的菜单
-	err = global.GGB_DB.Where("sys_role_id = ?", req.SysRoleID).Delete(&system.SysRoleMenu{}).Error
+	var sysRole system.SysRole
+	err = global.GGB_DB.First(&sysRole, req.SysRoleID).Error
 	if err != nil {
-		return err
+		return
 	}
 
-	if len(req.SysMenuIds) == 0 {
-		return nil
-	}
+	var sysMenus []system.SysMenu
+	global.GGB_DB.Find(&sysMenus, "id IN ?", req.SysMenuIds)
+	err = global.GGB_DB.Model(&sysRole).Association("Menus").Replace(&sysMenus)
 
-	// 添加新菜单
-	var roleMenu []system.SysRoleMenu
-	for _, menuId := range req.SysMenuIds {
-		roleMenu = append(roleMenu, system.SysRoleMenu{
-			SysRoleID: req.SysRoleID,
-			SysMenuID: menuId,
-		})
-	}
-
-	err = global.GGB_DB.Create(&roleMenu).Error
 	return err
 }
 
 // RoleAssignUser 角色分配给用户
 func (s *SysRoleService) RoleAssignUser(req request.RoleAssignUser) (err error) {
-	if len(req.SysUserIds) == 0 {
-		return nil
+	var sysRole system.SysRole
+	err = global.GGB_DB.First(&sysRole, req.SysRoleID).Error
+	if err != nil {
+		return
 	}
 
-	// 绑定用户与角色
-	var roleUser []system.SysRoleUser
-	for _, userId := range req.SysUserIds {
-		roleUser = append(roleUser, system.SysRoleUser{
-			SysRoleID: req.SysRoleID,
-			SysUserID: userId,
-		})
+	var sysUsers []system.SysUser
+	global.GGB_DB.Find(&sysUsers, "id IN ?", req.SysUserIds)
+	err = global.GGB_DB.Model(&sysRole).Association("Users").Append(&sysUsers)
+
+	return err
+}
+
+// RoleUnAssignUser 角色取消绑定用户
+func (s *SysRoleService) RoleUnAssignUser(req request.RoleAssignUser) (err error) {
+	var sysRole system.SysRole
+	err = global.GGB_DB.First(&sysRole, req.SysRoleID).Error
+	if err != nil {
+		return
 	}
 
-	err = global.GGB_DB.Create(roleUser).Error
+	var sysUsers []system.SysUser
+	global.GGB_DB.Find(&sysUsers, "id IN ?", req.SysUserIds)
+	err = global.GGB_DB.Model(&sysRole).Association("Users").Delete(&sysUsers)
+
 	return err
 }
 
 // GetUserByRole 获取角色绑定的用户
 func (s *SysRoleService) GetUserByRole(sysRoleId uint, offset int, limit int) (list interface{}, total int64, err error) {
-	var users []system.SysUser
-
 	err = global.GGB_DB.Model(&system.SysRoleUser{}).Where("sys_role_id = ?", sysRoleId).Count(&total).Error
 	if err != nil {
 		return
 	}
 
-	err = global.GGB_DB.Model(&system.SysUser{}).
-		Joins("JOIN sys_role_user ON sys_role_user.sys_user_id = sys_user.id").
-		Where("sys_role_user.sys_role_id = ? AND sys_role_user.deleted_at IS NULL", sysRoleId).
-		Order("sys_role_user.created_at DESC").
-		Offset(offset).Limit(limit).
-		Find(&users).Error
-	return users, total, err
+	// 非自定义连接表的查询方式（保留以供参考）
+	//var sysRole system.SysRole
+	//err = global.GGB_DB.Preload("Users", func(db *gorm.DB) *gorm.DB {
+	//	return db.Offset(offset).Limit(limit)
+	//}).First(&sysRole, sysRoleId).Error
+
+	var sysRoleUsers []system.SysRoleUser
+	err = global.GGB_DB.Preload("SysUser").Offset(offset).Limit(limit).Find(&sysRoleUsers, 1).Error
+
+	var sysUsers []system.SysUser
+	for _, sysRoleUser := range sysRoleUsers {
+		sysUsers = append(sysUsers, sysRoleUser.SysUser)
+	}
+
+	return sysUsers, total, err
 }
 
-// RoleUnAssignUser 角色取消绑定用户
-func (s *SysRoleService) RoleUnAssignUser(req request.RoleAssignUser) (err error) {
-	err = global.GGB_DB.Where("sys_role_id = ? AND sys_user_id in (?)", req.SysRoleID, req.SysUserIds).
-		Delete(&system.SysRoleUser{}).Error
-	return err
-}
-
-// GetMenuByRole 根据角色id查对应菜单
+// GetMenuByRole 获取角色绑定的菜单
 func (s *SysRoleService) GetMenuByRole(sysRoleId uint) (menus []system.SysMenu, err error) {
-	// 根据roleId找到对应的菜单
-	var roleMenus []system.SysRoleMenu
-	err = global.GGB_DB.Where("sys_role_id = ?", sysRoleId).Find(&roleMenus).Error
-	if err != nil {
-		return
-	}
+	var sysRole system.SysRole
+	err = global.GGB_DB.Preload("Menus").First(&sysRole, sysRoleId).Error
 
-	var menuIds []uint
-	for _, roleMenu := range roleMenus {
-		menuIds = append(menuIds, roleMenu.SysMenuID)
-	}
-
-	// 根据菜单id查找菜单
-	err = global.GGB_DB.Where("id in (?)", menuIds).Order("sort").Find(&menus).Error
-
-	return menus, err
+	return sysRole.Menus, err
 }
