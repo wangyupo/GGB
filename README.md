@@ -35,6 +35,8 @@ GGB/
 │   ├── router.go        # 路由初始化
 │   └── gorm.go          # 数据库初始化
 ├── log                  # 日志
+│   ├── 2024-10-01       # 按日期分类储存
+│   └── ...
 ├── middleware           # 中间件
 │   ├── jwt.go           # 鉴权
 │   └── operation.go     # 操作日志
