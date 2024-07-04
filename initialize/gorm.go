@@ -70,7 +70,7 @@ func initSystemData() {
 				Email:    "",
 				Password: hashPassword,
 				Status:   1,
-				Roles: []system.SysRole{
+				Roles: []*system.SysRole{
 					{
 						RoleName:    "超级管理员",
 						RoleCode:    "ADMIN",
@@ -85,7 +85,7 @@ func initSystemData() {
 			}
 
 			// 2-创建系统菜单、菜单和角色的连接表
-			var sysRole []system.SysRole
+			var sysRole []*system.SysRole
 			global.GGB_DB.Find(&sysRole, 1)
 			menus := []system.SysMenu{
 				// 系统管理

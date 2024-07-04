@@ -163,7 +163,7 @@ func (s *SysRoleService) GetUserByRole(sysRoleId uint, offset int, limit int) (l
 
 	var sysUsers []system.SysUser
 	for _, sysRoleUser := range sysRoleUsers {
-		sysUsers = append(sysUsers, sysRoleUser.SysUser)
+		sysUsers = append(sysUsers, *sysRoleUser.SysUser)
 	}
 
 	return sysUsers, total, err
@@ -174,5 +174,9 @@ func (s *SysRoleService) GetMenuByRole(sysRoleId uint) (menus []system.SysMenu, 
 	var sysRole system.SysRole
 	err = global.GGB_DB.Preload("Menus").First(&sysRole, sysRoleId).Error
 
-	return sysRole.Menus, err
+	for _, roleMenu := range sysRole.Menus {
+		menus = append(menus, *roleMenu)
+	}
+
+	return menus, err
 }
