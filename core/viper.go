@@ -11,6 +11,7 @@ import (
 	"os"
 )
 
+// Viper 配置管理器
 func Viper(path ...string) *viper.Viper {
 	var config string
 

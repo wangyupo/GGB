@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// RunWindowsServer 运行http服务
 func RunWindowsServer() {
 	Router := initialize.Routers()
 	address := fmt.Sprintf(":%s", global.GGB_CONFIG.System.Addr)
