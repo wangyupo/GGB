@@ -1,8 +1,8 @@
 package initialize
 
 import (
-	"fmt"
 	"github.com/wangyupo/GGB/global"
+	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -23,7 +23,7 @@ func GormMysql() *gorm.DB {
 		},
 	})
 	if err != nil {
-		fmt.Print("数据库链接错误")
+		global.GGB_LOG.Error("数据库链接错误", zap.Error(err))
 	}
 
 	return db
