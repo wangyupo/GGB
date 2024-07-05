@@ -26,6 +26,9 @@ func Routers() *gin.Engine {
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
 	{
 		PublicGroup.POST("/login", sysUserApi.Login) // 登录
+
+		PublicGroup.GET("/captcha", sysUserApi.GetCaptcha)            // 获取图形验证码
+		PublicGroup.POST("/captcha/verify", sysUserApi.VerifyCaptcha) // 校验图形验证码
 	}
 
 	// 路由-需要鉴权

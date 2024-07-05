@@ -11,6 +11,7 @@ type ApiGroup struct {
 }
 
 var (
+	sysLoginService        = service.ServiceGroupApp.SystemServiceGroup.SysLoginService
 	sysUserService         = service.ServiceGroupApp.SystemServiceGroup.SysUserService
 	sysRoleService         = service.ServiceGroupApp.SystemServiceGroup.SysRoleService
 	sysMenuService         = service.ServiceGroupApp.SystemServiceGroup.SysMenuService

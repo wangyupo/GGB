@@ -7,3 +7,8 @@ type LoginResponse struct {
 	Token     string         `json:"token"`
 	ExpiresAt int64          `json:"expiresAt"`
 }
+
+type CaptchaResponse struct {
+	ID     string `json:"id"`
+	Base64 string `json:"base_64"`
+}
