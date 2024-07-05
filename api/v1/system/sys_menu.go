@@ -43,7 +43,7 @@ func (s *SysMenuApi) CreateSysMenu(c *gin.Context) {
 	// 绑定 JSON 请求体中的数据到 sysMenu 结构体
 	if err := c.ShouldBindJSON(&sysMenu); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -92,7 +92,7 @@ func (s *SysMenuApi) UpdateSysMenu(c *gin.Context) {
 	// 绑定请求参数到数据对象
 	if err := c.ShouldBindJSON(&sysMenu); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -131,7 +131,7 @@ func (s *SysMenuApi) DeleteSysMenu(c *gin.Context) {
 func (s *SysMenuApi) MoveSysMenu(c *gin.Context) {
 	var req request.MoveMenu
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 

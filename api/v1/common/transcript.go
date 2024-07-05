@@ -144,7 +144,7 @@ func (t *TranscriptApi) CreateTranscript(c *gin.Context) {
 	// 绑定 JSON 请求体中的数据到 Transcript 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 

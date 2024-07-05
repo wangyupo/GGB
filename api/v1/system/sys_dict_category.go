@@ -45,7 +45,7 @@ func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 	// 绑定 JSON 请求体中的数据到 SysDictCategory 结构体
 	if err := c.ShouldBindJSON(&req); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -94,7 +94,7 @@ func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 	// 绑定请求参数到数据对象
 	if err := c.ShouldBindJSON(&req); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 

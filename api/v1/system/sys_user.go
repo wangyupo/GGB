@@ -24,17 +24,9 @@ type SysUserApi struct{}
 func (s *SysUserApi) Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
 	var loginForm request.Login
-	if err := c.BindJSON(&loginForm); err != nil {
+	if err := c.ShouldBindJSON(&loginForm); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	if loginForm.UserName == "" {
-		response.FailWithMessage("缺少账户", c)
-		return
-	}
-	if loginForm.Password == "" {
-		response.FailWithMessage("缺少密码", c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -106,7 +98,7 @@ func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
 func (s *SysUserApi) ChangePassword(c *gin.Context) {
 	var req request.ChangePassword
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -197,7 +189,7 @@ func (s *SysUserApi) CreateSystemUser(c *gin.Context) {
 	// 绑定 JSON 请求体中的数据到 systemUser 结构体
 	if err := c.ShouldBindJSON(&systemUser); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -245,7 +237,7 @@ func (s *SysUserApi) UpdateSystemUser(c *gin.Context) {
 	// 绑定请求参数到数据对象
 	if err := c.ShouldBindJSON(&systemUser); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -290,7 +282,7 @@ func (s *SysUserApi) ChangeSystemUserStatus(c *gin.Context) {
 
 	var req request.ChangeSystemUserStatus
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 

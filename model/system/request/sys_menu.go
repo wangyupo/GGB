@@ -7,7 +7,7 @@ type SysMenuQuery struct {
 }
 
 type MoveMenu struct {
-	OriginID uint   `json:"originId"`
-	TargetID uint   `json:"targetId"`
-	DropType string `json:"dropType"`
+	OriginID uint   `json:"originId" binding:"required"`
+	TargetID uint   `json:"targetId" binding:"required"`
+	DropType string `json:"dropType" binding:"required"`
 }

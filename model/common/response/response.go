@@ -17,9 +17,10 @@ type MsgResponse struct {
 }
 
 const (
-	ErrorToken = -1
-	Error      = 7
-	Success    = 0
+	Success = 0
+	Error   = 1000 + iota
+	ErrorAuth
+	ErrorValidate
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
@@ -62,10 +63,15 @@ func FailWithMessage(message string, c *gin.Context) {
 	MsgResult(Error, message, c)
 }
 
+// FailWithValidate 返回失败并验证消息
+func FailWithValidate(data interface{}, c *gin.Context) {
+	Result(ErrorValidate, data, "数据校验未通过", c)
+}
+
 // NoAuth 返回身份校验不通过并携带自定义消息
 func NoAuth(message string, c *gin.Context) {
 	c.JSON(http.StatusUnauthorized, MsgResponse{
-		ErrorToken,
+		ErrorAuth,
 		message,
 	})
 }

@@ -45,7 +45,7 @@ func (s *SysRoleApi) CreateSysRole(c *gin.Context) {
 	// 绑定 JSON 请求体中的数据到 sysRole 结构体
 	if err := c.ShouldBindJSON(&sysRole); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -94,7 +94,7 @@ func (s *SysRoleApi) UpdateSysRole(c *gin.Context) {
 	// 绑定请求参数到数据对象
 	if err := c.ShouldBindJSON(&sysRole); err != nil {
 		// 错误处理
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -135,7 +135,7 @@ func (s *SysRoleApi) ChangeRoleStatus(c *gin.Context) {
 
 	var req request.ChangeRoleStatus
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -153,7 +153,7 @@ func (s *SysRoleApi) ChangeRoleStatus(c *gin.Context) {
 func (s *SysRoleApi) RoleAssignMenu(c *gin.Context) {
 	var req request.RoleAssignMenu
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -171,7 +171,7 @@ func (s *SysRoleApi) RoleAssignMenu(c *gin.Context) {
 func (s *SysRoleApi) RoleAssignUser(c *gin.Context) {
 	var req request.RoleAssignUser
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
@@ -189,7 +189,7 @@ func (s *SysRoleApi) RoleAssignUser(c *gin.Context) {
 func (s *SysRoleApi) RoleUnAssignUser(c *gin.Context) {
 	var req request.RoleAssignUser
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+		utils.HandleValidatorError(err, c)
 		return
 	}
 
