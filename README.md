@@ -59,3 +59,7 @@ GGB/
 ├── uploads              # 上传文件本地存储目录
 └── utils                # 工具函数
 ```
+
+## License
+
+[MIT © Richard McRichface.](https://github.com/wangyupo/GGB/blob/main/LICENSE)
