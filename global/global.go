@@ -1,6 +1,7 @@
 package global
 
 import (
+	ut "github.com/go-playground/universal-translator"
 	"github.com/spf13/viper"
 	"github.com/wangyupo/GGB/config"
 	"github.com/wangyupo/GGB/utils/timer"
@@ -14,4 +15,5 @@ var (
 	GGB_VP     *viper.Viper
 	GGB_LOG    *zap.Logger
 	GGB_Timer  timer.Timer = timer.NewTimerTask()
+	GGB_Trans  ut.Translator
 )
