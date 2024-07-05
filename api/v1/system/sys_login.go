@@ -11,6 +11,7 @@ import (
 	systemResponse "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
+	"image/color"
 	"time"
 )
 
@@ -94,15 +95,44 @@ func (s *SysUserApi) Logout(c *gin.Context) {
 
 // GetCaptcha 获取图片验证码
 func (s *SysUserApi) GetCaptcha(c *gin.Context) {
-	driver := base64Captcha.NewDriverDigit(80, 240, 5, 0.7, 80)
-	cp := base64Captcha.NewCaptcha(driver, captchaStore)
-	// b64s是图片的base64编码
-	id, b64s, _, err := cp.Generate()
+	var req request.CaptchaRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		utils.HandleValidatorError(err, c)
+		return
+	}
+
+	var driver base64Captcha.Driver
+	var (
+		width           int         = 240
+		height          int         = 80
+		noiseCount      int         = 5
+		showLineOptions int         = base64Captcha.OptionShowHollowLine
+		bgColor         *color.RGBA = &color.RGBA{R: 242, G: 242, B: 242, A: 255}
+		stringSource    string      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"
+		chineseSource   string      = "猪猪侠,架构,真,的好,用,频输,高效,可扩展,后端,服务,架构,专为,现代,应用,设计"
+	)
+
+	switch req.CaptchaType {
+	case "digit":
+		driver = base64Captcha.NewDriverDigit(height, width, 5, 0.7, 80)
+	case "string":
+		driver = base64Captcha.NewDriverString(height, width, noiseCount, showLineOptions, 6, stringSource, bgColor, nil, nil)
+	case "math":
+		driver = base64Captcha.NewDriverMath(height, width, noiseCount, showLineOptions, bgColor, nil, nil)
+	case "chinese":
+		driver = base64Captcha.NewDriverChinese(height, width, noiseCount, showLineOptions, 2, chineseSource, bgColor, nil, nil)
+	default:
+		driver = base64Captcha.NewDriverDigit(height, width, 5, 0.7, 80)
+	}
+
+	cp := base64Captcha.NewCaptcha(driver, captchaStore) // 创建验证码对象
+	id, b64s, _, err := cp.Generate()                    // 生成验证码图像及其对应的标识（b64s是图片的base64编码）
 	if err != nil {
 		global.GGB_LOG.Error("生成验证码错误", zap.Error(err))
 		response.FailWithMessage("生成验证码错误", c)
 		return
 	}
+
 	response.SuccessWithData(systemResponse.CaptchaResponse{
 		ID:     id,
 		Base64: b64s,

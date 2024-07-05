@@ -6,8 +6,13 @@ type Login struct {
 	Password string `json:"password" binding:"required,min=2,max=18"` // 密码
 }
 
-// Captcha 验证码
+// CaptchaRequest 获取验证码
+type CaptchaRequest struct {
+	CaptchaType string `json:"captchaType" binding:"required"` // 验证码类型
+}
+
+// Captcha 校验验证码
 type Captcha struct {
-	Captcha   string `json:"captcha" binding:"required,min=5,max=5"` // 验证码
 	CaptchaId string `json:"captchaId" binding:"required"`           // 验证码ID
+	Captcha   string `json:"captcha" binding:"required,min=5,max=5"` // 验证码
 }
