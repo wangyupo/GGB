@@ -13,6 +13,6 @@ type CaptchaRequest struct {
 
 // Captcha 校验验证码
 type Captcha struct {
-	CaptchaId string `json:"captchaId" binding:"required"`           // 验证码ID
-	Captcha   string `json:"captcha" binding:"required,min=5,max=5"` // 验证码
+	CaptchaId string `json:"captchaId" binding:"required"` // 验证码ID
+	Captcha   string `json:"captcha" binding:"required"`   // 验证码
 }
