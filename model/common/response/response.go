@@ -17,9 +17,13 @@ type MsgResponse struct {
 }
 
 const (
+	// Success 成功
 	Success = 0
-	Error   = 1000 + iota
+	// Error 通用错误
+	Error = 1000 + iota
+	// ErrorAuth 身份校验错误
 	ErrorAuth
+	// ErrorValidate 数据验证错误
 	ErrorValidate
 )
 

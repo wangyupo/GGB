@@ -17,9 +17,9 @@ func GormMysql() *gorm.DB {
 	}
 
 	db, err := gorm.Open(mysql.New(mysqlConfig), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Silent), // 日志级别
 		NamingStrategy: schema.NamingStrategy{
-			SingularTable: true,
+			SingularTable: true, // 单数表名（启用前：sys_users；启用后：sys_user）
 		},
 	})
 	if err != nil {
