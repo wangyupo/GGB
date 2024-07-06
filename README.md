@@ -23,6 +23,25 @@
 
 GGB（猪猪侠）通过清晰的目录结构和模块化设计，为开发者提供了一套高效、可维护的后端服务架构。无论是初学者还是经验丰富的开发者，都能通过 GGB 快速上手并构建高质量的 Web 应用。
 
+## 运行方式
+
+```bash
+# 克隆项目
+git clone https://github.com/wangyupo/GGB.git
+
+# 进入项目文件夹
+cd GGB
+
+# 使用生成指令，执行配置环境、安装依赖包等一系列操作
+go generate
+
+# 编译 
+go build main.go
+
+# 运行二进制
+./main (windows运行命令为 ./main.exe)
+```
+
 ## 项目目录结构
 
 ```
@@ -60,25 +79,6 @@ GGB/
 └── utils                # 工具函数
     ├── timer            # 定时器
     └── upload           # oss
-```
-
-## 运行方式
-
-```bash
-# 克隆项目
-git clone https://github.com/wangyupo/GGB.git
-
-# 进入项目文件夹
-cd GGB
-
-# 使用生成指令，执行配置环境、安装依赖包等一系列操作
-go generate
-
-# 编译 
-go build main.go
-
-# 运行二进制
-./main (windows运行命令为 ./main.exe)
 ```
 
 ## License
