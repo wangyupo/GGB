@@ -5,4 +5,5 @@ type System struct {
 	OssType      string `mapstructure:"oss-type" json:"oss-type" yaml:"oss-type"`
 	Addr         string `mapstructure:"addr" json:"addr" yaml:"addr"`
 	RouterPrefix string `mapstructure:"router-prefix" json:"router-prefix" yaml:"router-prefix"`
+	Language     string `mapstructure:"language" json:"language" yaml:"language"`
 }

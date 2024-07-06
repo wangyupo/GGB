@@ -42,6 +42,8 @@ system:
   addr: 5312
   # url前缀
   router-prefix: /api
+  # 语言环境（zh|en|uk|fr）
+  language: zh
 
 # mysql connect configuration
 mysql:

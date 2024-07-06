@@ -17,7 +17,7 @@ import (
 )
 
 // Validator 自定义 customValidator
-func Validator(locale string) {
+func Validator() {
 	// 修改gin框架中的 customValidator 引擎属性，实现定制
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		// 注册一个获取结构体中 json 的 tag 的方法
@@ -32,8 +32,8 @@ func Validator(locale string) {
 		zhT := zh.New() // 中文翻译器
 		enT := en.New() // 英文翻译器
 
-		//第一个参数是备用的语言环境，后面的参数是应该支持的语言环境
-		uni := ut.New(enT, zhT, enT)
+		var locale = global.GGB_CONFIG.System.Language // 从配置中读取语言环境（默认中文）
+		uni := ut.New(enT, zhT, enT)                   // 第一个参数是备用的语言环境，后面的参数是应该支持的语言环境
 		global.GGB_Trans, ok = uni.GetTranslator(locale)
 		if !ok {
 			global.GGB_LOG.Error(fmt.Sprintf("uni.GetTranslator(%s)", locale))

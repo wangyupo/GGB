@@ -18,7 +18,7 @@ func main() {
 	zap.ReplaceGlobals(global.GGB_LOG) // 替换全局的日志记录器，可以在程序的任何地方通过 zap.L() 函数来获取这个全局日志记录器，并进行日志记录
 	global.GGB_DB = initialize.Gorm()  // 初始化gorm，连接数据库
 	initialize.Timer()                 // 初始化定时任务
-	initialize.Validator("zh")         // 初始化校验器
+	initialize.Validator()             // 初始化校验器
 	if global.GGB_DB != nil {
 		initialize.RegisterTables() // 初始化表
 		db, _ := global.GGB_DB.DB() // 程序结束前关闭数据库链接
