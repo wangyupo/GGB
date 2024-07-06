@@ -35,6 +35,13 @@ func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
 }
 
 // Login 登录
+// @Tags      Base
+// @Summary   登录
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.Login           true  "SysDictionary模型"
+// @Success   200   {object}  response.Response{data=systemResponse.LoginResponse,msg=string}  "返回包括用户信息,token,过期时间"
+// @Router    /login [post]
 func (s *SysUserApi) Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
 	var loginForm request.Login
@@ -78,6 +85,12 @@ func (s *SysUserApi) Login(c *gin.Context) {
 }
 
 // Logout 登出
+// @Tags      Base
+// @Summary   登出
+// @Security  ApiKeyAuth
+// @Produce   application/json
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /logout [post]
 func (s *SysUserApi) Logout(c *gin.Context) {
 	userId, err := utils.GetUserID(c) // 从token获取用户id
 	if err != nil {
@@ -90,6 +103,13 @@ func (s *SysUserApi) Logout(c *gin.Context) {
 }
 
 // GetCaptcha 获取图片验证码
+// @Tags      Base
+// @Summary   获取图片验证码
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.CaptchaRequest           true  "CaptchaRequest模型"
+// @Success   200   {object}  systemResponse.CaptchaResponse  "返回base64和图形ID"
+// @Router    /captcha [post]
 func (s *SysUserApi) GetCaptcha(c *gin.Context) {
 	var req request.CaptchaRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -111,6 +131,13 @@ func (s *SysUserApi) GetCaptcha(c *gin.Context) {
 }
 
 // VerifyCaptcha 校验图形验证码
+// @Tags      Base
+// @Summary   校验图形验证码
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.Captcha           true  "Captcha模型"
+// @Success   200   {object}  response.MsgResponse  	"返回验证码校验成功提示"
+// @Router    /captcha/verify [post]
 func (s *SysUserApi) VerifyCaptcha(c *gin.Context) {
 	var req request.Captcha
 	if err := c.ShouldBindJSON(&req); err != nil {

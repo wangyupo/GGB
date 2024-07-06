@@ -12,6 +12,13 @@ import (
 //go:generate go mod tidy
 //go:generate go mod download
 
+// @title 						GGB Swagger API接口文档
+// @version 					v0.0.1
+// @description 				基于 Gin 框架构建的高效、可扩展的后端服务架构，专为现代 Web 应用而设计。
+// @BasePath 					/api
+// @securityDefinitions.apikey  ApiKeyAuth
+// @in                          header
+// @name                        x-token
 func main() {
 	global.GGB_VP = core.Viper()       // 初始化Viper
 	global.GGB_LOG = core.Zap()        // 初始化日志库
