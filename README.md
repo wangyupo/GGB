@@ -28,7 +28,7 @@ GGB（猪猪侠）通过清晰的目录结构和模块化设计，为开发者�
 ```
 GGB/
 ├── api                  # API 控制器
-│   └── v1               # 版本
+│   └── v1               # v1版本
 ├── config               # 全局配置
 ├── core                 # 核心功能
 │   ├── viper.go         # viper初始化
@@ -58,6 +58,27 @@ GGB/
 │   └── system           # 系统相关服务
 ├── uploads              # 上传文件本地存储目录
 └── utils                # 工具函数
+    ├── timer            # 定时器
+    └── upload           # oss
+```
+
+## 运行方式
+
+```bash
+# 克隆项目
+git clone https://github.com/wangyupo/GGB.git
+
+# 进入项目文件夹
+cd GGB
+
+# 使用生成指令，执行配置环境、安装依赖包等一系列操作
+go generate
+
+# 编译 
+go build main.go
+
+# 运行二进制
+./main (windows运行命令为 ./main.exe)
 ```
 
 ## License
