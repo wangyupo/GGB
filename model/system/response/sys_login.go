@@ -10,5 +10,5 @@ type LoginResponse struct {
 
 type CaptchaResponse struct {
 	ID     string `json:"id"`
-	Base64 string `json:"base_64"`
+	Base64 string `json:"base64"`
 }

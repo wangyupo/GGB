@@ -8,7 +8,7 @@ type Login struct {
 
 // CaptchaRequest 获取验证码
 type CaptchaRequest struct {
-	CaptchaType string `json:"captchaType" binding:"required"` // 验证码类型
+	CaptchaType string `json:"captchaType" binding:"required,oneof=digit string math chinese"` // 验证码类型
 }
 
 // Captcha 校验验证码
