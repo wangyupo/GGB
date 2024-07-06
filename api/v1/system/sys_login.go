@@ -2,7 +2,6 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mojocn/base64Captcha"
 	"github.com/wangyupo/GGB/enums"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
@@ -11,13 +10,10 @@ import (
 	systemResponse "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
 	"go.uber.org/zap"
-	"image/color"
 	"time"
 )
 
 type SysLoginApi struct{}
-
-var captchaStore = base64Captcha.DefaultMemStore
 
 // 写入登入/登出日志
 func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
@@ -101,35 +97,10 @@ func (s *SysUserApi) GetCaptcha(c *gin.Context) {
 		return
 	}
 
-	var driver base64Captcha.Driver
-	var (
-		width           int         = 240
-		height          int         = 80
-		noiseCount      int         = 5
-		showLineOptions int         = base64Captcha.OptionShowHollowLine
-		bgColor         *color.RGBA = &color.RGBA{R: 242, G: 242, B: 242, A: 255}
-		stringSource    string      = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz"
-		chineseSource   string      = "猪猪侠,架构,真,的好,用,频输,高效,可扩展,后端,服务,架构,专为,现代,应用,设计"
-	)
-
-	switch req.CaptchaType {
-	case "digit":
-		driver = base64Captcha.NewDriverDigit(height, width, 5, 0.7, 80)
-	case "string":
-		driver = base64Captcha.NewDriverString(height, width, noiseCount, showLineOptions, 6, stringSource, bgColor, nil, nil)
-	case "math":
-		driver = base64Captcha.NewDriverMath(height, width, noiseCount, showLineOptions, bgColor, nil, nil)
-	case "chinese":
-		driver = base64Captcha.NewDriverChinese(height, width, noiseCount, showLineOptions, 2, chineseSource, bgColor, nil, nil)
-	default:
-		driver = base64Captcha.NewDriverDigit(height, width, 5, 0.7, 80)
-	}
-
-	cp := base64Captcha.NewCaptcha(driver, captchaStore) // 创建验证码对象
-	id, b64s, _, err := cp.Generate()                    // 生成验证码图像及其对应的标识（b64s是图片的base64编码）
+	id, b64s, err := utils.CreateCaptcha(req.CaptchaType)
 	if err != nil {
-		global.GGB_LOG.Error("生成验证码错误", zap.Error(err))
-		response.FailWithMessage("生成验证码错误", c)
+		global.GGB_LOG.Error("生成验证码失败！", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
@@ -147,9 +118,10 @@ func (s *SysUserApi) VerifyCaptcha(c *gin.Context) {
 		return
 	}
 
-	if !captchaStore.Verify(req.CaptchaId, req.Captcha, true) {
+	if ok := utils.VerifyCaptcha(req.CaptchaId, req.Captcha); !ok {
 		response.FailWithMessage("验证码错误", c)
 		return
 	}
+
 	response.SuccessWithMessage("验证码校验成功", c)
 }

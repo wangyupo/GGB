@@ -22,11 +22,11 @@ func HandleValidatorError(err error, c *gin.Context) {
 	return
 }
 
-// removeTopStruct 定义一个去掉结构体名称前缀的自定义方法：
+// removeTopStruct 定义一个去掉结构体名称前缀的自定义方法
 func removeTopStruct(fields map[string]string) map[string]string {
 	rsp := map[string]string{}
 	for field, err := range fields {
-		// 从文本的逗号开始切分   处理后"mobile": "mobile为必填字段"  处理前: "PasswordLoginForm.mobile": "mobile为必填字段"
+		// 从文本的逗号开始切分（处理前: "PasswordLoginForm.mobile": "mobile为必填字段"；处理后"mobile": "mobile为必填字段"）
 		rsp[field[strings.Index(field, ".")+1:]] = err
 	}
 	return rsp
