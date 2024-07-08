@@ -13,13 +13,27 @@ import (
 
 type TranscriptApi struct{}
 
-// DownloadExcelTemplate 下载Excel模板
+// DownloadExcelTemplate
+// @Tags      CommonTranscript
+// @Summary   下载Excel模板
+// @Security  ApiKeyAuth
+// @Produce   octet-stream
+// @Success   200   {file}  file  "返回文件流（blob）"
+// @Router    /common/excel/template [GET]
 func (t *TranscriptApi) DownloadExcelTemplate(c *gin.Context) {
 	filePath := global.GGB_CONFIG.Excel.TemplateDir + "Excel导入模板.xlsx"
 	c.File(filePath)
 }
 
-// ImportByExcel 通过Excel导入数据
+// ImportByExcel
+// @Tags      CommonUploadFile
+// @Summary   通过Excel导入数据
+// @Security  ApiKeyAuth
+// @accept    multipart/form-data
+// @Produce   application/json
+// @Param     file  formData  file   		true  	"上传文件"
+// @Success   200   {object}  response.MsgResult  	"返回数据导入成功提示"
+// @Router    /common/excel/import [POST]
 func (t *TranscriptApi) ImportByExcel(c *gin.Context) {
 	file, _, err := c.Request.FormFile("file")
 	if err != nil {
@@ -39,7 +53,14 @@ func (t *TranscriptApi) ImportByExcel(c *gin.Context) {
 	response.SuccessWithMessage("数据导入成功", c)
 }
 
-// ExportExcel 导出Excel
+// ExportExcel
+// @Tags      CommonTranscript
+// @Summary   导出Excel
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   octet-stream
+// @Success   200   {file}  file  "返回文件流（blob）"
+// @Router    /common/excel/export [GET]
 func (t *TranscriptApi) ExportExcel(c *gin.Context) {
 	// 1-获取其它查询参数
 	var query request.TranscriptQuery
@@ -136,7 +157,15 @@ func (t *TranscriptApi) GetTranscriptList(c *gin.Context) {
 	}, c)
 }
 
-// CreateTranscript 新建成绩
+// CreateTranscript
+// @Tags      CommonTranscript
+// @Summary   新建成绩
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data	body		common.Transcript	true  	"Transcript模型"
+// @Success   200   {object}  	response.MsgResponse  		"返回操作成功提示"
+// @Router    /common/excel [POST]
 func (t *TranscriptApi) CreateTranscript(c *gin.Context) {
 	// 声明 common.Transcript 类型的变量以存储 JSON 数据
 	var req common.Transcript
@@ -159,7 +188,15 @@ func (t *TranscriptApi) CreateTranscript(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteTranscript 删除成绩
+// DeleteTranscript
+// @Tags      CommonTranscript
+// @Summary   删除成绩
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int		true 			"成绩id（id）"
+// @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
+// @Router    /common/excel/:id [DELETE]
 func (t *TranscriptApi) DeleteTranscript(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
