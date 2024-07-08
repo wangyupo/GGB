@@ -173,7 +173,7 @@ func (s *SysMenuApi) DeleteSysMenu(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param	  data  body 		system.MoveMenu 	true 	"MoveMenu模型"
+// @Param	  data  body 		request.MoveMenu 	true 	"MoveMenu模型"
 // @Success   200   {object}  	response.MsgResponse  		"返回操作成功提示"
 // @Router    /system/menu/move [PUT]
 func (s *SysMenuApi) MoveSysMenu(c *gin.Context) {
