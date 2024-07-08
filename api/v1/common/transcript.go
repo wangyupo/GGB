@@ -132,7 +132,16 @@ func (t *TranscriptApi) ExportExcel(c *gin.Context) {
 	c.File(filePath)
 }
 
-// GetTranscriptList 查询成绩列表
+// GetTranscriptList
+// @Tags      CommonTranscript
+// @Summary   查询成绩列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  pageNumber 		query 	int 	true 	"分页"
+// @Param	  pageSize  		query 	int 	true 	"每页条数"
+// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回列表，总数"
+// @Router    /common/excel [GET]
 func (t *TranscriptApi) GetTranscriptList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
