@@ -12,7 +12,16 @@ import (
 
 type SysDictDataApi struct{}
 
-// GetSysDictDataList 查询字典列表
+// GetSysDictDataList
+// @Tags      SysDictData
+// @Summary   获取字典列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  pageNumber 		query 	int 	true 	"分页"
+// @Param	  pageSize  		query 	int 	true 	"每页条数"
+// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回列表，总数"
+// @Router    /system/dictData [GET]
 func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -37,7 +46,15 @@ func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 	}, c)
 }
 
-// CreateSysDictData 新建字典
+// CreateSysDictData
+// @Tags      SysDictData
+// @Summary   新建字典
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data	body		system.SysDictData	true  	"SysDictData模型"
+// @Success   200   {object}  	response.MsgResponse  		"返回操作成功提示"
+// @Router    /system/dictData [POST]
 func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 	// 声明 system.SysDictData 类型的变量以存储 JSON 数据
 	var req system.SysDictData
@@ -60,7 +77,15 @@ func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSysDictData 获取字典详情
+// GetSysDictData
+// @Tags      SysDictData
+// @Summary   获取字典详情
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int 			true 					"字典id（dictDataId）"
+// @Success   200   {object}  	response.Response{data=system.SysRole}  "返回角色详情"
+// @Router    /system/dictData/:id [GET]
 func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -80,7 +105,16 @@ func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	response.SuccessWithData(sysDictData, c)
 }
 
-// UpdateSysDictData 编辑字典
+// UpdateSysDictData
+// @Tags      SysDictData
+// @Summary   编辑字典
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int 				true 	"字典id（dictDataId）"
+// @Param	  data  body 		system.SysDictData 	true 	"SysDictData模型"
+// @Success   200   {object}  	response.MsgResponse  		"返回操作成功提示"
+// @Router    /system/dictData/:id [PUT]
 func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -109,7 +143,15 @@ func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSysDictData 删除字典
+// DeleteSysDictData
+// @Tags      SysDictData
+// @Summary   删除字典
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int		true 			"字典id（dictDataId）"
+// @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
+// @Router    /system/dictData/:id [DELETE]
 func (s *SysDictDataApi) DeleteSysDictData(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {

@@ -19,5 +19,6 @@ func (s *DictDataRouter) InitDictDataRouter(Router *gin.RouterGroup) {
 	}
 	{
 		dictDataRouterWithoutRecord.GET("", dictDataApi.GetSysDictDataList) // 获取字典数据列表
+		dictDataRouterWithoutRecord.GET("/:id", dictDataApi.GetSysDictData) // 获取字典数据详情
 	}
 }
