@@ -24,6 +24,7 @@ func GormMysql() *gorm.DB {
 	})
 	if err != nil {
 		global.GGB_LOG.Error("数据库链接错误", zap.Error(err))
+		panic(err)
 	}
 
 	return db

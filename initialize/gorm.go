@@ -40,6 +40,7 @@ func RegisterTables() {
 	)
 	if err != nil {
 		global.GGB_LOG.Error("创建数据表错误", zap.Error(err))
+		panic(err)
 	}
 
 	// 1-1 创建自定义连接表
@@ -47,6 +48,7 @@ func RegisterTables() {
 	err = db.SetupJoinTable(&system.SysRole{}, "Menus", &system.SysRoleMenu{})
 	if err != nil {
 		global.GGB_LOG.Error("创建自定义连接表错误", zap.Error(err))
+		panic(err)
 	}
 
 	// 2-初始化默认数据
@@ -82,6 +84,7 @@ func initSystemData() {
 			err = global.GGB_DB.Create(&adminUser).Error
 			if err != nil {
 				global.GGB_LOG.Error("写入超级用户失败！", zap.Error(err))
+				panic(err)
 			}
 
 			// 2-创建系统菜单、菜单和角色的连接表
@@ -108,9 +111,11 @@ func initSystemData() {
 			err = global.GGB_DB.Create(&menus).Error
 			if err != nil {
 				global.GGB_LOG.Error("写入系统菜单失败！", zap.Error(err))
+				panic(err)
 			}
 		} else {
 			global.GGB_LOG.Error("数据表原始数据填充错误！", zap.Error(err))
+			panic(err)
 		}
 	}
 }

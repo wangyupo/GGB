@@ -52,6 +52,7 @@ func Validator() {
 		}
 		if err != nil {
 			global.GGB_LOG.Error("注册翻译器失败", zap.Error(err))
+			panic(err)
 		}
 
 		// 注册自定义校验函数
