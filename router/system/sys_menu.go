@@ -20,5 +20,6 @@ func (s *MenuRouter) InitMenuRouter(Router *gin.RouterGroup) {
 	}
 	{
 		menuRouterWithoutRecord.GET("", menuApi.GetSysMenuList) // 获取菜单列表
+		menuRouterWithoutRecord.GET("/:id", menuApi.GetSysMenu) // 获取菜单详情
 	}
 }

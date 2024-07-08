@@ -12,7 +12,14 @@ import (
 
 type SysMenuApi struct{}
 
-// GetSysMenuList 列表
+// GetSysMenuList
+// @Tags      SysMenu
+// @Summary   获取所有菜单
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回所有菜单，总数"
+// @Router    /system/menu [GET]
 func (s *SysMenuApi) GetSysMenuList(c *gin.Context) {
 	// 获取其它查询参数
 	var query request.SysMenuQuery
@@ -35,7 +42,15 @@ func (s *SysMenuApi) GetSysMenuList(c *gin.Context) {
 	}, c)
 }
 
-// CreateSysMenu 新建
+// CreateSysMenu
+// @Tags      SysMenu
+// @Summary   新建菜单
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data	body		system.SysMenu	true  "SysMenu模型"
+// @Success   200   {object}  	response.MsgResponse  "返回操作成功提示"
+// @Router    /system/menu [POST]
 func (s *SysMenuApi) CreateSysMenu(c *gin.Context) {
 	// 声明 system.SysMenu 类型的变量以存储 JSON 数据
 	var sysMenu system.SysMenu
@@ -58,7 +73,15 @@ func (s *SysMenuApi) CreateSysMenu(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSysMenu 详情
+// GetSysMenu
+// @Tags      SysMenu
+// @Summary   菜单详情
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int 				true 				"菜单id（menuId）"
+// @Success   200   {object}  	response.Response{data=system.SysMenu}  "返回菜详情"
+// @Router    /system/menu/:id [GET]
 func (s *SysMenuApi) GetSysMenu(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -78,7 +101,16 @@ func (s *SysMenuApi) GetSysMenu(c *gin.Context) {
 	response.SuccessWithData(sysMenu, c)
 }
 
-// UpdateSysMenu 编辑
+// UpdateSysMenu
+// @Tags      SysMenu
+// @Summary   编辑菜单
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 	int 			true 	"菜单id（menuId）"
+// @Param	  data  body 	system.SysMenu 	true 	"SysMenu模型"
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /system/menu/:id [PUT]
 func (s *SysMenuApi) UpdateSysMenu(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -107,7 +139,15 @@ func (s *SysMenuApi) UpdateSysMenu(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSysMenu 删除
+// DeleteSysMenu
+// @Tags      SysMenu
+// @Summary   删除菜单
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int		true 			"菜单id（menuId）"
+// @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
+// @Router    /system/menu/:id [DELETE]
 func (s *SysMenuApi) DeleteSysMenu(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -127,7 +167,15 @@ func (s *SysMenuApi) DeleteSysMenu(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// MoveSysMenu 菜单排序
+// MoveSysMenu
+// @Tags      SysMenu
+// @Summary   菜单排序
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  data  body 		system.MoveMenu 	true 	"MoveMenu模型"
+// @Success   200   {object}  	response.MsgResponse  		"返回操作成功提示"
+// @Router    /system/menu/move [PUT]
 func (s *SysMenuApi) MoveSysMenu(c *gin.Context) {
 	var req request.MoveMenu
 	if err := c.ShouldBindJSON(&req); err != nil {
