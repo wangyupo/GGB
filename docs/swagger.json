@@ -1,0 +1,2931 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "基于 Gin 框架构建的高效、可扩展的后端服务架构，专为现代 Web 应用而设计。",
+        "title": "GGB Swagger API接口文档",
+        "contact": {},
+        "version": "v0.0.1"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/captcha": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Base"
+                ],
+                "summary": "获取图片验证码",
+                "parameters": [
+                    {
+                        "description": "CaptchaRequest模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CaptchaRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回base64和图形ID",
+                        "schema": {
+                            "$ref": "#/definitions/response.CaptchaResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/captcha/verify": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Base"
+                ],
+                "summary": "校验图形验证码",
+                "parameters": [
+                    {
+                        "description": "Captcha模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Captcha"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回验证码校验成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/excel": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CommonTranscript"
+                ],
+                "summary": "查询成绩列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/common.Transcript"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CommonTranscript"
+                ],
+                "summary": "新建成绩",
+                "parameters": [
+                    {
+                        "description": "Transcript模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/common.Transcript"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/excel/:id": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CommonTranscript"
+                ],
+                "summary": "删除成绩",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "成绩id（id）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/excel/export": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "CommonTranscript"
+                ],
+                "summary": "导出Excel",
+                "responses": {
+                    "200": {
+                        "description": "返回文件流（blob）",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/excel/import": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CommonUploadFile"
+                ],
+                "summary": "通过Excel导入数据",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回数据导入成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/excel/template": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "CommonTranscript"
+                ],
+                "summary": "下载Excel模板",
+                "responses": {
+                    "200": {
+                        "description": "返回文件流（blob）",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/common/upload": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CommonUploadFile"
+                ],
+                "summary": "获取上传文件列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/common.UploadFile"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CommonUploadFile"
+                ],
+                "summary": "上传文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "上传文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回包括文件路径，文件名称",
+                        "schema": {
+                            "$ref": "#/definitions/response.UploadFileResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/log/operate": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysLogOperate"
+                ],
+                "summary": "获取系统操作日志列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/log.SysLogOperate"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/log/operate/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysLogOperate"
+                ],
+                "summary": "获取系统操作日志详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "操作日志id（logOperateId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作日志详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/log.SysLogOperate"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysLogOperate"
+                ],
+                "summary": "删除系统操作日志",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "操作日志id（logOperateId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Base"
+                ],
+                "summary": "登录",
+                "parameters": [
+                    {
+                        "description": "SysDictionary模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Login"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回包括用户信息,token,过期时间",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.LoginResponse"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Base"
+                ],
+                "summary": "登出",
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/dictCategory": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictCategory"
+                ],
+                "summary": "获取字典类型列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/system.SysDictCategory"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictCategory"
+                ],
+                "summary": "新建字典类型",
+                "parameters": [
+                    {
+                        "description": "SysDictCategory模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysDictCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/dictCategory/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictCategory"
+                ],
+                "summary": "获取字典类型详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典类型id（dictCategoryId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回字典类型详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/system.SysDictCategory"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictCategory"
+                ],
+                "summary": "编辑字典类型",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典类型id（dictCategoryId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "SysDictCategory模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysDictCategory"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictCategory"
+                ],
+                "summary": "删除字典类型",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典类型id（dictCategoryId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/dictData": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictData"
+                ],
+                "summary": "获取字典数据列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/system.SysDictData"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictData"
+                ],
+                "summary": "新建字典数据",
+                "parameters": [
+                    {
+                        "description": "SysDictData模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysDictData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/dictData/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictData"
+                ],
+                "summary": "获取字典数据详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典数据id（dictDataId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回字典数据详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/system.SysDictData"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictData"
+                ],
+                "summary": "编辑字典数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典数据id（dictDataId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "SysDictData模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysDictData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysDictData"
+                ],
+                "summary": "删除字典数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "字典数据id（dictDataId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/log/login": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysLogLogin"
+                ],
+                "summary": "获取登录日志列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/log.SysLogLogin"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/system/log/login/excel": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "SysLogLogin"
+                ],
+                "summary": "导出Excel",
+                "responses": {
+                    "200": {
+                        "description": "返回文件流（blob）",
+                        "schema": {
+                            "type": "file"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/menu": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysMenu"
+                ],
+                "summary": "获取所有菜单",
+                "responses": {
+                    "200": {
+                        "description": "返回所有菜单，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/system.SysMenu"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysMenu"
+                ],
+                "summary": "新建菜单",
+                "parameters": [
+                    {
+                        "description": "SysMenu模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/menu/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysMenu"
+                ],
+                "summary": "菜单详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "菜单id（menuId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回菜详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/system.SysMenu"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysMenu"
+                ],
+                "summary": "编辑菜单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "菜单id（menuId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "SysMenu模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysMenu"
+                ],
+                "summary": "删除菜单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "菜单id（menuId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/menu/move": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysMenu"
+                ],
+                "summary": "菜单排序",
+                "parameters": [
+                    {
+                        "description": "MoveMenu模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.MoveMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "获取角色列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/system.SysRole"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "新建角色",
+                "parameters": [
+                    {
+                        "description": "SysRole模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "角色详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id（roleId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回角色详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/system.SysRole"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "编辑角色",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id（roleId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "SysRole模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysRole"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id（roleId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role/:id/menu": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "获取角色绑定的菜单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id（roleId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回菜单列表",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/system.SysMenu"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role/:id/status": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "修改角色状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id（roleId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ChangeRoleStatus模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ChangeRoleStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role/:id/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "获取角色绑定的用户",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色id（roleId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回用户列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.PageResult"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role/menu": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "角色分配菜单",
+                "parameters": [
+                    {
+                        "description": "RoleAssignMenu模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RoleAssignMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/role/user": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "角色分配给用户",
+                "parameters": [
+                    {
+                        "description": "RoleAssignUser模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RoleAssignUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysRole"
+                ],
+                "summary": "角色取消绑定用户",
+                "parameters": [
+                    {
+                        "description": "RoleAssignUser模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RoleAssignUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "获取用户列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "pageNumber",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页条数",
+                        "name": "pageSize",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回用户列表，总数",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "allOf": [
+                                                {
+                                                    "$ref": "#/definitions/response.PageResult"
+                                                },
+                                                {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "list": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/definitions/system.SysUser"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "新建用户",
+                "parameters": [
+                    {
+                        "description": "SysUser模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/user/:id": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "通过id获取用户详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id（userId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回用户详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/system.SysUser"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "编辑用户",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id（userId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "SysUser模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "删除用户",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id（userId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/user/:id/reset-password": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "重置用户登录密码",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id（userId）",
+                        "name": "id",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回密码重置成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/user/:id/status": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "修改用户状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户id（userId）",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "ChangeSystemUserStatus模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ChangeSystemUserStatus"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回操作成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/system/user/info": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "根据token获取用户信息",
+                "responses": {
+                    "200": {
+                        "description": "返回用户详情",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/system.SysUser"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/system/user/password": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "修改密码",
+                "parameters": [
+                    {
+                        "description": "ChangePassword模型",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.ChangePassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回密码修改成功提示",
+                        "schema": {
+                            "$ref": "#/definitions/response.MsgResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "common.Transcript": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "english": {
+                    "description": "英语",
+                    "type": "integer"
+                },
+                "geography": {
+                    "description": "地理",
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "language": {
+                    "description": "语文",
+                    "type": "integer"
+                },
+                "math": {
+                    "description": "数学",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "学生姓名",
+                    "type": "string"
+                },
+                "politics": {
+                    "description": "政治",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "上传Excel的用户id",
+                    "type": "integer"
+                }
+            }
+        },
+        "common.UploadFile": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "fileName": {
+                    "description": "文件名称",
+                    "type": "string"
+                },
+                "filePath": {
+                    "description": "文件存储路径",
+                    "type": "string"
+                },
+                "fileSize": {
+                    "description": "文件大小（字节）",
+                    "type": "integer"
+                },
+                "fileType": {
+                    "description": "文件MIME类型，如：image/png",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "uploadedFileName": {
+                    "description": "文件存储名称",
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "上传用户id",
+                    "type": "integer"
+                }
+            }
+        },
+        "enums.LoginType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1
+            ],
+            "x-enum-varnames": [
+                "Logout",
+                "Login"
+            ]
+        },
+        "log.SysLogLogin": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "description": "请求ip",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "操作类型 0登出 1登入",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/enums.LoginType"
+                        }
+                    ]
+                },
+                "typeText": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/system.SysUser"
+                },
+                "userAgent": {
+                    "description": "用户设备和浏览器",
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "用户ID",
+                    "type": "integer"
+                },
+                "userName": {
+                    "description": "gorm:\"-\" 用于告诉 GORM 字段只在应用层面使用，不需要持久化到数据库。这意味着这个字段不会被映射到数据库表中的任何列上。",
+                    "type": "string"
+                }
+            }
+        },
+        "log.SysLogOperate": {
+            "type": "object",
+            "properties": {
+                "agent": {
+                    "description": "代理",
+                    "type": "string"
+                },
+                "body": {
+                    "description": "请求Body",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "errorMessage": {
+                    "description": "错误信息",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ip": {
+                    "description": "请求ip",
+                    "type": "string"
+                },
+                "latency": {
+                    "description": "延迟",
+                    "type": "string"
+                },
+                "method": {
+                    "description": "请求方法",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "请求路径",
+                    "type": "string"
+                },
+                "response": {
+                    "description": "响应Body",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "请求状态",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/system.SysUser"
+                },
+                "userId": {
+                    "description": "用户id",
+                    "type": "integer"
+                },
+                "userName": {
+                    "description": "用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "request.Captcha": {
+            "type": "object",
+            "required": [
+                "captcha",
+                "captchaId"
+            ],
+            "properties": {
+                "captcha": {
+                    "description": "验证码",
+                    "type": "string"
+                },
+                "captchaId": {
+                    "description": "验证码ID",
+                    "type": "string"
+                }
+            }
+        },
+        "request.CaptchaRequest": {
+            "type": "object",
+            "required": [
+                "captchaType"
+            ],
+            "properties": {
+                "captchaType": {
+                    "description": "验证码类型",
+                    "type": "string",
+                    "enum": [
+                        "digit",
+                        "string",
+                        "math",
+                        "chinese"
+                    ]
+                }
+            }
+        },
+        "request.ChangePassword": {
+            "type": "object",
+            "required": [
+                "newPassword",
+                "password"
+            ],
+            "properties": {
+                "newPassword": {
+                    "description": "新密码",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                }
+            }
+        },
+        "request.ChangeRoleStatus": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                }
+            }
+        },
+        "request.ChangeSystemUserStatus": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "integer",
+                    "enum": [
+                        0,
+                        1
+                    ]
+                }
+            }
+        },
+        "request.Login": {
+            "type": "object",
+            "required": [
+                "password",
+                "userName"
+            ],
+            "properties": {
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "maxLength": 18,
+                    "minLength": 2
+                },
+                "userName": {
+                    "description": "用户名",
+                    "type": "string",
+                    "maxLength": 10,
+                    "minLength": 2
+                }
+            }
+        },
+        "request.MoveMenu": {
+            "type": "object",
+            "required": [
+                "dropType",
+                "originId",
+                "targetId"
+            ],
+            "properties": {
+                "dropType": {
+                    "type": "string"
+                },
+                "originId": {
+                    "type": "integer"
+                },
+                "targetId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.RoleAssignMenu": {
+            "type": "object",
+            "required": [
+                "sysRoleId"
+            ],
+            "properties": {
+                "sysMenuIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "sysRoleId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.RoleAssignUser": {
+            "type": "object",
+            "required": [
+                "sysRoleId"
+            ],
+            "properties": {
+                "sysRoleId": {
+                    "type": "integer"
+                },
+                "sysUserIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "response.CaptchaResponse": {
+            "type": "object",
+            "properties": {
+                "base64": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.LoginResponse": {
+            "type": "object",
+            "properties": {
+                "expiresAt": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/system.SysUser"
+                }
+            }
+        },
+        "response.MsgResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.PageResult": {
+            "type": "object",
+            "properties": {
+                "list": {},
+                "total": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "response.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.UploadFileResponse": {
+            "type": "object",
+            "properties": {
+                "fileName": {
+                    "type": "string"
+                },
+                "filePath": {
+                    "type": "string"
+                }
+            }
+        },
+        "system.SysDictCategory": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "description": "分类描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "label": {
+                    "description": "分类名",
+                    "type": "string"
+                },
+                "labelCode": {
+                    "description": "分类编码",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "system.SysDictData": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "description": "字典项描述",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "label": {
+                    "description": "字典键",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "value": {
+                    "description": "字典值",
+                    "type": "string"
+                }
+            }
+        },
+        "system.SysMenu": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "icon": {
+                    "description": "菜单图标",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "label": {
+                    "description": "菜单名称",
+                    "type": "string"
+                },
+                "parentId": {
+                    "description": "父级菜单ID",
+                    "type": "integer"
+                },
+                "path": {
+                    "description": "菜单路径",
+                    "type": "string"
+                },
+                "sort": {
+                    "description": "排序号（越小越靠前）",
+                    "type": "integer"
+                },
+                "type": {
+                    "description": "菜单类型 0菜单 1页面",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "system.SysRole": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "description": {
+                    "description": "角色描述等信息",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "menus": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/system.SysMenu"
+                    }
+                },
+                "roleCode": {
+                    "description": "角色的唯一标识码",
+                    "type": "string"
+                },
+                "roleName": {
+                    "description": "角色名",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "角色状态 0禁用 1启用",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "system.SysUser": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "email": {
+                    "description": "用户邮箱",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "nickName": {
+                    "description": "用户昵称",
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/system.SysRole"
+                    }
+                },
+                "status": {
+                    "description": "用户状态 0禁用 1启用",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userName": {
+                    "description": "用户登录名",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "x-token",
+            "in": "header"
+        }
+    }
+}
