@@ -2,7 +2,10 @@ package initialize
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/wangyupo/GGB/api/v1"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	v1 "github.com/wangyupo/GGB/api/v1"
+	_ "github.com/wangyupo/GGB/docs"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/middleware"
 	"github.com/wangyupo/GGB/router"
@@ -21,6 +24,9 @@ func Routers() *gin.Engine {
 	systemRouter := router.RouterGroupApp.System
 	logRouter := router.RouterGroupApp.Log
 	sysUserApi := v1.ApiGroupApp.SysApiGroup.SysUserApi
+
+	// 匹配 swagger 路由（启动后端服务后，访问地址：服务地址:端口/swagger/index.html）
+	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// 路由-不做鉴权
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
