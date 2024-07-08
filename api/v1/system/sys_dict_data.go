@@ -83,8 +83,8 @@ func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param	  id  	path 		int 			true 					"字典数据id（dictDataId）"
-// @Success   200   {object}  	response.Response{data=system.SysRole}  "返回字典数据详情"
+// @Param	  id  	path 		int 			true 						"字典数据id（dictDataId）"
+// @Success   200   {object}  	response.Response{data=system.SysDictData}  "返回字典数据详情"
 // @Router    /system/dictData/:id [GET]
 func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	// 获取路径参数

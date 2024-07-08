@@ -83,8 +83,8 @@ func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param	  id  	path 		int 			true 					"字典类型id（dictCategoryId）"
-// @Success   200   {object}  	response.Response{data=system.SysRole}  "返回字典类型详情"
+// @Param	  id  	path 		int 				true 						"字典类型id（dictCategoryId）"
+// @Success   200   {object}  	response.Response{data=system.SysDictCategory}  "返回字典类型详情"
 // @Router    /system/dictCategory/:id [GET]
 func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 	// 获取路径参数

@@ -12,7 +12,16 @@ import (
 
 type SysLogOperateApi struct{}
 
-// GetSysLogOperateList 查询系统操作日志列表
+// GetSysLogOperateList
+// @Tags      SysLogOperate
+// @Summary   获取系统操作日志列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  pageNumber 		query 	int 	true 	"分页"
+// @Param	  pageSize  		query 	int 	true 	"每页条数"
+// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回列表，总数"
+// @Router    /log/operate [GET]
 func (s *SysLogOperateApi) GetSysLogOperateList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -60,7 +69,15 @@ func (s *SysLogOperateApi) CreateSysLogOperate(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSysLogOperate 获取系统操作日志详情
+// GetSysLogOperate
+// @Tags      SysLogOperate
+// @Summary   获取系统操作日志详情
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int 			true 						"操作日志id（logOperateId）"
+// @Success   200   {object}  	response.Response{data=log.SysLogOperate}  	"返回操作日志详情"
+// @Router    /log/operate/:id [GET]
 func (s *SysLogOperateApi) GetSysLogOperate(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -80,7 +97,15 @@ func (s *SysLogOperateApi) GetSysLogOperate(c *gin.Context) {
 	response.SuccessWithData(sysLogOperate, c)
 }
 
-// DeleteSysLogOperate 删除系统操作日志
+// DeleteSysLogOperate
+// @Tags      SysLogOperate
+// @Summary   删除系统操作日志
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int		true 			"操作日志id（logOperateId）"
+// @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
+// @Router    /log/operate/:id [DELETE]
 func (s *SysLogOperateApi) DeleteSysLogOperate(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
