@@ -10,6 +10,11 @@ import (
 
 // RunWindowsServer 运行http服务
 func RunWindowsServer() {
+	if global.GGB_CONFIG.System.UseRedis {
+		// 初始化redis服务
+		initialize.Redis()
+	}
+
 	Router := initialize.Routers()
 	address := fmt.Sprintf(":%s", global.GGB_CONFIG.System.Addr)
 
