@@ -13,7 +13,7 @@ type SysLogOperate struct {
 	Method       string         `json:"method" form:"method" gorm:"comment:请求方法"`
 	Path         string         `json:"path" form:"path" gorm:"comment:请求路径"`
 	Status       int            `json:"status" form:"status" gorm:"comment:请求状态"`
-	Latency      time.Duration  `json:"latency" form:"latency" gorm:"comment:延迟" swaggertype:"integer"`
+	Latency      time.Duration  `json:"latency" form:"latency" gorm:"comment:延迟" swaggertype:"string"`
 	Agent        string         `json:"agent" form:"agent" gorm:"comment:代理"`
 	ErrorMessage string         `json:"errorMessage" form:"errorMessage" gorm:"comment:错误信息"`
 	Body         string         `json:"body" form:"body" gorm:"comment:请求Body"`
