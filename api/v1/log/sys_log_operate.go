@@ -20,7 +20,7 @@ type SysLogOperateApi struct{}
 // @Produce   application/json
 // @Param	  pageNumber 		query 	int 	true 	"分页"
 // @Param	  pageSize  		query 	int 	true 	"每页条数"
-// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回列表，总数"
+// @Success   200   {object}  	response.Response{data=response.PageResult{list=[]log.SysLogOperate}}  "返回列表，总数"
 // @Router    /log/operate [GET]
 func (s *SysLogOperateApi) GetSysLogOperateList(c *gin.Context) {
 	// 获取分页参数

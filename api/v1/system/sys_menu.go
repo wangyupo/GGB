@@ -18,7 +18,7 @@ type SysMenuApi struct{}
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回所有菜单，总数"
+// @Success   200   {object}  	response.Response{data=response.PageResult{list=[]system.SysMenu}}  "返回所有菜单，总数"
 // @Router    /system/menu [GET]
 func (s *SysMenuApi) GetSysMenuList(c *gin.Context) {
 	// 获取其它查询参数

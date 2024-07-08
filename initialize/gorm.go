@@ -92,21 +92,21 @@ func initSystemData() {
 			global.GGB_DB.Find(&sysRole, 1)
 			menus := []system.SysMenu{
 				// 系统管理
-				{Label: "系统管理", Path: "", Icon: "", ParentId: 0, Sort: 1, Type: 1, Roles: sysRole},
-				{Label: "用户管理", Path: "/systemManage/user", Icon: "", ParentId: 1, Sort: 1, Type: 1, Roles: sysRole},
-				{Label: "角色管理", Path: "/systemManage/role", Icon: "", ParentId: 1, Sort: 2, Type: 1, Roles: sysRole},
-				{Label: "分配用户", Path: "/systemManage/role/user", Icon: "", ParentId: 3, Sort: 1, Type: 2, Roles: sysRole},
-				{Label: "菜单管理", Path: "/systemManage/menu", Icon: "", ParentId: 1, Sort: 3, Type: 1, Roles: sysRole},
-				{Label: "字典管理", Path: "/systemManage/dict", Icon: "", ParentId: 1, Sort: 4, Type: 1, Roles: sysRole},
-				{Label: "字典数据", Path: "/systemManage/dict/data", Icon: "", ParentId: 6, Sort: 1, Type: 2, Roles: sysRole},
+				{Label: "系统管理", Path: "", Icon: "", ParentId: 0, Sort: 1, Type: 0, Roles: sysRole},
+				{Label: "用户管理", Path: "/systemManage/user", Icon: "", ParentId: 1, Sort: 1, Type: 0, Roles: sysRole},
+				{Label: "角色管理", Path: "/systemManage/role", Icon: "", ParentId: 1, Sort: 2, Type: 0, Roles: sysRole},
+				{Label: "分配用户", Path: "/systemManage/role/user", Icon: "", ParentId: 3, Sort: 1, Type: 1, Roles: sysRole},
+				{Label: "菜单管理", Path: "/systemManage/menu", Icon: "", ParentId: 1, Sort: 3, Type: 0, Roles: sysRole},
+				{Label: "字典管理", Path: "/systemManage/dict", Icon: "", ParentId: 1, Sort: 4, Type: 0, Roles: sysRole},
+				{Label: "字典数据", Path: "/systemManage/dict/data", Icon: "", ParentId: 6, Sort: 1, Type: 1, Roles: sysRole},
 				// 日志管理
-				{Label: "日志管理", Path: "", Icon: "", ParentId: 0, Sort: 2, Type: 1, Roles: sysRole},
-				{Label: "登录日志", Path: "/logManage/loginLog", Icon: "", ParentId: 8, Sort: 1, Type: 1, Roles: sysRole},
-				{Label: "操作日志", Path: "/logManage/operateLog", Icon: "", ParentId: 8, Sort: 2, Type: 1, Roles: sysRole},
+				{Label: "日志管理", Path: "", Icon: "", ParentId: 0, Sort: 2, Type: 0, Roles: sysRole},
+				{Label: "登录日志", Path: "/logManage/loginLog", Icon: "", ParentId: 8, Sort: 1, Type: 0, Roles: sysRole},
+				{Label: "操作日志", Path: "/logManage/operateLog", Icon: "", ParentId: 8, Sort: 2, Type: 0, Roles: sysRole},
 				// 示例页面
-				{Label: "示例页面", Path: "", Icon: "", ParentId: 0, Sort: 3, Type: 1, Roles: sysRole},
-				{Label: "文件管理", Path: "/demo/file", Icon: "", ParentId: 11, Sort: 1, Type: 1, Roles: sysRole},
-				{Label: "Excel导入/导出", Path: "/demo/excel", Icon: "", ParentId: 11, Sort: 2, Type: 1, Roles: sysRole},
+				{Label: "示例页面", Path: "", Icon: "", ParentId: 0, Sort: 3, Type: 0, Roles: sysRole},
+				{Label: "文件管理", Path: "/demo/file", Icon: "", ParentId: 11, Sort: 1, Type: 0, Roles: sysRole},
+				{Label: "Excel导入/导出", Path: "/demo/excel", Icon: "", ParentId: 11, Sort: 2, Type: 0, Roles: sysRole},
 			}
 			err = global.GGB_DB.Create(&menus).Error
 			if err != nil {

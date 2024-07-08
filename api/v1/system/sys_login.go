@@ -39,8 +39,8 @@ func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
 // @Summary   登录
 // @accept    application/json
 // @Produce   application/json
-// @Param     data  body      request.Login           true  "SysDictionary模型"
-// @Success   200   {object}  response.Response{data=systemResponse.LoginResponse,msg=string}  "返回包括用户信息,token,过期时间"
+// @Param     data  body      request.Login           		true 								 	"SysDictionary模型"
+// @Success   200   {object}  response.Response{data=systemResponse.LoginResponse,msg=string}  		"返回包括用户信息,token,过期时间"
 // @Router    /login [POST]
 func (s *SysUserApi) Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据

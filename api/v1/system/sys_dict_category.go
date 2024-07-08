@@ -20,7 +20,7 @@ type SysDictCategoryApi struct{}
 // @Produce   application/json
 // @Param	  pageNumber 		query 	int 	true 	"分页"
 // @Param	  pageSize  		query 	int 	true 	"每页条数"
-// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回列表，总数"
+// @Success   200   {object}  	response.Response{data=response.PageResult{list=[]system.SysDictCategory}}  "返回列表，总数"
 // @Router    /system/dictCategory [GET]
 func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 	// 获取分页参数
