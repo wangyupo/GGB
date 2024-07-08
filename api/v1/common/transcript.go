@@ -31,8 +31,8 @@ func (t *TranscriptApi) DownloadExcelTemplate(c *gin.Context) {
 // @Security  ApiKeyAuth
 // @accept    multipart/form-data
 // @Produce   application/json
-// @Param     file  formData  file   		true  	"上传文件"
-// @Success   200   {object}  response.MsgResult  	"返回数据导入成功提示"
+// @Param     file  formData  file   		true  		"上传文件"
+// @Success   200   {object}  response.MsgResponse  	"返回数据导入成功提示"
 // @Router    /common/excel/import [POST]
 func (t *TranscriptApi) ImportByExcel(c *gin.Context) {
 	file, _, err := c.Request.FormFile("file")
