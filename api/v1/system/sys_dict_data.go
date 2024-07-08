@@ -14,7 +14,7 @@ type SysDictDataApi struct{}
 
 // GetSysDictDataList
 // @Tags      SysDictData
-// @Summary   获取字典列表
+// @Summary   获取字典数据列表
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
@@ -48,7 +48,7 @@ func (s *SysDictDataApi) GetSysDictDataList(c *gin.Context) {
 
 // CreateSysDictData
 // @Tags      SysDictData
-// @Summary   新建字典
+// @Summary   新建字典数据
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
@@ -79,12 +79,12 @@ func (s *SysDictDataApi) CreateSysDictData(c *gin.Context) {
 
 // GetSysDictData
 // @Tags      SysDictData
-// @Summary   获取字典详情
+// @Summary   获取字典数据详情
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param	  id  	path 		int 			true 					"字典id（dictDataId）"
-// @Success   200   {object}  	response.Response{data=system.SysRole}  "返回角色详情"
+// @Param	  id  	path 		int 			true 					"字典数据id（dictDataId）"
+// @Success   200   {object}  	response.Response{data=system.SysRole}  "返回字典数据详情"
 // @Router    /system/dictData/:id [GET]
 func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 	// 获取路径参数
@@ -107,11 +107,11 @@ func (s *SysDictDataApi) GetSysDictData(c *gin.Context) {
 
 // UpdateSysDictData
 // @Tags      SysDictData
-// @Summary   编辑字典
+// @Summary   编辑字典数据
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param	  id  	path 		int 				true 	"字典id（dictDataId）"
+// @Param	  id  	path 		int 				true 	"字典数据id（dictDataId）"
 // @Param	  data  body 		system.SysDictData 	true 	"SysDictData模型"
 // @Success   200   {object}  	response.MsgResponse  		"返回操作成功提示"
 // @Router    /system/dictData/:id [PUT]
@@ -145,11 +145,11 @@ func (s *SysDictDataApi) UpdateSysDictData(c *gin.Context) {
 
 // DeleteSysDictData
 // @Tags      SysDictData
-// @Summary   删除字典
+// @Summary   删除字典数据
 // @Security  ApiKeyAuth
 // @accept    application/json
 // @Produce   application/json
-// @Param	  id  	path 		int		true 			"字典id（dictDataId）"
+// @Param	  id  	path 		int		true 			"字典数据id（dictDataId）"
 // @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
 // @Router    /system/dictData/:id [DELETE]
 func (s *SysDictDataApi) DeleteSysDictData(c *gin.Context) {

@@ -19,5 +19,6 @@ func (s *DictCategoryRouter) InitDictCategoryRouter(Router *gin.RouterGroup) {
 	}
 	{
 		dictCategoryRouterWithoutRecord.GET("", dictCategoryApi.GetSysDictCategoryList) // 获取字典类型列表
+		dictCategoryRouterWithoutRecord.GET("/:id", dictCategoryApi.GetSysDictCategory) // 获取字典类型详情
 	}
 }
