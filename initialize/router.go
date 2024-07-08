@@ -9,16 +9,12 @@ import (
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/middleware"
 	"github.com/wangyupo/GGB/router"
-	"go.uber.org/zap"
 )
 
 // Routers 注册路由
 func Routers() *gin.Engine {
-	// 初始化zap日志
-	logger, _ := zap.NewProduction()
-	defer logger.Sync()
-
-	Router := gin.Default()
+	Router := gin.New()
+	Router.Use(gin.Recovery())
 
 	commonRouter := router.RouterGroupApp.Common
 	systemRouter := router.RouterGroupApp.System
@@ -39,7 +35,7 @@ func Routers() *gin.Engine {
 
 	// 路由-需要鉴权
 	PrivateGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
-	PrivateGroup.Use(middleware.Logger(logger)).Use(middleware.Jwt())
+	PrivateGroup.Use(middleware.Jwt())
 	{
 		PrivateGroup.POST("/logout", sysUserApi.Logout) // 登出
 
