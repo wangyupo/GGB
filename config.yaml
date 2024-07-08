@@ -38,12 +38,20 @@ system:
   db-type: mysql
   # 控制oss选择走本地还是七牛等其他仓，默认本地
   oss-type: local
+  # 是否启用redis
+  use-redis: false
   # 程序监听端口
   addr: 5312
   # url前缀
   router-prefix: /api
   # 语言环境（zh|en|uk|fr）
   language: zh
+
+# redis configuration
+redis:
+  addr: 127.0.0.1:6379
+  password: ""
+  db: 0
 
 # mysql connect configuration
 mysql:

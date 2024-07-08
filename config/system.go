@@ -6,4 +6,5 @@ type System struct {
 	Addr         string `mapstructure:"addr" json:"addr" yaml:"addr"`
 	RouterPrefix string `mapstructure:"router-prefix" json:"router-prefix" yaml:"router-prefix"`
 	Language     string `mapstructure:"language" json:"language" yaml:"language"`
+	UseRedis     bool   `mapstructure:"use-redis" json:"use-redis" yaml:"use-redis"`
 }
