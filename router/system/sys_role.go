@@ -23,6 +23,7 @@ func (s *RoleRouter) InitRoleRouter(Router *gin.RouterGroup) {
 	}
 	{
 		roleRouterWithoutRecord.GET("", roleApi.GetSysRoleList)         // 获取角色列表
+		roleRouterWithoutRecord.GET("/:id", roleApi.GetSysRole)         // 获取角色详情
 		roleRouterWithoutRecord.GET("/:id/user", roleApi.GetUserByRole) // 获取角色用户
 		roleRouterWithoutRecord.GET("/:id/menu", roleApi.GetMenuByRole) // 获取角色权限菜单
 	}

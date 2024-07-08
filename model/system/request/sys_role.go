@@ -7,7 +7,7 @@ type SysRoleQuery struct {
 }
 
 type ChangeRoleStatus struct {
-	Status int `json:"status" binding:"required"`
+	Status int `json:"status" binding:"required,oneof=0 1"`
 }
 
 type RoleAssignMenu struct {

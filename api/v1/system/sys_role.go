@@ -12,7 +12,16 @@ import (
 
 type SysRoleApi struct{}
 
-// GetSysRoleList 列表
+// GetSysRoleList
+// @Tags      SysRole
+// @Summary   获取角色列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  pageNumber 		query 	int 	true 	"分页"
+// @Param	  pageSize  		query 	int 	true 	"每页条数"
+// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回列表，总数"
+// @Router    /system/role [GET]
 func (s *SysRoleApi) GetSysRoleList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -37,7 +46,15 @@ func (s *SysRoleApi) GetSysRoleList(c *gin.Context) {
 	}, c)
 }
 
-// CreateSysRole 新建
+// CreateSysRole
+// @Tags      SysRole
+// @Summary   新建角色
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data	body		system.SysRole	true  "SysRole模型"
+// @Success   200   {object}  	response.MsgResponse  "返回操作成功提示"
+// @Router    /system/role [POST]
 func (s *SysRoleApi) CreateSysRole(c *gin.Context) {
 	// 声明 system.SysRole 类型的变量以存储 JSON 数据
 	var sysRole system.SysRole
@@ -60,7 +77,15 @@ func (s *SysRoleApi) CreateSysRole(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSysRole 详情
+// GetSysRole
+// @Tags      SysRole
+// @Summary   角色详情
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int 	true 	"角色id（roleId）"
+// @Success   200   {object}  	response.Response{data=system.SysRole}  "返回角色详情"
+// @Router    /system/role/:id [GET]
 func (s *SysRoleApi) GetSysRole(c *gin.Context) {
 	// 获取路径参数
 	id, err := utils.Str2uint(c.Param("id"))
@@ -80,7 +105,16 @@ func (s *SysRoleApi) GetSysRole(c *gin.Context) {
 	response.SuccessWithData(sysRole, c)
 }
 
-// UpdateSysRole 编辑
+// UpdateSysRole
+// @Tags      SysRole
+// @Summary   编辑角色
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 	int 			true 	"角色id（roleId）"
+// @Param	  data  body 	system.SysRole 	true 	"SysRole模型"
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /system/role/:id [PUT]
 func (s *SysRoleApi) UpdateSysRole(c *gin.Context) {
 	// 获取路径参数
 	id, err := utils.Str2uint(c.Param("id"))
@@ -109,7 +143,15 @@ func (s *SysRoleApi) UpdateSysRole(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSysRole 删除
+// DeleteSysRole
+// @Tags      SysRole
+// @Summary   删除角色
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 		int		true 			"角色id（roleId）"
+// @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
+// @Router    /system/role/:id [DELETE]
 func (s *SysRoleApi) DeleteSysRole(c *gin.Context) {
 	// 获取路径参数
 	id, _ := utils.Str2uint(c.Param("id"))
@@ -125,7 +167,16 @@ func (s *SysRoleApi) DeleteSysRole(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// ChangeRoleStatus 修改角色状态
+// ChangeRoleStatus
+// @Tags      SysRole
+// @Summary   修改角色状态
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  		path 		int								true 	"角色id（roleId）"
+// @Param	  data  	body 		request.ChangeRoleStatus		true 	"ChangeRoleStatus模型"
+// @Success   200   	{object} 	response.MsgResponse  					"返回操作成功提示"
+// @Router    /system/role/:id/status [PATCH]
 func (s *SysRoleApi) ChangeRoleStatus(c *gin.Context) {
 	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：角色id", c)
@@ -149,7 +200,15 @@ func (s *SysRoleApi) ChangeRoleStatus(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// RoleAssignMenu 角色分配菜单
+// RoleAssignMenu
+// @Tags      SysRole
+// @Summary   角色分配菜单
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  data  body 		request.RoleAssignMenu		true 	"RoleAssignMenu模型"
+// @Success   200   {object}  	response.MsgResponse  				"返回操作成功提示"
+// @Router    /system/role/menu [POST]
 func (s *SysRoleApi) RoleAssignMenu(c *gin.Context) {
 	var req request.RoleAssignMenu
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -167,7 +226,15 @@ func (s *SysRoleApi) RoleAssignMenu(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// RoleAssignUser 角色分配给用户
+// RoleAssignUser
+// @Tags      SysRole
+// @Summary   角色分配给用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  data  body 		request.RoleAssignUser		true 	"RoleAssignUser模型"
+// @Success   200   {object}  	response.MsgResponse  				"返回操作成功提示"
+// @Router    /system/role/user [POST]
 func (s *SysRoleApi) RoleAssignUser(c *gin.Context) {
 	var req request.RoleAssignUser
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -185,7 +252,15 @@ func (s *SysRoleApi) RoleAssignUser(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// RoleUnAssignUser 角色取消绑定用户
+// RoleUnAssignUser
+// @Tags      SysRole
+// @Summary   角色取消绑定用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  data  body 		request.RoleAssignUser		true 	"RoleAssignUser模型"
+// @Success   200   {object}  	response.MsgResponse  				"返回操作成功提示"
+// @Router    /system/role/user [DELETE]
 func (s *SysRoleApi) RoleUnAssignUser(c *gin.Context) {
 	var req request.RoleAssignUser
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -203,7 +278,17 @@ func (s *SysRoleApi) RoleUnAssignUser(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetUserByRole 获取角色绑定的用户
+// GetUserByRole
+// @Tags      SysRole
+// @Summary   获取角色绑定的用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id 				path 	int 	true 	"角色id（roleId）"
+// @Param	  pageNumber 		query 	int 	true 	"分页"
+// @Param	  pageSize  		query 	int 	true 	"每页条数"
+// @Success   200   {object}  	response.Response{data=response.PageResult}  "返回用户列表，总数"
+// @Router    /system/role/:id/user [GET]
 func (s *SysRoleApi) GetUserByRole(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -227,7 +312,15 @@ func (s *SysRoleApi) GetUserByRole(c *gin.Context) {
 	}, c)
 }
 
-// GetMenuByRole 获取角色绑定的菜单
+// GetMenuByRole
+// @Tags      SysRole
+// @Summary   获取角色绑定的菜单
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id 	path 		int 	true 	"角色id（roleId）"
+// @Success   200   {object}  	response.Response{data=[]system.SysMenu}  "返回菜单列表"
+// @Router    /system/role/:id/menu [GET]
 func (s *SysRoleApi) GetMenuByRole(c *gin.Context) {
 	if c.Param("id") == "" {
 		response.FailWithMessage("缺少参数：角色id", c)
