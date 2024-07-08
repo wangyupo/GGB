@@ -16,7 +16,15 @@ var (
 
 type SysUserApi struct{}
 
-// ChangePassword 修改密码
+// ChangePassword
+// @Tags      SysUser
+// @Summary   修改密码
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body	request.ChangePassword	true	"ChangePassword模型"
+// @Success   200   {object}  response.MsgResponse  "返回密码修改成功提示"
+// @Router    /system/user/password [patch]
 func (s *SysUserApi) ChangePassword(c *gin.Context) {
 	var req request.ChangePassword
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -42,7 +50,15 @@ func (s *SysUserApi) ChangePassword(c *gin.Context) {
 	response.SuccessWithMessage("密码修改成功", c)
 }
 
-// ResetPassword 重置用户登录密码
+// ResetPassword
+// @Tags      SysUser
+// @Summary   重置用户登录密码
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     id  path   int	ture	"用户id（userId）"
+// @Success   200   {object}  response.MsgResponse  "返回密码重置成功提示"
+// @Router    /system/user/:id/reset-password [patch]
 func (s *SysUserApi) ResetPassword(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
@@ -57,10 +73,17 @@ func (s *SysUserApi) ResetPassword(c *gin.Context) {
 		return
 	}
 
-	response.SuccessWithMessage("密码重置成功！", c)
+	response.SuccessWithMessage("密码重置成功", c)
 }
 
-// GetSystemUserInfo 根据token获取用户信息
+// GetSystemUserInfo
+// @Tags      SysUser
+// @Summary   根据token获取用户信息
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Success   200   {object}  response.Response{data=system.SysUser}  "返回用户详情"
+// @Router    /system/user/info [get]
 func (s *SysUserApi) GetSystemUserInfo(c *gin.Context) {
 	id, err := utils.GetUserID(c)
 	if err != nil {
@@ -78,7 +101,16 @@ func (s *SysUserApi) GetSystemUserInfo(c *gin.Context) {
 	response.SuccessWithData(systemUser, c)
 }
 
-// GetSystemUserList 列表
+// GetSystemUserList
+// @Tags      SysUser
+// @Summary   获取用户列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  pageNumber 	query 	int 	true 	"分页"
+// @Param	  pageSize  	query 	int 	true 	"每页条数"
+// @Success   200   {object}  response.Response{data=response.PageResult}  "返回列表，总数"
+// @Router    /system/user [get]
 func (s *SysUserApi) GetSystemUserList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -103,7 +135,15 @@ func (s *SysUserApi) GetSystemUserList(c *gin.Context) {
 	}, c)
 }
 
-// CreateSystemUser 新建
+// CreateSystemUser
+// @Tags      SysUser
+// @Summary   新建用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data	body	system.SysUser	true  "SysUser模型"
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /system/user [post]
 func (s *SysUserApi) CreateSystemUser(c *gin.Context) {
 	// 声明 system.SysUser 类型的变量以存储 JSON 数据
 	var systemUser system.SysUser
@@ -126,7 +166,15 @@ func (s *SysUserApi) CreateSystemUser(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// GetSystemUser 详情
+// GetSystemUser
+// @Tags      SysUser
+// @Summary   通过id获取用户详情
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 	int 	true 	"用户id（userId）"
+// @Success   200   {object}  response.Response{data=system.SysUser}  "返回用户详情"
+// @Router    /system/user/:id [get]
 func (s *SysUserApi) GetSystemUser(c *gin.Context) {
 	// 获取路径参数
 	id, err := utils.Str2uint(c.Param("id"))
@@ -145,7 +193,16 @@ func (s *SysUserApi) GetSystemUser(c *gin.Context) {
 	response.SuccessWithData(systemUser, c)
 }
 
-// UpdateSystemUser 编辑
+// UpdateSystemUser
+// @Tags      SysUser
+// @Summary   编辑用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 	int 			true 	"用户id（userId）"
+// @Param	  data  body 	system.SysUser 	true 	"SysUser模型"
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /system/user/:id [put]
 func (s *SysUserApi) UpdateSystemUser(c *gin.Context) {
 	// 获取路径参数
 	id, err := utils.Str2uint(c.Param("id"))
@@ -174,7 +231,15 @@ func (s *SysUserApi) UpdateSystemUser(c *gin.Context) {
 	response.SuccessWithDefaultMessage(c)
 }
 
-// DeleteSystemUser 删除用户
+// DeleteSystemUser
+// @Tags      SysUser
+// @Summary   删除用户
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  	path 	int		true 	"用户id（userId）"
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /system/user/:id [delete]
 func (s *SysUserApi) DeleteSystemUser(c *gin.Context) {
 	// 获取路径参数
 	id, err := utils.Str2uint(c.Param("id"))
@@ -191,10 +256,19 @@ func (s *SysUserApi) DeleteSystemUser(c *gin.Context) {
 	}
 
 	// 返回响应结果
-	response.SuccessWithMessage("Success to deleted systemUser", c)
+	response.SuccessWithDefaultMessage(c)
 }
 
-// ChangeSystemUserStatus 修改用户状态
+// ChangeSystemUserStatus
+// @Tags      SysUser
+// @Summary   修改用户状态
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param	  id  		path 	int									true 	"用户id（userId）"
+// @Param	  data  	body 	request.ChangeSystemUserStatus		true 	"ChangeSystemUserStatus模型"
+// @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
+// @Router    /system/user/:id/status [patch]
 func (s *SysUserApi) ChangeSystemUserStatus(c *gin.Context) {
 	id, err := utils.Str2uint(c.Param("id"))
 	if err != nil {

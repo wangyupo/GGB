@@ -10,5 +10,5 @@ type SysUser struct {
 	Email    string     `json:"email" gorm:"type:varchar(128);comment:用户邮箱"`
 	Password string     `json:"-" gorm:"comment:密码"`
 	Status   uint       `json:"status" gorm:"type:tinyint(1);default:0;comment:用户状态 0禁用 1启用"`
-	Roles    []*SysRole `json:"roles" gorm:"many2many:sys_role_user;"`
+	Roles    []*SysRole `json:"-" gorm:"many2many:sys_role_user;"`
 }

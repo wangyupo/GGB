@@ -21,7 +21,8 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouter.PATCH("/:id/status", userApi.ChangeSystemUserStatus) // 修改用户状态
 	}
 	{
-		userRouterWithoutRecord.GET("", userApi.GetSystemUserList) // 获取用户列表
-		userRouterWithoutRecord.GET("/:id", userApi.GetSystemUser) // 获取用户详情
+		userRouterWithoutRecord.GET("", userApi.GetSystemUserList)      // 获取用户列表
+		userRouterWithoutRecord.GET("/:id", userApi.GetSystemUser)      // 获取用户详情（通过用户id）
+		userRouterWithoutRecord.GET("/info", userApi.GetSystemUserInfo) // 获取用户详情（通过token）
 	}
 }
