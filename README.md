@@ -103,6 +103,71 @@ GGB/
     └── upload           # oss
 ```
 
+## 问题注解
+
+### 1、如何使用docker部署该项目？
+
+1）创建必要容器
+
+```bash
+# 拉取 mysql 镜像
+docker pull mysql5.7
+
+# 使用 mysql 镜像创建容器（将 docker 宿主机的 3307 端口映射到容器的 3306 端口；容器命名为 mysql；初始化 root 用户的密码为 123456）
+docker run -itd -p 3307:3306 --name=mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+
+# 拉取 redis 镜像
+docker pull redis:latest
+
+# 使用 redis 镜像创建容器（将 docker 宿主机的 6379 端口映射到容器的 6378 端口；容器命名为 redis）
+docker run -itd -p 6379:6378 --name=redis redis:latest
+
+# 拉取 nginx 镜像
+docker pull nginx:latest
+
+# 使用 nginx 镜像创建容器（将 docker 宿主机的 81 端口映射到容器的 80 端口；容器命名为 nginx）
+docker run -itd -p 81:80 --name=nginx nginx:latest
+```
+
+2）查看容器 IP，配置 config.docker.yaml
+
+```bash
+# 查看 mysql 容器的 IP
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
+
+# 修改 config.docker.yaml 中的 mysql 配置
+mysql:
+  host: 这里填你查到的mysql容器的IP
+  password: 这里填你设置的mysql的root密码
+
+# 查看 redis 容器的 IP
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis
+
+# 修改 config.docker.yaml 中的 redis 配置
+redis:
+  addr: 这里填你查到的redis容器的IP
+```
+
+3）创建本项目的docker镜像（docker image），并创建容器
+
+```bash
+# 创建项目的 docker 镜像（镜像名为 ggb）
+docker build -t ggb .
+
+# 创建项目容器（程序会自动运行）
+docker run -p 5313:5312 --name=ggb_server ggb
+```
+
+### 2、如何访问OpenAPI（Swagger）？
+
+```bash
+# 本地启动项目
+http://localhost:5312/swagger/index.html
+
+# docker 启动项目（启动项目容器时，已经把 docker 宿主机的 5313 端口已经映射到容器的 5312 端口）
+http://localhost:5313/swagger/index.html
+```
+
 ## License
 
 [MIT © Richard McRichface.](https://github.com/wangyupo/GGB/blob/main/LICENSE)
