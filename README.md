@@ -23,6 +23,10 @@
 
 GGB（猪猪侠）通过清晰的目录结构和模块化设计，为开发者提供了一套高效、可维护的后端服务架构。无论是初学者还是经验丰富的开发者，都能通过 GGB 快速上手并构建高质量的 Web 应用。
 
+## 语言环境
+
+golang版本 >= v1.22
+
 ## 项目运行
 
 ```bash
@@ -161,10 +165,19 @@ docker run -p 5313:5312 --name=ggb_server ggb
 ### 2、如何访问OpenAPI（Swagger）？
 
 ```bash
+# 生成/更新 API 文档
+swag init
+
 # 本地启动项目
+go run main.go
+
+# 访问本地 OpenAPI 地址
 http://localhost:5312/swagger/index.html
 
 # docker 启动项目（启动项目容器时，已经把 docker 宿主机的 5313 端口已经映射到容器的 5312 端口）
+docker run -p 5313:5312 --name=ggb_server ggb
+
+# 访问本地映射的 OpenAPI 地址
 http://localhost:5313/swagger/index.html
 ```
 
