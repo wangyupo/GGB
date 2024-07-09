@@ -23,7 +23,7 @@
 
 GGB（猪猪侠）通过清晰的目录结构和模块化设计，为开发者提供了一套高效、可维护的后端服务架构。无论是初学者还是经验丰富的开发者，都能通过 GGB 快速上手并构建高质量的 Web 应用。
 
-## 运行方式
+## 项目运行
 
 ```bash
 # 克隆项目
@@ -38,8 +38,30 @@ go generate
 # 编译 
 go build main.go
 
-# 运行二进制
+# 运行编译好的包
 ./main (windows运行命令为 ./main.exe)
+```
+
+### 指定配置文件运行
+
+```bash
+# 本地启动服务
+go run main.go
+
+# 根据指定yaml配置启动服务
+go run main.go -c ./config.docker.yaml
+```
+
+### windows编译并生成可执行文件
+
+```bash
+set GOOS=linux
+go build -o main
+set GOOS=windos
+
+或直接执行以下命令：
+
+./build-linux.sh
 ```
 
 ## 项目目录结构
