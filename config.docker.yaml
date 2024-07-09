@@ -49,7 +49,7 @@ system:
 
 # redis configuration
 redis:
-  addr: 172.17.0.2:6379
+  addr: 172.17.0.4:6379
   password: ""
   db: 0
 
