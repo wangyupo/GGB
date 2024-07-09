@@ -22,6 +22,6 @@ func Redis() {
 		return
 	}
 
-	global.GGB_LOG.Info("redis connect ping response:", zap.String("pong", pong))
+	global.GGB_LOG.Info("redis connect success, here is ping response:", zap.String("pong", pong))
 	global.GGB_REDIS = client
 }
