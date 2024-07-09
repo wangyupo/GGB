@@ -1,0 +1,85 @@
+# jwt configuration
+jwt:
+  # 密钥
+  signing-key: c2VjcmV0X1hZUkFMUlJGVEtIWUdDWkhFNDNfSkpCSFBFVFpIUVFZVVRLTE5CRkFEUg==
+  # token过期时间（天）
+  expires-time: 7d
+  # 签发者
+  issuer: GGB
+
+# zap logger configuration
+zap:
+  # 日志等级（debug|info|warn|error|dpanic|panic|fatal）
+  level: info
+  # 输出形式（json-{"level":"error","time":"2024-06-24 09:56:09","msg":"222"} | console-2024-06-23 15:55:59	error	222）
+  format: console
+  # 日志前缀
+  prefix: "[github.com/wangyupo/GGB]"
+  # 日志存放路径
+  director: log
+  # 显示行号
+  show-line: true
+  # 显示栈名
+  stacktrace-key: stacktrace
+  # 控制台打印
+  log-in-console: true
+  # 大小限制（单位：M）
+  max-size: 50
+  # 备份数量
+  max-backups: 50
+  # 存放时间（单位：天）
+  max-age: 30
+  # 是否压缩
+  compress: false
+
+# system configuration
+system:
+  # 数据库类型
+  db-type: mysql
+  # 控制oss选择走本地还是七牛等其他仓，默认本地
+  oss-type: local
+  # 是否启用redis
+  use-redis: true
+  # 程序监听端口
+  addr: 5312
+  # url前缀
+  router-prefix: /api
+  # 语言环境（zh|en|uk|fr）
+  language: zh
+
+# redis configuration
+redis:
+  addr: 172.17.0.2:6379
+  password: ""
+  db: 0
+
+# mysql connect configuration
+mysql:
+  # 主机地址
+  host: "172.17.0.3"
+  # 端口
+  port: "3306"
+  # 数据库名
+  db-name: "ggb"
+  # 用户名
+  username: "root"
+  # 密码
+  password: "123456"
+  # 编码方式
+  charset: "utf8mb4"
+  # 字符集（utf8mb4_general_ci速度比utf8mb4_unicode_ci快些）
+  collation: utf8mb4_general_ci
+
+# local configuration
+local:
+  # 文件路径
+  path: uploads/file
+  # 文件储存路径
+  store-path: uploads/file
+
+# excel configuration
+excel:
+  # Excel模板存放路径（通常用于通过Excel模板导入数据）
+  template-dir: resource/excel/template/
+  # Excel输出路径（导出Excel时，Excel文件的临时存放目录）
+  output-dir: resource/excel/output/
