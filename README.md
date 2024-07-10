@@ -111,55 +111,93 @@ GGB/
 
 ### 1、如何使用docker部署该项目？
 
-1）创建必要容器
+1）新建自定义网络
+
+```bash
+# 查看已存在的 docker 网络，确认没有重名
+docker network ls
+
+# 新建网络，IP 地址范围从 10.1.0.0 到 10.1.255.255，网络名称为 my-net
+docker network create --subnet=10.1.0.0/16 my-net
+
+# （无需执行，仅作命令展示）删除自定义网络
+docker network rm my-net
+```
+
+2）在自定义网络上创建必要的容器
 
 ```bash
 # 拉取 mysql 镜像
-docker pull mysql5.7
+docker pull mysql:8.0
 
-# 使用 mysql 镜像创建容器（将 docker 宿主机的 3307 端口映射到容器的 3306 端口；容器命名为 mysql；初始化 root 用户的密码为 123456）
-docker run -itd -p 3307:3306 --name=mysql -e MYSQL_ROOT_PASSWORD=123456 mysql:5.7
+# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456）
+docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0
 
 # 拉取 redis 镜像
 docker pull redis:latest
 
-# 使用 redis 镜像创建容器（将 docker 宿主机的 6379 端口映射到容器的 6378 端口；容器命名为 redis）
-docker run -itd -p 6379:6378 --name=redis redis:latest
+# 使用 redis 镜像创建容器（容器命名为 redis；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 6380 端口映射到容器的 6379 端口）
+docker run -itd --name redis --network my-net --ip 10.1.0.3 -p 6380:6379 redis:latest
 
 # 拉取 nginx 镜像
 docker pull nginx:latest
 
-# 使用 nginx 镜像创建容器（将 docker 宿主机的 81 端口映射到容器的 80 端口；容器命名为 nginx）
-docker run -itd -p 81:80 --name=nginx nginx:latest
+# 使用 nginx 镜像创建容器（容器命名为 nginx；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 81 端口映射到容器的 80 端口）
+docker run -itd --name nginx --network my-net --ip 10.1.0.4 -p 81:80 nginx:latest
 ```
 
-2）查看容器 IP，配置 config.docker.yaml
+2）配置 config.docker.yaml
 
 ```bash
-# 查看 mysql 容器的 IP
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' mysql
-
 # 修改 config.docker.yaml 中的 mysql 配置
 mysql:
-  host: 这里填你查到的mysql容器的IP
-  password: 这里填你设置的mysql的root密码
-
-# 查看 redis 容器的 IP
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' redis
+  host: 10.1.0.2          # 这里填mysql容器的IP
+  password: 123456        # 这里填mysql的root密码
 
 # 修改 config.docker.yaml 中的 redis 配置
 redis:
-  addr: 这里填你查到的redis容器的IP
+  addr: 10.1.0.3:6378     # 这里填redis容器的IP:端口
+  
+# （无需执行，仅作命令展示）查看容器的 IP
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' containerName
 ```
 
-3）创建本项目的docker镜像（docker image），并创建容器
+3）使用 Navicat 等数据库工具，连接 docker 的 mysql，创建数据库 ggb
 
 ```bash
-# 创建项目的 docker 镜像（镜像名为 ggb）
-docker build -t ggb .
+# 主机
+localhost
 
-# 创建项目容器（程序会自动运行）
-docker run -p 5313:5312 --name=ggb_server ggb
+# 端口
+3307
+
+# 用户名
+root
+
+# 密码
+123456
+
+# 数据库名称
+ggb
+
+# 数据库字符集
+utf8mb4
+
+# 数据库排序规则
+utf8mb4_general_ci
+```
+
+4）创建本项目的docker镜像（docker image），并创建容器
+
+```bash
+# 创建项目的 docker 镜像（镜像名为 ggb，tag默认为 latest，）
+docker build -t ggb .     # 也可指定tag，如：docker build -t ggb:v0.0.1 .
+
+# 创建项目容器（server 程序会在容器启动时自动运行）
+docker run --name ggb_server --network my-net --ip 10.1.0.113 -p 5313:5312 ggb
+
+# （无需执行，仅作命令展示）启动已有容器，并附加到其控制台输出（-a），同时保持交互模式（-i）
+docker start -a -i my-container
 ```
 
 ### 2、如何访问OpenAPI（Swagger）？
