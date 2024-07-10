@@ -49,14 +49,14 @@ system:
 
 # redis configuration
 redis:
-  addr: 172.17.0.4:6379
+  addr: 10.1.0.3:6379
   password: ""
   db: 0
 
 # mysql connect configuration
 mysql:
   # 主机地址
-  host: "172.17.0.3"
+  host: "10.1.0.2"
   # 端口
   port: "3306"
   # 数据库名
