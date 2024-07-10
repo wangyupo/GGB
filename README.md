@@ -156,7 +156,7 @@ mysql:
 
 # 修改 redis 配置
 redis:
-  addr: 10.1.0.3:6378     # 这里填redis容器的IP:端口
+  addr: 10.1.0.3:6379     # 这里填redis容器的IP:端口
   
 # （无需执行，仅作命令展示）查看容器的 IP
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' containerName
