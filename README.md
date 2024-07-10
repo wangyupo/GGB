@@ -124,7 +124,7 @@ docker network create --subnet=10.1.0.0/16 my-net
 docker network rm my-net
 ```
 
-2）在自定义网络上创建必要的容器
+2）拉取镜像，并在自定义网络上创建容器
 
 ```bash
 # 拉取 mysql 镜像
@@ -146,15 +146,15 @@ docker pull nginx:latest
 docker run -itd --name nginx --network my-net --ip 10.1.0.4 -p 81:80 -v C:/dockerVolumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -v C:/dockerVolumes/nginx/conf.d:/etc/nginx/conf.d:ro -v C:/dockerVolumes/nginx/html:/usr/share/nginx/html -v C:/dockerVolumes/nginx/log:/var/log/nginx nginx:latest
 ```
 
-3）配置 config.docker.yaml
+3）修改 config.docker.yaml 配置
 
 ```bash
-# 修改 config.docker.yaml 中的 mysql 配置
+# 修改 mysql 配置
 mysql:
   host: 10.1.0.2          # 这里填mysql容器的IP
   password: 123456        # 这里填mysql的root密码
 
-# 修改 config.docker.yaml 中的 redis 配置
+# 修改 redis 配置
 redis:
   addr: 10.1.0.3:6378     # 这里填redis容器的IP:端口
   
@@ -162,7 +162,7 @@ redis:
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' containerName
 ```
 
-4）使用 Navicat 等数据库工具，连接 docker 的 mysql，创建数据库 ggb
+4）使用 Navicat 等数据库工具，连接 docker 容器中的 mysql，并创建数据库 ggb
 
 ```bash
 # 主机
@@ -187,20 +187,20 @@ utf8mb4
 utf8mb4_general_ci
 ```
 
-5）创建本项目的docker镜像（docker image），并创建容器
+5）创建本项目的 docker 镜像（docker image），并创建容器
 
 ```bash
 # 创建项目的 docker 镜像（镜像名为 ggb，tag默认为 latest，）
 docker build -t ggb .     # 也可指定tag，如：docker build -t ggb:v0.0.1 .
 
-# 创建项目容器（server 程序会在容器启动时自动运行）
+# 创建项目容器（server 服务会在容器启动时自动运行）
 docker run --name ggb_server --network my-net --ip 10.1.0.113 -p 5313:5312 ggb
 
 # （无需执行，仅作命令展示）启动已有容器，并附加到其控制台输出（-a），同时保持交互模式（-i）
 docker start -a -i my-container
 ```
 
-### 2、如何访问OpenAPI（Swagger）？
+### 2、如何访问 OpenAPI（Swagger）？
 
 ```bash
 # 生成/更新 API 文档
