@@ -142,7 +142,7 @@ docker run -itd --name redis --network my-net --ip 10.1.0.3 -p 6380:6379 -v C:/d
 # 拉取 nginx 镜像
 docker pull nginx:latest
 
-# 使用 nginx 镜像创建容器（容器命名为 nginx；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 81 端口映射到容器的 80 端口；挂载 nginx 配置卷到本地）
+# 使用 nginx 镜像创建容器（容器命名为 nginx；使用自定义网络，绑定IP为 10.1.0.4；将 docker 宿主机的 81 端口映射到容器的 80 端口；挂载 nginx 配置卷到本地）
 docker run -itd --name nginx --network my-net --ip 10.1.0.4 -p 81:80 -v C:/dockerVolumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -v C:/dockerVolumes/nginx/conf.d:/etc/nginx/conf.d:ro -v C:/dockerVolumes/nginx/html:/usr/share/nginx/html -v C:/dockerVolumes/nginx/log:/var/log/nginx nginx:latest
 ```
 
