@@ -190,8 +190,8 @@ utf8mb4_general_ci
 5）创建本项目的 docker 镜像（docker image），并创建容器
 
 ```bash
-# 创建项目的 docker 镜像（镜像名为 ggb，tag默认为 latest，）
-docker build -t ggb .     # 也可指定tag，如：docker build -t ggb:v0.0.1 .
+# 创建项目的 docker 镜像（镜像名为 ggb，tag 默认为 latest，）
+docker build -t ggb .     # 也可指定 tag，如：docker build -t ggb:v0.0.1 .
 
 # 创建项目容器（server 服务会在容器启动时自动运行）
 docker run --name ggb_server --network my-net --ip 10.1.0.113 -p 5313:5312 ggb
