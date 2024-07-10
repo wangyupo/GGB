@@ -130,23 +130,23 @@ docker network rm my-net
 # 拉取 mysql 镜像
 docker pull mysql:8.0
 
-# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456）
-docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 mysql:8.0
+# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456；挂载 mysql 数据和配置卷到本地，以持久化数据）
+docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -v C:/dockerVolumes/mysql/data:/var/lib/mysql -v C:/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro mysql:8.0
 
 # 拉取 redis 镜像
 docker pull redis:latest
 
-# 使用 redis 镜像创建容器（容器命名为 redis；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 6380 端口映射到容器的 6379 端口）
-docker run -itd --name redis --network my-net --ip 10.1.0.3 -p 6380:6379 redis:latest
+# 使用 redis 镜像创建容器（容器命名为 redis；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 6380 端口映射到容器的 6379 端口；挂载 redis 数据和配置卷到本地）
+docker run -itd --name redis --network my-net --ip 10.1.0.3 -p 6380:6379 -v C:/dockerVolumes/redis/data:/data -v C:/dockerVolumes/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro redis:latest
 
 # 拉取 nginx 镜像
 docker pull nginx:latest
 
-# 使用 nginx 镜像创建容器（容器命名为 nginx；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 81 端口映射到容器的 80 端口）
-docker run -itd --name nginx --network my-net --ip 10.1.0.4 -p 81:80 nginx:latest
+# 使用 nginx 镜像创建容器（容器命名为 nginx；使用自定义网络，绑定IP为 10.1.0.3；将 docker 宿主机的 81 端口映射到容器的 80 端口；挂载 nginx 配置卷到本地）
+docker run -itd --name nginx --network my-net --ip 10.1.0.4 -p 81:80 -v C:/dockerVolumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro -v C:/dockerVolumes/nginx/conf.d:/etc/nginx/conf.d:ro -v C:/dockerVolumes/nginx/html:/usr/share/nginx/html -v C:/dockerVolumes/nginx/log:/var/log/nginx nginx:latest
 ```
 
-2）配置 config.docker.yaml
+3）配置 config.docker.yaml
 
 ```bash
 # 修改 config.docker.yaml 中的 mysql 配置
@@ -162,7 +162,7 @@ redis:
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' containerName
 ```
 
-3）使用 Navicat 等数据库工具，连接 docker 的 mysql，创建数据库 ggb
+4）使用 Navicat 等数据库工具，连接 docker 的 mysql，创建数据库 ggb
 
 ```bash
 # 主机
@@ -187,7 +187,7 @@ utf8mb4
 utf8mb4_general_ci
 ```
 
-4）创建本项目的docker镜像（docker image），并创建容器
+5）创建本项目的docker镜像（docker image），并创建容器
 
 ```bash
 # 创建项目的 docker 镜像（镜像名为 ggb，tag默认为 latest，）
