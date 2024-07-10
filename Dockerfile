@@ -5,7 +5,7 @@
 
 # 第一阶段：构建（在第一阶段进行构建和编译，生成最终需要的文件。）
 # 使用基于 Alpine Linux 的 Go 官方镜像作为构建阶段的基础镜像
-FROM golang:alpine as builder
+FROM golang:1.22.5-alpine3.20 as builder
 
 # 设置工作目录为
 WORKDIR /go/src/github.com/wangyupo/ggb/server
