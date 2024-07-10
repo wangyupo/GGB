@@ -7,10 +7,10 @@ import (
 	"go.uber.org/zap"
 )
 
-//go:generate go env -w GO111MODULE=on
-//go:generate go env -w GOPROXY=https://goproxy.cn,direct
-//go:generate go mod tidy
-//go:generate go mod download
+//go:generate go env -w GO111MODULE=on							# 启用 Go 模块（Modules）支持
+//go:generate go env -w GOPROXY=https://goproxy.cn,direct		# 设置 Go 模块代理为中国大陆仓库
+//go:generate go mod tidy 										# 清理和更新依赖
+//go:generate go mod download									# 下载并缓存依赖
 
 // @title 						GGB Swagger API接口文档
 // @version 					v0.0.1
