@@ -219,6 +219,24 @@ docker run -p 5313:5312 --name=ggb_server ggb
 http://localhost:5313/swagger/index.html
 ```
 
+### 3、如何将 docker 镜像移动到另一个环境中加载并使用？
+
+```bash
+# 导出 docker 镜像
+# 示例命令：docker save -o <path_to_tar_file> <image_name>:<tag>
+docker save -o ggb.tar ggb:latest
+
+# 上传镜像文件
+scp ggb.tar user@remote_host:/path/to/destination
+
+# 加载 docker 镜像
+# 示例命令：docker load -i <path_to_tar_file>
+docker load -i ggb.tar
+
+# 确认镜像加载成功（你应该能看到 ggb:latest 镜像在列表中）
+docker images
+```
+
 ## License
 
 [MIT © Richard McRichface.](https://github.com/wangyupo/GGB/blob/main/LICENSE)
