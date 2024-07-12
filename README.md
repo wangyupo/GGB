@@ -208,11 +208,24 @@ docker-compose up -d
 # （需执行，仅作命令展示）查看运行中的服务
 docker-compose ps
 
-# （需执行，仅作命令展示）停止服务但不删除容器
+# （需执行，仅作命令展示）停止所有服务但不删除容器
 docker-compose stop
 
-# （需执行，仅作命令展示）停止服务并删除容器
+# （需执行，仅作命令展示）停止所有服务并删除所有容器
 docker-compose down
+```
+
+_注意：如果发现 mysql 没有新建数据库 ggb，可能是因为已存在的 mysql 映射卷的缘故，请执行以下命令：_
+
+```bash
+# 停止所有服务并删除所有容器
+docker-compose down
+
+# 删除 mysql 的映射卷
+sudo rm -r C:/dockerVolumes/mysql/
+
+# 重启启动所有服务
+docker-compose up -d
 ```
 
 ### 3、如何将 docker 镜像移动到另一个环境中加载并使用？
