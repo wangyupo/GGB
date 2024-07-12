@@ -28,6 +28,14 @@ FROM alpine:latest
 # 设置工作目录
 WORKDIR /go/src/github.com/wangyupo/ggb/server
 
+# 下载并解压 dockerize
+ADD https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz /tmp/dockerize.tar.gz
+RUN tar -C /usr/local/bin -xzvf /tmp/dockerize.tar.gz
+
+# 复制启动脚本
+COPY server-start.sh /usr/local/bin/server-start.sh
+RUN chmod +x /usr/local/bin/server-start.sh
+
 # 从构建阶段复制文件到运行阶段（最终只保留这些文件，构建阶段的其它文件不会被保留）
 COPY --from=0 /go/src/github.com/wangyupo/ggb/server/server ./
 COPY --from=0 /go/src/github.com/wangyupo/ggb/server/resource ./resource/
@@ -36,5 +44,5 @@ COPY --from=0 /go/src/github.com/wangyupo/ggb/server/config.docker.yaml ./
 # 声明容器在运行时监听 5312 端口
 EXPOSE 5312
 
-# 指定容器启动时运行的命令，即执行 ./server -c config.docker.yaml，使用 config.docker.yaml 配置文件来启动应用程序
-ENTRYPOINT ./server -c config.docker.yaml
+# 执行启动脚本
+ENTRYPOINT ["/usr/local/bin/server-start.sh"]
