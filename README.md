@@ -130,8 +130,8 @@ docker network rm my-net
 # 拉取 mysql 镜像
 docker pull mysql:8.0
 
-# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456；初始化数据库 ggb；设置字符集为 utf8mb4；排序规则为 utf8mb4_general_ci；挂载 mysql 数据和配置卷到本地，以持久化数据）
-docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_DATABASE=ggb --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci -v C:/dockerVolumes/mysql/data:/var/lib/mysql -v C:/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro --restart unless-stopped mysql:8.0
+# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456；初始化数据库 ggb；挂载 mysql 数据和配置卷到本地，以持久化数据；设置字符集为 utf8mb4；排序规则为 utf8mb4_general_ci；）
+docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_DATABASE=ggb -v C:/dockerVolumes/mysql/data:/var/lib/mysql -v C:/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro --restart unless-stopped mysql:8.0 --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 
 # 拉取 redis 镜像
 docker pull redis:latest
