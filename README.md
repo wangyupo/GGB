@@ -130,8 +130,8 @@ docker network rm my-net
 # 拉取 mysql 镜像
 docker pull mysql:8.0
 
-# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456；初始化数据库 ggb；挂载 mysql 数据和配置卷到本地，以持久化数据）
-docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_DATABASE=ggb -v C:/dockerVolumes/mysql/data:/var/lib/mysql -v C:/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro --restart unless-stopped mysql:8.0
+# 使用 mysql 镜像创建容器（容器命名为 mysql；使用自定义网络，绑定IP为 10.1.0.2；将 docker 宿主机的 3307 端口映射到容器的 3306 端口；初始化 root 用户的密码为 123456；初始化数据库 ggb；设置字符集为 utf8mb4；排序规则为 utf8mb4_general_ci；挂载 mysql 数据和配置卷到本地，以持久化数据）
+docker run -itd --name mysql --network my-net --ip 10.1.0.2 -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 -e MYSQL_DATABASE=ggb --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci -v C:/dockerVolumes/mysql/data:/var/lib/mysql -v C:/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro --restart unless-stopped mysql:8.0
 
 # 拉取 redis 镜像
 docker pull redis:latest
@@ -162,32 +162,7 @@ redis:
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' containerName
 ```
 
-4）使用 Navicat 等数据库工具，连接 docker 容器中的 mysql，并创建数据库 ggb
-
-```bash
-# 主机
-localhost
-
-# 端口
-3307
-
-# 用户名
-root
-
-# 密码
-123456
-
-# 数据库名称
-ggb
-
-# 数据库字符集
-utf8mb4
-
-# 数据库排序规则
-utf8mb4_general_ci
-```
-
-5）创建本项目的 docker 镜像（docker image），并创建容器
+4）创建本项目的 docker 镜像（docker image），并创建容器
 
 ```bash
 # 创建项目的 docker 镜像（镜像名为 ggb，tag 默认为 latest，）
@@ -200,23 +175,44 @@ docker run --name ggb_server --network my-net --ip 10.1.0.113 -p 5313:5312 --res
 docker start -a -i my-container
 ```
 
-### 2、如何访问 OpenAPI（Swagger）？
+### 2、如何使用 docker-compose 部署该项目？
+
+1）安装 docker-compose
 
 ```bash
-# 生成/更新 API 文档
-swag init
+# 更新包管理器和安装依赖
+sudo apt update
+sudo apt install -y curl
 
-# 本地启动项目
-go run main.go
+# 下载最新版本的 Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
-# 访问本地 OpenAPI 地址
-http://localhost:5312/swagger/index.html
+# 赋予执行权限
+sudo chmod +x /usr/local/bin/docker-compose
 
-# docker 启动项目（启动项目容器时，已经把 docker 宿主机的 5313 端口已经映射到容器的 5312 端口）
-docker run -p 5313:5312 --name=ggb_server ggb
+# 创建符号链接（可选，但推荐）
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
-# 访问本地映射的 OpenAPI 地址
-http://localhost:5313/swagger/index.html
+# 验证安装
+docker-compose --version      # 这应该输出 Docker Compose 的版本号，表示安装成功
+```
+
+2）将本项目根目录下的 docker-compose.yml 复制到你的服务器上项目所处目录中去
+
+3）在你的项目所处目录中，运行以下指令
+
+```bash
+# 启动所有服务
+docker-compose up -d
+
+# （需执行，仅作命令展示）查看运行中的服务
+docker-compose ps
+
+# （需执行，仅作命令展示）停止服务但不删除容器
+docker-compose stop
+
+# （需执行，仅作命令展示）停止服务并删除容器
+docker-compose down
 ```
 
 ### 3、如何将 docker 镜像移动到另一个环境中加载并使用？
@@ -235,6 +231,46 @@ docker load -i ggb.tar
 
 # 确认镜像加载成功（你应该能看到 ggb:latest 镜像在列表中）
 docker images
+```
+
+### 4、如何使用数据库工具管理 docker 容器中的 mysql？
+
+使用 Navicat 等数据库工具，连接 docker 容器中的 mysql 即可，具体配置如下：
+
+```bash
+# 主机
+localhost
+
+# 端口
+3307
+
+# 用户名
+root
+
+# 密码
+123456
+
+# 数据库名称
+ggb
+```
+
+### 5、如何访问 OpenAPI（Swagger）？
+
+```bash
+# 生成/更新 API 文档
+swag init
+
+# 本地启动项目
+go run main.go
+
+# 访问本地 OpenAPI 地址
+http://localhost:5312/swagger/index.html
+
+# docker 启动项目（启动项目容器时，已经把 docker 宿主机的 5313 端口已经映射到容器的 5312 端口）
+docker run -p 5313:5312 --name=ggb_server ggb
+
+# 访问本地映射的 OpenAPI 地址
+http://localhost:5313/swagger/index.html
 ```
 
 ## License
