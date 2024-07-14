@@ -1,14 +1,27 @@
-# 注意：C:/dockerVolumes/ 不是绝对的，你可以替换成实际开发中的真实的地址，比如替换成 /etc/volumes/
+# 创建自定义网络，网络地址 10.1.0.0，默认网关 10.1.0.1，广播地址 10.1.0.255
+networks:
+  my-net:
+    driver: bridge
+    name: my-net
+    ipam:
+      config:
+        - subnet: 10.1.0.0/16
+
+# 如果你事先创建了自定义网络，请使用下面的 networks 配置
+#networks:
+#  my-net:
+#    external: true
+
 services:
   mysql:
     image: mysql:8.0
     container_name: mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 123456
-      MYSQL_DATABASE: ggb
+      MYSQL_ROOT_PASSWORD: 123456                       # root 账户密码
+      MYSQL_DATABASE: ggb                               # 初始化 mysql 时创建数据库 ggb
     volumes:
-      - C:/dockerVolumes/mysql/data:/var/lib/mysql
-      - C:/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro
+      - /etc/dockerVolumes/mysql/data:/var/lib/mysql    # /etc/ 目录不是一成不变的，取决于卷的挂载地址，windows 系统也可以替换成 C:/dockerVolumes
+      - /etc/dockerVolumes/mysql/mysql.conf.d:/etc/mysql/conf.d:ro
     networks:
       my-net:
         ipv4_address: 10.1.0.2
@@ -16,31 +29,41 @@ services:
       - "3307:3306"
     restart: unless-stopped
     command: [
-      "--character-set-server=utf8mb4",
-      "--collation-server=utf8mb4_general_ci"
+      "--character-set-server=utf8mb4",                 # 设置字符集
+      "--collation-server=utf8mb4_general_ci"           # 设置排序规则
     ]
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p123456" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   redis:
     image: redis:latest
     container_name: redis
     volumes:
-      - C:/dockerVolumes/redis/data:/data
-      - C:/dockerVolumes/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - /etc/dockerVolumes/redis/data:/data
+      - /etc/dockerVolumes/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
     networks:
       my-net:
         ipv4_address: 10.1.0.3
     ports:
       - "6380:6379"
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   nginx:
     image: nginx:latest
     container_name: nginx
     volumes:
-      - C:/dockerVolumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - C:/dockerVolumes/nginx/conf.d:/etc/nginx/conf.d:ro
-      - C:/dockerVolumes/nginx/html:/usr/share/nginx/html
-      - C:/dockerVolumes/nginx/log:/var/log/nginx
+      - /etc/dockerVolumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/dockerVolumes/nginx/conf.d:/etc/nginx/conf.d:ro
+      - /etc/dockerVolumes/nginx/html:/usr/share/nginx/html
+      - /etc/dockerVolumes/nginx/log:/var/log/nginx
     networks:
       my-net:
         ipv4_address: 10.1.0.4
@@ -52,8 +75,10 @@ services:
     image: ggb
     container_name: ggb_server
     depends_on:
-      - mysql
-      - redis
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     networks:
       my-net:
         ipv4_address: 10.1.0.113
@@ -62,15 +87,3 @@ services:
     restart: unless-stopped
     environment:
       - GIN_MODE=debug
-
-networks:
-  my-net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.1.0.0/16
-
-# 如果你事先创建了自定义网络，请使用下面的 networks 配置
-#networks:
-#  my-net:
-#    external: true
