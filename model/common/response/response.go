@@ -25,6 +25,8 @@ const (
 	ErrorAuth
 	// ErrorValidate 数据验证错误
 	ErrorValidate
+	// ErrorNotFound 接口不存在
+	ErrorNotFound
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
@@ -77,5 +79,13 @@ func NoAuth(message string, c *gin.Context) {
 	c.JSON(http.StatusUnauthorized, MsgResponse{
 		ErrorAuth,
 		message,
+	})
+}
+
+// NotFound 接口不存在
+func NotFound(c *gin.Context) {
+	c.JSON(http.StatusNotFound, MsgResponse{
+		ErrorNotFound,
+		"接口不存在",
 	})
 }
