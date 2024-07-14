@@ -14,7 +14,9 @@ import (
 
 // Routers 注册路由
 func Routers() *gin.Engine {
-	Router := gin.New()
+	Router := gin.New(func(engine *gin.Engine) {
+		engine.HandleMethodNotAllowed = true
+	})
 	Router.Use(gin.Recovery())
 	if gin.Mode() == gin.DebugMode {
 		Router.Use(gin.Logger())
@@ -27,11 +29,6 @@ func Routers() *gin.Engine {
 
 	// 匹配 swagger 路由（启动后端服务后，访问地址：服务地址:端口/swagger/index.html）
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-
-	// 自定义404响应
-	Router.NoRoute(func(c *gin.Context) {
-		response.NotFound(c)
-	})
 
 	// 路由-不做鉴权
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
@@ -57,6 +54,16 @@ func Routers() *gin.Engine {
 		logRouter.InitLoginLogRouter(PrivateGroup)      // 登录日志
 		logRouter.InitSysLogOperateRouter(PrivateGroup) // 操作日志
 	}
+
+	// 自定义404响应
+	Router.NoRoute(func(c *gin.Context) {
+		response.NotFound(c)
+	})
+
+	// 自定义方法不匹配响应
+	Router.NoMethod(func(c *gin.Context) {
+		response.MethodNotAllowed(c)
+	})
 
 	return Router
 }

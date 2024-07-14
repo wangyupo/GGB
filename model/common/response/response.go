@@ -27,6 +27,8 @@ const (
 	ErrorValidate
 	// ErrorNotFound 接口不存在
 	ErrorNotFound
+	// ErrorMethodNotAllowed 请求方法不正确
+	ErrorMethodNotAllowed
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
@@ -86,6 +88,14 @@ func NoAuth(message string, c *gin.Context) {
 func NotFound(c *gin.Context) {
 	c.JSON(http.StatusNotFound, MsgResponse{
 		ErrorNotFound,
-		"接口不存在",
+		"该接口不存在",
+	})
+}
+
+// MethodNotAllowed 请求方法不正确
+func MethodNotAllowed(c *gin.Context) {
+	c.JSON(http.StatusNotFound, MsgResponse{
+		ErrorMethodNotAllowed,
+		"该方法不适用于所请求的 URL",
 	})
 }
