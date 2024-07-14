@@ -175,7 +175,25 @@ docker run --name ggb_server --network my-net --ip 10.1.0.113 -p 5313:5312 --res
 docker start -a -i my-container
 ```
 
-### 2、如何使用 docker-compose 部署该项目？
+### 2、如何将 docker 镜像移动到另一个环境中加载并使用？
+
+```bash
+# 导出 docker 镜像
+# eg：docker save -o <path_to_tar_file> <image_name>:<tag>
+docker save -o ggb.tar ggb:latest
+
+# 上传镜像文件
+scp ggb.tar user@remote_host:/path/to/destination
+
+# 加载 docker 镜像
+# eg：docker load -i <path_to_tar_file>
+docker load -i ggb.tar
+
+# 确认镜像加载成功（你应该能看到 ggb:latest 镜像在列表中）
+docker images
+```
+
+### 3、如何使用 docker-compose 部署该项目？
 
 1）安装 docker-compose
 
@@ -226,24 +244,6 @@ sudo rm -r C:/dockerVolumes/mysql/
 
 # 重启启动所有服务
 docker-compose up -d
-```
-
-### 3、如何将 docker 镜像移动到另一个环境中加载并使用？
-
-```bash
-# 导出 docker 镜像
-# eg：docker save -o <path_to_tar_file> <image_name>:<tag>
-docker save -o ggb.tar ggb:latest
-
-# 上传镜像文件
-scp ggb.tar user@remote_host:/path/to/destination
-
-# 加载 docker 镜像
-# eg：docker load -i <path_to_tar_file>
-docker load -i ggb.tar
-
-# 确认镜像加载成功（你应该能看到 ggb:latest 镜像在列表中）
-docker images
 ```
 
 ### 4、如何使用数据库工具管理 docker 容器中的 mysql？
