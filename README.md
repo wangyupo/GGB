@@ -267,7 +267,24 @@ root
 ggb
 ```
 
-### 5、如何访问 OpenAPI（Swagger）？
+### 5、如何查看 docker 容器中的服务的实时日志？
+
+```bash
+# 确认 docker-compose 中 ggb_server 的 GIN_MODE=debug
+ggb_server:
+  environment:
+    - GIN_MODE=debug
+
+# 执行问题注解 3 中的步骤，导出镜像->加载镜像
+
+# 使用 docker-compose 启动容器
+docker-compose up -d
+    
+# 查看服务实时日志
+docker logs -f ggb_server
+```
+
+### 6、如何访问 OpenAPI（Swagger）？
 
 ```bash
 # 生成/更新 API 文档
