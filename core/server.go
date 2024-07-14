@@ -28,7 +28,7 @@ func RunWindowsServer() {
 
 	fmt.Printf(`
 ggb_server 服务启动成功
-项目地址：		https://github.com/wangyupo/GGB
+项目地址：        https://github.com/wangyupo/GGB
 OpenAPI 文档地址：http://127.0.0.1%s/swagger/index.html
 	`, address)
 
