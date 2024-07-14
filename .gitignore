@@ -23,9 +23,9 @@
 
 # Dependency directories (remove the comment below to include it)
 tmp/
-./log/
-./uploads/
-./resource/excel/output
+/log/*
+/uploads/*
+/resource/excel/output/*
 
 # Go workspace file
 go.work
