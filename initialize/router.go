@@ -22,7 +22,7 @@ func Routers() *gin.Engine {
 	commonRouter := router.RouterGroupApp.Common
 	systemRouter := router.RouterGroupApp.System
 	logRouter := router.RouterGroupApp.Log
-	sysUserApi := v1.ApiGroupApp.SysApiGroup.SysUserApi
+	sysBaseApi := v1.ApiGroupApp.SysApiGroup.SysBaseApi
 
 	// 匹配 swagger 路由（启动后端服务后，访问地址：服务地址:端口/swagger/index.html）
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -30,17 +30,14 @@ func Routers() *gin.Engine {
 	// 路由-不做鉴权
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
 	{
-		PublicGroup.POST("/login", sysUserApi.Login) // 登录
-
-		PublicGroup.POST("/captcha", sysUserApi.GetCaptcha)           // 获取图形验证码
-		PublicGroup.POST("/captcha/verify", sysUserApi.VerifyCaptcha) // 校验图形验证码
+		systemRouter.InitBaseRouter(PublicGroup)
 	}
 
 	// 路由-需要鉴权
 	PrivateGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
 	PrivateGroup.Use(middleware.Jwt())
 	{
-		PrivateGroup.POST("/logout", sysUserApi.Logout) // 登出
+		PrivateGroup.POST("/logout", sysBaseApi.Logout) // 登出
 
 		commonRouter.InitUploadFileRouter(PrivateGroup) // 上传文件
 		commonRouter.InitTranscriptRouter(PrivateGroup) // Excel导入/导出

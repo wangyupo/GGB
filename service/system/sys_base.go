@@ -8,10 +8,10 @@ import (
 	"github.com/wangyupo/GGB/utils"
 )
 
-type SysLoginService struct{}
+type SysBaseService struct{}
 
 // Login 登录
-func (s *SysLoginService) Login(loginForm request.Login) (systemUser system.SysUser, err error) {
+func (s *SysBaseService) Login(loginForm request.Login) (systemUser system.SysUser, err error) {
 	// 根据 userName 找用户（userName 是唯一的）
 	err = global.GGB_DB.Preload("Roles").
 		Preload("Roles.Menus").Where("user_name = ?", loginForm.UserName).First(&systemUser).Error

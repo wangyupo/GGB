@@ -1,7 +1,7 @@
 package system
 
 type ServiceGroup struct {
-	SysLoginService
+	SysBaseService
 	SysUserService
 	SysRoleService
 	SysMenuService

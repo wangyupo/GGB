@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-type SysLoginApi struct{}
+type SysBaseApi struct{}
 
 // 写入登入/登出日志
 func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
@@ -42,7 +42,7 @@ func setLoginLog(c *gin.Context, userId uint, loginType enums.LoginType) {
 // @Param     data  body      request.Login           		true 								 	"SysDictionary模型"
 // @Success   200   {object}  response.Response{data=systemResponse.LoginResponse,msg=string}  		"返回包括用户信息,token,过期时间"
 // @Router    /login [POST]
-func (s *SysUserApi) Login(c *gin.Context) {
+func (s *SysBaseApi) Login(c *gin.Context) {
 	// 声明 loginForm 类型的变量以存储 JSON 数据
 	var loginForm request.Login
 	if err := c.ShouldBindJSON(&loginForm); err != nil {
@@ -51,7 +51,7 @@ func (s *SysUserApi) Login(c *gin.Context) {
 		return
 	}
 
-	user, err := sysLoginService.Login(loginForm)
+	user, err := SysBaseService.Login(loginForm)
 	if err != nil {
 		global.GGB_LOG.Error("登录失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
@@ -91,7 +91,7 @@ func (s *SysUserApi) Login(c *gin.Context) {
 // @Produce   application/json
 // @Success   200   {object}  response.MsgResponse  "返回操作成功提示"
 // @Router    /logout [POST]
-func (s *SysUserApi) Logout(c *gin.Context) {
+func (s *SysBaseApi) Logout(c *gin.Context) {
 	userId, err := utils.GetUserID(c) // 从token获取用户id
 	if err != nil {
 		global.GGB_LOG.Error("获取用户id失败！", zap.Error(err))
@@ -110,7 +110,7 @@ func (s *SysUserApi) Logout(c *gin.Context) {
 // @Param     data  body      request.CaptchaRequest           true  "CaptchaRequest模型"
 // @Success   200   {object}  systemResponse.CaptchaResponse  "返回base64和图形ID"
 // @Router    /captcha [POST]
-func (s *SysUserApi) GetCaptcha(c *gin.Context) {
+func (s *SysBaseApi) GetCaptcha(c *gin.Context) {
 	var req request.CaptchaRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.HandleValidatorError(err, c)
@@ -138,7 +138,7 @@ func (s *SysUserApi) GetCaptcha(c *gin.Context) {
 // @Param     data  body      request.Captcha           true  "Captcha模型"
 // @Success   200   {object}  response.MsgResponse  	"返回验证码校验成功提示"
 // @Router    /captcha/verify [POST]
-func (s *SysUserApi) VerifyCaptcha(c *gin.Context) {
+func (s *SysBaseApi) VerifyCaptcha(c *gin.Context) {
 	var req request.Captcha
 	if err := c.ShouldBindJSON(&req); err != nil {
 		utils.HandleValidatorError(err, c)
