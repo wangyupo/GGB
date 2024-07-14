@@ -94,7 +94,7 @@ func NotFound(c *gin.Context) {
 
 // MethodNotAllowed 请求方法不正确
 func MethodNotAllowed(c *gin.Context) {
-	c.JSON(http.StatusNotFound, MsgResponse{
+	c.JSON(http.StatusMethodNotAllowed, MsgResponse{
 		ErrorMethodNotAllowed,
 		"该方法不适用于所请求的 URL",
 	})
