@@ -60,6 +60,8 @@ services:
     ports:
       - "5313:5312"
     restart: unless-stopped
+    environment:
+      - GIN_MODE=debug
 
 networks:
   my-net:
