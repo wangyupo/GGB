@@ -74,6 +74,8 @@ services:
   ggb_server:
     image: ggb
     container_name: ggb_server
+    volumes:
+      - ./log:/go/src/github.com/wangyupo/ggb/server/log
     depends_on:
       mysql:
         condition: service_healthy
