@@ -25,6 +25,17 @@ RUN go env -w GO111MODULE=on \
 # 使用最新的 Alpine Linux 官方镜像作为运行阶段的基础镜像
 FROM alpine:latest
 
+# 添加维护者标签
+LABEL MAINTAINER="https://github.com/wangyupo"
+
+# 设置时区为上海时间
+ENV TZ=Asia/Shanghai
+
+# 更新包索引，安装 tzdata 和 openntpd，并设置时区
+RUN apk update && apk add --no-cache tzdata openntpd \
+    && ln -sf /usr/share/zoneinfo/$TZ /etc/localtime \
+    && echo $TZ > /etc/timezone
+
 # 设置工作目录
 WORKDIR /go/src/github.com/wangyupo/ggb/server
 
