@@ -8,6 +8,7 @@ import (
 	_ "github.com/wangyupo/GGB/docs"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/middleware"
+	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/router"
 )
 
@@ -26,6 +27,11 @@ func Routers() *gin.Engine {
 
 	// 匹配 swagger 路由（启动后端服务后，访问地址：服务地址:端口/swagger/index.html）
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// 自定义404响应
+	Router.NoRoute(func(c *gin.Context) {
+		response.NotFound(c)
+	})
 
 	// 路由-不做鉴权
 	PublicGroup := Router.Group(global.GGB_CONFIG.System.RouterPrefix)
