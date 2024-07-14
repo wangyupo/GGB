@@ -17,7 +17,7 @@ func Zap() (logger *zap.Logger) {
 	// 1-创建日志存放目录
 	ok, _ := utils.PathExists(global.GGB_CONFIG.Zap.Director)
 	if !ok {
-		fmt.Printf("创建日志目录 %v", global.GGB_CONFIG.Zap.Director)
+		fmt.Printf("初始化日志存放目录 %v\n", global.GGB_CONFIG.Zap.Director)
 		_ = os.Mkdir(global.GGB_CONFIG.Zap.Director, os.ModePerm)
 	}
 
