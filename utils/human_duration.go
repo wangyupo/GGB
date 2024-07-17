@@ -1,55 +1,44 @@
 package utils
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 	"time"
 )
 
 // ParseDuration 解析类似于 "1d7h10m" 的持续时间字符串，并返回 time.Duration 类型的时间间隔
-func ParseDuration(durationStr string) (time.Duration, error) {
+func ParseDuration(d string) (time.Duration, error) {
 	// 去除字符串首尾空格
-	durationStr = strings.TrimSpace(durationStr)
+	d = strings.TrimSpace(d)
 
-	// 定义一些用于匹配时间单位的括号规则
-	pairs := []struct {
-		unit   string
-		length time.Duration
-	}{
-		{"d", time.Hour * 24},
-		{"h", time.Hour},
-		{"m", time.Minute},
-		{"s", time.Second},
-		{"ms", time.Millisecond},
-		{"us", time.Microsecond},
-		{"ns", time.Nanosecond},
+	// 尝试使用标准库的 ParseDuration 函数解析
+	dr, err := time.ParseDuration(d)
+	if err == nil {
+		return dr, nil
 	}
 
-	var total time.Duration
+	// 如果字符串包含 "d"，需要特殊处理
+	if strings.Contains(d, "d") {
+		index := strings.Index(d, "d")
 
-	// 遍历每一个已知时间单位
-	for _, pair := range pairs {
-		// 查找该单位在字符串中的位置
-		i := strings.Index(durationStr, pair.unit)
-		if i >= 0 {
-			// 获取单位前面的数字
-			numStr := durationStr[:i]
-			// 尝试移除解析后的数字和单位
-			durationStr = durationStr[i+len(pair.unit):]
-			// 将该数字转换为整数
-			num, err := strconv.Atoi(numStr)
-			if err != nil {
-				return 0, errors.New("无效的时间间隔格式: " + numStr + pair.unit)
-			}
-			// 计算该单位对应的 time.Duration 并累加到总时间中
-			total += pair.length * time.Duration(num)
+		// 获取 "d" 前面的数字，表示天数
+		hour, err := strconv.Atoi(d[:index])
+		if err != nil {
+			return 0, err
 		}
+		dr = time.Hour * 24 * time.Duration(hour)
+
+		// 解析 "d" 后面的部分
+		ndr, err := time.ParseDuration(d[index+1:])
+		if err != nil {
+			// 如果解析 "d" 后面的部分失败，仅返回天数部分
+			return dr, nil
+		}
+		// 返回天数部分和后面部分的总和
+		return dr + ndr, nil
 	}
 
-	if len(durationStr) > 0 {
-		return 0, errors.New("包含未能识别的时间单位: " + durationStr)
-	}
-
-	return total, nil
+	// 如果字符串不包含任何时间单位，尝试将其解析为整数并返回
+	dv, err := strconv.ParseInt(d, 10, 64)
+	return time.Duration(dv), err
 }
