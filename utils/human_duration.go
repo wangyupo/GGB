@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -22,23 +23,32 @@ func ParseDuration(d string) (time.Duration, error) {
 		index := strings.Index(d, "d")
 
 		// 获取 "d" 前面的数字，表示天数
-		hour, err := strconv.Atoi(d[:index])
+		days, err := strconv.Atoi(d[:index])
 		if err != nil {
-			return 0, err
+			return 0, errors.New("无效的天数格式: " + d[:index])
 		}
-		dr = time.Hour * 24 * time.Duration(hour)
+		// 天数不能为负
+		if days < 0 {
+			return 0, errors.New("天数不能为负: " + d[:index])
+		}
+		dr = time.Hour * 24 * time.Duration(days)
 
 		// 解析 "d" 后面的部分
-		ndr, err := time.ParseDuration(d[index+1:])
-		if err != nil {
-			// 如果解析 "d" 后面的部分失败，仅返回天数部分
-			return dr, nil
+		remainder := d[index+1:]
+		if remainder != "" {
+			ndr, err := time.ParseDuration(remainder)
+			if err != nil {
+				return 0, errors.New("无效的时间间隔格式: " + remainder)
+			}
+			// 确保时间间隔不是负值
+			if ndr < 0 {
+				return 0, errors.New("时间间隔不能为负: " + remainder)
+			}
+			dr += ndr
 		}
-		// 返回天数部分和后面部分的总和
-		return dr + ndr, nil
+		return dr, nil
 	}
 
-	// 如果字符串不包含任何时间单位，尝试将其解析为整数并返回
-	dv, err := strconv.ParseInt(d, 10, 64)
-	return time.Duration(dv), err
+	// 如果字符串不包含任何已知时间单位，返回错误
+	return 0, errors.New("无效的时间间隔格式: " + d)
 }
