@@ -63,3 +63,9 @@ func GetUserID(c *gin.Context) (uint, error) {
 	cl, err := GetClaims(c)
 	return cl.BaseClaims.ID, err
 }
+
+// GetUserName 从token的声明（claims）中获取userName
+func GetUserName(c *gin.Context) (string, error) {
+	cl, err := GetClaims(c)
+	return cl.BaseClaims.UserName, err
+}

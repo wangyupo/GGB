@@ -1,11 +1,13 @@
 package system
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
 	"github.com/wangyupo/GGB/enums"
 	"github.com/wangyupo/GGB/global"
 	"github.com/wangyupo/GGB/model/common/response"
 	"github.com/wangyupo/GGB/model/log"
+	"github.com/wangyupo/GGB/model/system"
 	"github.com/wangyupo/GGB/model/system/request"
 	systemResponse "github.com/wangyupo/GGB/model/system/response"
 	"github.com/wangyupo/GGB/utils"
@@ -74,6 +76,10 @@ func (s *SysBaseApi) Login(c *gin.Context) {
 	// 设置cookie
 	utils.SetToken(c, token, int(claims.RegisteredClaims.ExpiresAt.Unix()-time.Now().Unix()))
 
+	// redis记录[用户名-token]键值对
+	ep, _ := utils.ParseDuration(global.GGB_CONFIG.JWT.ExpiresTime)
+	global.GGB_REDIS.Set(context.Background(), "token_"+user.UserName, token, ep)
+
 	// 记录登录日志
 	setLoginLog(c, user.ID, 1)
 
@@ -97,6 +103,10 @@ func (s *SysBaseApi) Logout(c *gin.Context) {
 		global.GGB_LOG.Error("获取用户id失败！", zap.Error(err))
 	} else {
 		setLoginLog(c, userId, 0)
+		// redis删除[用户名-token]键值对
+		var user system.SysUser
+		global.GGB_DB.First(&user, userId)
+		global.GGB_REDIS.Del(context.Background(), "token_"+user.UserName)
 	}
 	utils.ClearToken(c)
 	response.SuccessWithDefaultMessage(c)
