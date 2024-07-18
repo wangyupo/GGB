@@ -2,8 +2,8 @@
 jwt:
   # 密钥
   signing-key: c2VjcmV0X1hZUkFMUlJGVEtIWUdDWkhFNDNfSkpCSFBFVFpIUVFZVVRLTE5CRkFEUg==
-  # token过期时间（天）
-  expires-time: 7d
+  # token过期时间
+  expires-time: 3h
   # 签发者
   issuer: GGB
 
@@ -39,7 +39,7 @@ system:
   # 控制oss选择走本地还是七牛等其他仓，默认本地
   oss-type: local
   # 是否启用redis
-  use-redis: false
+  use-redis: true
   # 程序监听端口
   addr: 5312
   # url前缀
