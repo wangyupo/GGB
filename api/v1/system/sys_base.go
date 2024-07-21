@@ -56,7 +56,7 @@ func (s *SysBaseApi) Login(c *gin.Context) {
 	user, err := SysBaseService.Login(loginForm)
 	if err != nil {
 		global.GGB_LOG.Error("登录失败！", zap.Error(err))
-		response.FailWithMessage(err.Error(), c)
+		response.NoAuth(err.Error(), c)
 		return
 	}
 
