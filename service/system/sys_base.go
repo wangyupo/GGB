@@ -16,9 +16,9 @@ import (
 type SysBaseService struct{}
 
 const (
-	LoginFailedPrefix        = "login_attempts:" // 登录失败，redis 记录的 key 的前缀
-	LoginFailedLimitTime     = 5                 // 登录失败次数限制
-	LoginFailedResetDuration = 15                // 登录失败超出限制后，重试需要等待的时间（分钟）
+	LoginFailedPrefix        = "auth:login_attempts:" // 登录失败，redis 记录的 key 的前缀
+	LoginFailedLimitTime     = 5                      // 登录失败次数限制
+	LoginFailedResetDuration = 15                     // 登录失败超出限制后，重试需要等待的时间（分钟）
 )
 
 // isLoginAllowed 检查用户是否超过了允许的登录尝试次数，并返回相应的错误信息

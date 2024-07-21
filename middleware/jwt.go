@@ -38,7 +38,7 @@ func Jwt() gin.HandlerFunc {
 
 		// 3-检查redis中的token，实现单会话登录
 		userName, _ := utils.GetUserName(c)
-		userTokenInRedis, _ := global.GGB_REDIS.Get(context.Background(), "user_token:"+userName).Result()
+		userTokenInRedis, _ := global.GGB_REDIS.Get(context.Background(), "auth:token:"+userName).Result()
 		if userTokenInRedis != token {
 			utils.ClearToken(c)
 			response.NoAuth("账号已在其它地方登录", c)
