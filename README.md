@@ -23,6 +23,11 @@
 
 GGB（猪猪侠）通过清晰的目录结构和模块化设计，为开发者提供了一套高效、可维护的后端服务架构。无论是初学者还是经验丰富的开发者，都能通过 GGB 快速上手并构建高质量的 Web 应用。
 
+## Todo
+
+- [ ] 发送、验证邮件
+- [ ] 集成 Elasticsearch
+
 ## 语言环境
 
 golang版本 >= v1.22
@@ -302,6 +307,30 @@ docker run -p 5313:5312 --name=ggb_server ggb
 # 访问本地映射的 OpenAPI 地址
 http://localhost:5313/swagger/index.html
 ```
+
+### 7、如何集成 GGB 的前端项目？
+
+```bash
+# 下载前端项目到本地
+git clone https://github.com/wangyupo/GGB_FE
+
+# 进入项目目录
+cd GGB_FE
+
+# 安装依赖（node >= v20.16.0）
+npm install
+
+# 运行前端项目
+npm run dev
+```
+
+## 其它项目推荐
+
+1、**[v3s](https://github.com/wangyupo/v3s)** 基于 Vue3、Vite5、Vue Router、Pinia 和 Element Plus 构建的高效后台管理模板。结合 VSCode 插件 v3s snippets，助力快速开发业务应用。
+
+2、**[vue3-cookbook](https://github.com/wangyupo/vue3-cookbook)** 为您提供了一些组件化的范例和资源，以帮助您在 Vue 3 中起步。包括组合式 API (Composition API)、Pinia、Vue Router 使用示例，以及 axios 和 TailwindCSS 集成示例。
+
+3、**[FE-Guide](https://github.com/wangyupo/FE-Guide)** 本文档旨在为前端团队搭建一个标准化的技术栈和代码风格指南，帮助团队成员在开发过程中保持一致，提升整体开发体验。
 
 ## License
 
