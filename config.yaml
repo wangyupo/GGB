@@ -42,7 +42,7 @@ email:
   username: xxx@qq.com
   # SMTP 密码（生成的授权码）
   password: xxx
-  # 发件人地址
+  # 发件人地址（你的QQ邮箱完整的地址，需要与 SMTP 帐户保持统一）
   from: xxx@qq.com
 
 # system configuration
