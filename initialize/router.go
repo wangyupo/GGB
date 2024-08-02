@@ -42,6 +42,7 @@ func Routers() *gin.Engine {
 	{
 		PrivateGroup.POST("/logout", sysBaseApi.Logout) // 登出
 
+		commonRouter.InitEmailRouter(PrivateGroup)      // 发送邮件
 		commonRouter.InitUploadFileRouter(PrivateGroup) // 上传文件
 		commonRouter.InitTranscriptRouter(PrivateGroup) // Excel导入/导出
 
