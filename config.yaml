@@ -32,6 +32,19 @@ zap:
   # 是否压缩
   compress: false
 
+# email configuration
+email:
+  # SMTP 发送邮件服务器地址
+  host: smtp.qq.com
+  # SMTP 发送邮件服务器端口号
+  port: 587
+  # SMTP 帐户（你的QQ邮箱完整的地址）
+  username: 1106774262@qq.com
+  # SMTP 密码（生成的授权码）
+  password: qroqsluwlbsdfjgh
+  # 发件人地址
+  from: 1106774262@qq.com
+
 # system configuration
 system:
   # 数据库类型
