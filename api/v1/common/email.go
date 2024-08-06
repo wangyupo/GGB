@@ -25,7 +25,7 @@ type EmailApi struct{}
 //	@Router		/common/email [GET]
 func (e *EmailApi) SendEmail(c *gin.Context) {
 	// 使用 html 模板作为邮件内容的载体
-	t, err := template.ParseFiles(filepath.Join("resource/template", "email.html"))
+	t, err := template.ParseFiles(filepath.Join("resource/email/template", "welcome.html"))
 	if err != nil {
 		global.GGB_LOG.Error("Email模板读取失败！", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
@@ -35,7 +35,7 @@ func (e *EmailApi) SendEmail(c *gin.Context) {
 	// 模板填充数据
 	var body bytes.Buffer
 	err = t.Execute(&body, map[string]interface{}{
-		"content": "这是来自 GGB 的一封测试邮件",
+		"content": "这是来自 GGB 的一封测试邮件。",
 	})
 	if err != nil {
 		global.GGB_LOG.Error("Email模板数据填充失败！", zap.Error(err))
