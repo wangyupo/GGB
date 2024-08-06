@@ -15,13 +15,14 @@ import (
 type EmailApi struct{}
 
 // SendEmail 发送邮件
-// @Tags      CommonEmail
-// @Summary   发送邮件
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Success   200   {object}  response.MsgResponse  	"返回邮件发送成功提示"
-// @Router    /common/email [GET]
+//
+//	@Tags		CommonEmail
+//	@Summary	发送邮件
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Success	200	{object}	response.MsgResponse	"返回邮件发送成功提示"
+//	@Router		/common/email [GET]
 func (e *EmailApi) SendEmail(c *gin.Context) {
 	// 使用 html 模板作为邮件内容的载体
 	t, err := template.ParseFiles(filepath.Join("resource/template", "email.html"))

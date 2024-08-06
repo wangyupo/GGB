@@ -13,15 +13,16 @@ import (
 type SysLogLoginApi struct{}
 
 // GetSysLogLoginList
-// @Tags      SysLogLogin
-// @Summary   获取登录日志列表
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param	  pageNumber 		query 	int 	true 	"分页"
-// @Param	  pageSize  		query 	int 	true 	"每页条数"
-// @Success   200   {object}  	response.Response{data=response.PageResult{list=[]log.SysLogLogin}}  "返回列表，总数"
-// @Router    /system/log/login [GET]
+//
+//	@Tags		SysLogLogin
+//	@Summary	获取登录日志列表
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		pageNumber	query		int																	true	"分页"
+//	@Param		pageSize	query		int																	true	"每页条数"
+//	@Success	200			{object}	response.Response{data=response.PageResult{list=[]log.SysLogLogin}}	"返回列表，总数"
+//	@Router		/system/log/login [GET]
 func (s *SysLogLoginApi) GetSysLogLoginList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -43,13 +44,14 @@ func (s *SysLogLoginApi) GetSysLogLoginList(c *gin.Context) {
 }
 
 // ExportExcel
-// @Tags      SysLogLogin
-// @Summary   导出Excel
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   octet-stream
-// @Success   200   {file}  file  "返回文件流（blob）"
-// @Router    /system/log/login/excel [GET]
+//
+//	@Tags		SysLogLogin
+//	@Summary	导出Excel
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	octet-stream
+//	@Success	200	{file}	file	"返回文件流（blob）"
+//	@Router		/system/log/login/excel [GET]
 func (s *SysLogLoginApi) ExportExcel(c *gin.Context) {
 	userId, _ := utils.Str2uint(c.Query("userId"))
 

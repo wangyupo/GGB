@@ -12,14 +12,15 @@ import (
 type UploadFileApi struct{}
 
 // UploadFile 上传文件
-// @Tags      CommonUploadFile
-// @Summary   上传文件
-// @Security  ApiKeyAuth
-// @accept    multipart/form-data
-// @Produce   application/json
-// @Param     file  formData  file   		true  			"上传文件"
-// @Success   200   {object}  response.UploadFileResponse  	"返回包括文件路径，文件名称"
-// @Router    /common/upload [POST]
+//
+//	@Tags		CommonUploadFile
+//	@Summary	上传文件
+//	@Security	ApiKeyAuth
+//	@accept		multipart/form-data
+//	@Produce	application/json
+//	@Param		file	formData	file						true	"上传文件"
+//	@Success	200		{object}	response.UploadFileResponse	"返回包括文件路径，文件名称"
+//	@Router		/common/upload [POST]
 func (u *UploadFileApi) UploadFile(c *gin.Context) {
 	_, fileHeader, err := c.Request.FormFile("file")
 	if err != nil {
@@ -64,15 +65,16 @@ func (u *UploadFileApi) DeleteFile(c *gin.Context) {
 }
 
 // GetUploadFileList
-// @Tags      CommonUploadFile
-// @Summary   获取上传文件列表
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param	  pageNumber 		query 	int 	true 	"分页"
-// @Param	  pageSize  		query 	int 	true 	"每页条数"
-// @Success   200   {object}  	response.Response{data=response.PageResult{list=[]common.UploadFile}}  "返回列表，总数"
-// @Router    /common/upload [GET]
+//
+//	@Tags		CommonUploadFile
+//	@Summary	获取上传文件列表
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		pageNumber	query		int																		true	"分页"
+//	@Param		pageSize	query		int																		true	"每页条数"
+//	@Success	200			{object}	response.Response{data=response.PageResult{list=[]common.UploadFile}}	"返回列表，总数"
+//	@Router		/common/upload [GET]
 func (u *UploadFileApi) GetUploadFileList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)

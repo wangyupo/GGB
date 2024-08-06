@@ -13,15 +13,16 @@ import (
 type SysDictCategoryApi struct{}
 
 // GetSysDictCategoryList
-// @Tags      SysDictCategory
-// @Summary   获取字典类型列表
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param	  pageNumber 		query 	int 	true 	"分页"
-// @Param	  pageSize  		query 	int 	true 	"每页条数"
-// @Success   200   {object}  	response.Response{data=response.PageResult{list=[]system.SysDictCategory}}  "返回列表，总数"
-// @Router    /system/dictCategory [GET]
+//
+//	@Tags		SysDictCategory
+//	@Summary	获取字典类型列表
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		pageNumber	query		int																			true	"分页"
+//	@Param		pageSize	query		int																			true	"每页条数"
+//	@Success	200			{object}	response.Response{data=response.PageResult{list=[]system.SysDictCategory}}	"返回列表，总数"
+//	@Router		/system/dictCategory [GET]
 func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 	// 获取分页参数
 	offset, limit := utils.GetPaginationParams(c)
@@ -47,14 +48,15 @@ func (s *SysDictCategoryApi) GetSysDictCategoryList(c *gin.Context) {
 }
 
 // CreateSysDictCategory
-// @Tags      SysDictCategory
-// @Summary   新建字典类型
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param     data	body		system.SysDictCategory	true  	"SysDictCategory模型"
-// @Success   200   {object}  	response.MsgResponse  			"返回操作成功提示"
-// @Router    /system/dictCategory [POST]
+//
+//	@Tags		SysDictCategory
+//	@Summary	新建字典类型
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		data	body		system.SysDictCategory	true	"SysDictCategory模型"
+//	@Success	200		{object}	response.MsgResponse	"返回操作成功提示"
+//	@Router		/system/dictCategory [POST]
 func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 	// 声明 system.SysDictCategory 类型的变量以存储 JSON 数据
 	var req system.SysDictCategory
@@ -78,14 +80,15 @@ func (s *SysDictCategoryApi) CreateSysDictCategory(c *gin.Context) {
 }
 
 // GetSysDictCategory
-// @Tags      SysDictCategory
-// @Summary   获取字典类型详情
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param	  id  	path 		int 				true 						"字典类型id（dictCategoryId）"
-// @Success   200   {object}  	response.Response{data=system.SysDictCategory}  "返回字典类型详情"
-// @Router    /system/dictCategory/:id [GET]
+//
+//	@Tags		SysDictCategory
+//	@Summary	获取字典类型详情
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		id	path		int												true	"字典类型id（dictCategoryId）"
+//	@Success	200	{object}	response.Response{data=system.SysDictCategory}	"返回字典类型详情"
+//	@Router		/system/dictCategory/:id [GET]
 func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -106,15 +109,16 @@ func (s *SysDictCategoryApi) GetSysDictCategory(c *gin.Context) {
 }
 
 // UpdateSysDictCategory
-// @Tags      SysDictCategory
-// @Summary   编辑字典类型
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param	  id  	path 		int 					true 	"字典类型id（dictCategoryId）"
-// @Param	  data  body 		system.SysDictCategory 	true 	"SysDictCategory模型"
-// @Success   200   {object}  	response.MsgResponse  			"返回操作成功提示"
-// @Router    /system/dictCategory/:id [PUT]
+//
+//	@Tags		SysDictCategory
+//	@Summary	编辑字典类型
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		id		path		int						true	"字典类型id（dictCategoryId）"
+//	@Param		data	body		system.SysDictCategory	true	"SysDictCategory模型"
+//	@Success	200		{object}	response.MsgResponse	"返回操作成功提示"
+//	@Router		/system/dictCategory/:id [PUT]
 func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
@@ -144,14 +148,15 @@ func (s *SysDictCategoryApi) UpdateSysDictCategory(c *gin.Context) {
 }
 
 // DeleteSysDictCategory
-// @Tags      SysDictCategory
-// @Summary   删除字典类型
-// @Security  ApiKeyAuth
-// @accept    application/json
-// @Produce   application/json
-// @Param	  id  	path 		int		true 			"字典类型id（dictCategoryId）"
-// @Success   200   {object}  	response.MsgResponse  	"返回操作成功提示"
-// @Router    /system/dictCategory/:id [DELETE]
+//
+//	@Tags		SysDictCategory
+//	@Summary	删除字典类型
+//	@Security	ApiKeyAuth
+//	@accept		application/json
+//	@Produce	application/json
+//	@Param		id	path		int						true	"字典类型id（dictCategoryId）"
+//	@Success	200	{object}	response.MsgResponse	"返回操作成功提示"
+//	@Router		/system/dictCategory/:id [DELETE]
 func (s *SysDictCategoryApi) DeleteSysDictCategory(c *gin.Context) {
 	// 获取路径参数
 	if c.Param("id") == "" {
