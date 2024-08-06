@@ -8,11 +8,11 @@ import (
 type BaseRouter struct{}
 
 func (s *BaseRouter) InitBaseRouter(Router *gin.RouterGroup) {
-	dictDataRouterWithoutRecord := Router
+	baseRouterWithoutRecord := Router
 	sysBaseApi := v1.ApiGroupApp.SysApiGroup.SysBaseApi
 	{
-		dictDataRouterWithoutRecord.POST("/login", sysBaseApi.Login)                  // 登录
-		dictDataRouterWithoutRecord.POST("/captcha", sysBaseApi.GetCaptcha)           // 获取图形验证码
-		dictDataRouterWithoutRecord.POST("/captcha/verify", sysBaseApi.VerifyCaptcha) // 校验图形验证码
+		baseRouterWithoutRecord.POST("/login", sysBaseApi.Login)                  // 登录
+		baseRouterWithoutRecord.POST("/captcha", sysBaseApi.GetCaptcha)           // 获取图形验证码
+		baseRouterWithoutRecord.POST("/captcha/verify", sysBaseApi.VerifyCaptcha) // 校验图形验证码
 	}
 }

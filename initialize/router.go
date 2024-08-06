@@ -15,7 +15,7 @@ import (
 // Routers 注册路由
 func Routers() *gin.Engine {
 	Router := gin.New(func(engine *gin.Engine) {
-		engine.HandleMethodNotAllowed = true
+		engine.HandleMethodNotAllowed = true // 开启方法不匹配规则校验
 	})
 	Router.Use(gin.Recovery())
 	if gin.Mode() == gin.DebugMode {
