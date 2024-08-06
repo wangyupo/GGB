@@ -33,9 +33,8 @@ func (e *EmailApi) SendEmail(c *gin.Context) {
 
 	// 模板填充数据
 	var body bytes.Buffer
-	err = t.Execute(&body, request.EmailTest{
-		Name:    "Youper",
-		Content: "这是来自 GGB 的一封测试邮件",
+	err = t.Execute(&body, map[string]interface{}{
+		"content": "这是来自 GGB 的一封测试邮件",
 	})
 	if err != nil {
 		global.GGB_LOG.Error("Email模板数据填充失败！", zap.Error(err))
@@ -45,8 +44,8 @@ func (e *EmailApi) SendEmail(c *gin.Context) {
 
 	// 发送邮件
 	err = utils.SendEmail(request.Email{
-		To:      "1106774262@qq.com",
-		Subject: "GGB",
+		To:      "xxx@qq.com",
+		Subject: "欢迎使用GGB后端服务架构",
 		Body:    body.String(),
 	})
 	if err != nil {

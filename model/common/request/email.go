@@ -5,8 +5,3 @@ type Email struct {
 	Subject string `json:"subject"` // 邮件主题
 	Body    string `json:"body"`    // 邮件内容
 }
-
-type EmailTest struct {
-	Name    string `json:"name"`
-	Content string `json:"content"`
-}
